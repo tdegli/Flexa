@@ -1,0 +1,2269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Flexa.</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#090910;--bg2:#0f0f18;--bg3:#13131e;--bg4:#1a1a28;
+  --border:rgba(255,255,255,0.07);--border2:rgba(255,255,255,0.13);
+  --text:#f0f0f5;--text2:#a0a0b8;--text3:#5a5a78;
+  --purple:#b9a7ff;--peach:#ffb39b;--teal:#8fe4cf;--coral:#ff7c5c;
+  --grad:linear-gradient(110deg,#b9a7ff 0%,#ffb39b 52%,#8fe4cf 100%);
+  --radius:18px;--radius-sm:12px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
+.app{max-width:390px;margin:0 auto;padding-bottom:90px}
+.header{padding:52px 22px 18px}
+.logo{font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;font-weight:600;letter-spacing:-0.02em}
+.logo .dot{color:var(--coral)}
+.header-sub{font-size:12px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:6px}
+/* top nav hidden — replaced by floating bottom nav */
+.nav{display:none}
+.nav-tab{display:none}
+.content{padding:20px 22px 0}
+.section{display:none}.section.active{display:block}
+
+/* Legend (kept for month view) */
+.legend{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text3)}
+.l-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── NEW: Plan status hero ── */
+.plan-status-hero{padding:4px 0 24px}
+.ps-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text3);margin-bottom:8px}
+.ps-state{font-size:34px;font-weight:700;letter-spacing:-1.2px;line-height:1.05;margin-bottom:10px;font-family:'Plus Jakarta Sans',sans-serif}
+.ps-state .ok{color:var(--teal)}
+.ps-state .warn{color:var(--peach)}
+.ps-reason{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:16px}
+.ps-reason strong{color:var(--text);font-weight:600}
+
+/* Sport chips */
+.sport-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.sport-chip{display:flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border);border-radius:20px;padding:5px 11px;font-size:12px;font-weight:500;color:var(--text2);white-space:nowrap}
+.sport-chip.active{border-color:rgba(185,167,255,0.25);color:var(--text)}
+.sport-chip.suggested{border-color:rgba(143,228,207,0.35);color:var(--teal);background:rgba(143,228,207,0.05)}
+.sport-chip.missing{border-style:dashed;border-color:rgba(255,255,255,0.12);color:var(--text3)}
+
+/* Balance bar (horizontal) */
+.bal-bar-h{display:flex;height:5px;border-radius:4px;overflow:hidden;gap:2px;margin-bottom:10px}
+.bal-seg{height:100%;border-radius:2px;transition:width .4s}
+.bal-legend{display:flex;gap:14px;margin-bottom:16px}
+.bl-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text3);font-weight:500}
+.bl-dot{width:5px;height:5px;border-radius:50%}
+.bl-val{color:var(--text2);font-weight:600;margin-left:1px}
+
+/* Flexa suggestion box */
+.flexa-suggest{background:rgba(143,228,207,0.05);border:1px solid rgba(143,228,207,0.18);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:flex-start;gap:10px;margin-bottom:24px}
+.fs-icon{font-size:15px;flex-shrink:0;margin-top:2px}
+.fs-text{font-size:13px;color:var(--text2);line-height:1.55}
+.fs-text strong{color:var(--teal);font-weight:600}
+.fs-cta{display:inline-flex;align-items:center;gap:4px;margin-top:10px;font-size:12px;font-weight:700;color:var(--teal);background:rgba(143,228,207,0.1);border:1px solid rgba(143,228,207,0.25);border-radius:8px;padding:6px 12px;cursor:pointer;border:none}
+
+/* Section divider */
+.s-divider{height:1px;background:var(--border);margin:0 0 24px}
+.s-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text3);margin-bottom:12px}
+
+/* Next session card — redesigned */
+.next-card-v2{background:var(--bg3);border:1px solid rgba(185,167,255,0.15);border-radius:var(--radius);padding:18px 20px;margin-bottom:24px}
+.nc2-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
+.nc2-emoji{font-size:28px;line-height:1}
+.nc2-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--purple);background:rgba(185,167,255,0.1);border:1px solid rgba(185,167,255,0.2);border-radius:20px;padding:4px 10px}
+.nc2-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:700;letter-spacing:-0.6px;margin-bottom:6px}
+.nc2-why{font-size:12px;color:var(--text3);line-height:1.55;margin-bottom:14px;font-style:italic}
+.nc2-why span{color:var(--purple);font-style:normal;font-weight:600}
+.nc2-meta{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.nc2-time{font-size:13px;color:var(--text2)}
+.nc2-sep{color:var(--text3);font-size:10px}
+.nc2-dur{font-size:13px;color:var(--text2)}
+.nc2-actions{display:flex;gap:8px}
+.nc2-done{flex:1;background:var(--teal);color:#090910;font-size:14px;font-weight:700;padding:13px;border-radius:12px;border:none;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.nc2-flex{background:rgba(185,167,255,0.08);border:1px solid rgba(185,167,255,0.22);color:var(--purple);font-size:14px;font-weight:600;padding:13px 18px;border-radius:12px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;white-space:nowrap}
+
+/* Week strip redesigned */
+.week-strip-v2{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:0}
+.dp-v2{display:flex;flex-direction:column;align-items:center;padding:9px 2px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);gap:4px;cursor:pointer}
+.dp-v2.dp-today{border-color:rgba(185,167,255,0.3);background:rgba(185,167,255,0.04)}
+.dp-v2.dp-next{border-color:rgba(185,167,255,0.18)}
+.dp-v2.dp-suggest{border-color:rgba(143,228,207,0.3);background:rgba(143,228,207,0.04);border-style:dashed}
+.dp-v2.dp-rest{opacity:0.3}
+.dp-v2.dp-done{border-color:rgba(143,228,207,0.3);background:rgba(143,228,207,0.04)}
+.dp-v2.dp-modified{border-color:rgba(255,179,155,0.3)}
+.dpv2-d{font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;font-weight:700}
+.dpv2-n{font-size:12px;font-weight:700}
+.dp-v2.dp-today .dpv2-n{color:var(--purple)}
+.dp-v2.dp-suggest .dpv2-n{color:var(--teal)}
+.dpv2-icon{font-size:12px;line-height:1}
+
+/* Collapsible week detail */
+.week-detail-toggle{display:flex;align-items:center;justify-content:space-between;padding:14px 0 0;cursor:pointer}
+.wdt-label{font-size:11px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em}
+.wdt-arrow{font-size:12px;color:var(--text3);transition:transform .2s}
+.wdt-arrow.open{transform:rotate(180deg)}
+.week-detail-body{margin-top:12px}
+
+/* Balance cards */
+.bal-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 10px 8px;display:flex;flex-direction:column;gap:6px}
+.bal-label{font-size:9px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em}
+.bal-count{font-size:18px;font-weight:600;font-family:'Plus Jakarta Sans',sans-serif;line-height:1;margin-bottom:1px}
+.bal-bar-track{height:3px;border-radius:2px;background:rgba(255,255,255,0.08);overflow:hidden}
+.bal-bar-fill{height:100%;border-radius:2px;transition:width .4s ease}
+
+/* Week grid */
+.week-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:20px}
+.day-pill{display:flex;flex-direction:column;align-items:center;gap:4px;padding:9px 3px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);cursor:pointer;transition:border-color .15s,background .15s}
+.day-pill.today-pill{border-color:var(--purple);background:rgba(185,167,255,0.08)}
+.day-pill.modified{border-color:var(--peach);background:rgba(255,179,155,0.06)}
+.day-pill.empty-slot{border-style:dashed;border-color:var(--border2);background:transparent;opacity:.6}
+.day-pill.empty-slot:hover{border-color:var(--teal);opacity:1}
+.day-name-s{font-size:9px;color:var(--text3);text-transform:uppercase}
+.day-num-s{font-size:13px;font-weight:500}
+.day-icon-s{font-size:14px;line-height:1}
+
+/* Next card */
+.next-card{background:var(--bg3);border:1px solid rgba(185,167,255,0.18);border-radius:var(--radius);padding:16px;margin-bottom:12px;position:relative;overflow:hidden}
+.next-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+.next-eyebrow{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px}
+.next-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+.next-meta{font-size:13px;color:var(--text2);display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.orario-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(143,228,207,0.1);border:1px solid rgba(143,228,207,0.2);border-radius:20px;padding:3px 10px;font-size:12px;color:var(--teal);font-weight:500}
+.fase-tag{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:500}
+.fase-tag.f1{background:rgba(143,228,207,0.1);color:var(--teal)}
+.fase-tag.f2{background:rgba(185,167,255,0.1);color:var(--purple)}
+
+/* Week list */
+.week-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
+.week-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);cursor:pointer;transition:border-color .15s}
+.week-row.highlight{border-color:rgba(185,167,255,0.2);background:rgba(185,167,255,0.05)}
+.week-row.modified-row{border-color:rgba(255,179,155,0.3);background:rgba(255,179,155,0.04)}
+.week-row.add-row{border-style:dashed;border-color:var(--border2);background:transparent}
+.week-row.add-row:hover{border-color:var(--teal);background:rgba(143,228,207,0.04)}
+.wr-left{display:flex;align-items:center;gap:10px}
+.wr-date{font-size:12px;color:var(--text3);min-width:44px}
+.wr-name{font-size:14px;font-weight:500}
+.wr-orario{font-size:11px;color:var(--text3);margin-top:1px}
+.sport-dot{width:8px;height:8px;border-radius:50%}
+
+/* Week navigation */
+.week-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.week-nav-arrow{background:none;border:1px solid var(--border2);border-radius:8px;color:var(--text2);font-size:16px;width:34px;height:34px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:border-color .15s}
+.week-nav-arrow:hover{border-color:var(--purple);color:var(--purple)}
+.week-nav-label{font-size:13px;font-weight:500;color:var(--text)}
+.week-nav-sub{font-size:11px;color:var(--text3);text-align:center;margin-top:1px}
+
+/* Extra activity badge on occupied day */
+.day-pill.has-extra{border-color:var(--peach)}
+.day-pill.done-pill{border-color:rgba(143,228,207,0.35);background:rgba(143,228,207,0.06)}
+.extra-badge{font-size:9px;background:rgba(255,179,155,0.2);color:var(--peach);border-radius:4px;padding:1px 4px;margin-top:1px;line-height:1.3}
+
+/* Done button */
+.done-btn{font-size:11px;color:var(--text3);background:none;border:1px solid var(--border);border-radius:6px;padding:3px 8px;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif;transition:all .15s}
+.done-btn:hover{border-color:var(--teal);color:var(--teal)}
+.done-btn.completed{background:rgba(143,228,207,0.12);border-color:var(--teal);color:var(--teal)}
+.week-row.done-row{opacity:.55}
+.week-row.done-row .wr-name{text-decoration:line-through;color:var(--text3)}
+
+/* Add-to-day button inside week-row */
+.add-extra-btn{font-size:11px;color:var(--teal);background:none;border:1px solid rgba(143,228,207,0.25);border-radius:6px;padding:3px 8px;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif}
+.add-extra-btn:hover{background:rgba(143,228,207,0.08)}
+
+/* Readiness */
+.readiness-card{border-radius:var(--radius);padding:16px;margin-bottom:16px;background:rgba(143,228,207,0.06);border:1px solid rgba(143,228,207,0.15);display:flex;align-items:center;justify-content:space-between}
+.readiness-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:40px;font-weight:600;color:var(--teal);line-height:1}
+.readiness-label{font-size:12px;color:var(--text2);margin-bottom:4px}
+.readiness-action{font-size:13px;font-weight:500;color:var(--teal)}
+
+/* Alerts */
+.alert-box{border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:14px;font-size:13px;line-height:1.5;display:flex;gap:8px;align-items:flex-start}
+.alert-warn{background:rgba(255,179,100,0.08);border:1px solid rgba(255,179,100,0.2);color:#ffcf8b}
+.alert-info{background:rgba(185,167,255,0.08);border:1px solid rgba(185,167,255,0.2);color:var(--purple)}
+.alert-success{background:rgba(143,228,207,0.08);border:1px solid rgba(143,228,207,0.2);color:var(--teal)}
+
+/* Exercise tables */
+.block-title{font-size:10px;font-weight:500;color:var(--text3);text-transform:uppercase;letter-spacing:0.09em;margin:20px 0 8px}
+.ex-table{width:100%;border-collapse:collapse}
+.ex-table th{text-align:left;font-size:10px;color:var(--text3);font-weight:400;padding:0 0 7px;border-bottom:1px solid var(--border)}
+.ex-table td{padding:9px 0;border-bottom:1px solid var(--border);font-size:13px;vertical-align:top;line-height:1.4}
+.ex-table td:first-child{color:var(--text);padding-right:10px}
+.ex-table td:nth-child(2){color:var(--purple);font-weight:500;white-space:nowrap;padding-right:10px;min-width:80px}
+.ex-table td:last-child{color:var(--text3);font-size:12px}
+.ex-table tr:last-child td{border-bottom:none}
+.note{background:var(--bg3);border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:var(--text2);margin-top:16px;line-height:1.6;border:1px solid var(--border)}
+.note strong{color:var(--text);font-weight:500}
+
+/* Check-in */
+.checkin-row{display:flex;justify-content:space-between;align-items:center;padding:13px 0;border-bottom:1px solid var(--border)}
+.checkin-row:last-child{border-bottom:none}
+.checkin-label{font-size:14px;color:var(--text2)}
+.checkin-source{font-size:11px;color:var(--text3);margin-top:2px}
+.checkin-val{font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;font-weight:600}
+.adapt-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:12px}
+.adapt-card{border-radius:var(--radius-sm);padding:12px 8px;text-align:center;border:1px solid var(--border);background:var(--bg3)}
+.adapt-score{font-size:17px;font-weight:600;margin-bottom:2px}
+.adapt-lbl{font-size:10px;color:var(--text3);margin-bottom:5px}
+.adapt-action{font-size:11px;font-weight:500;line-height:1.3}
+
+/* Phase banners */
+.fase-banner{border-radius:var(--radius-sm);padding:9px 13px;font-size:13px;margin-bottom:16px;display:flex;justify-content:space-between;align-items:center}
+.fase-banner.f1{background:rgba(143,228,207,0.07);border:1px solid rgba(143,228,207,0.18);color:var(--teal)}
+.fase-banner.f2{background:rgba(185,167,255,0.07);border:1px solid rgba(185,167,255,0.18);color:var(--purple)}
+.section-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:21px;font-weight:600;margin-bottom:3px}
+.section-meta{font-size:13px;color:var(--text2);margin-bottom:16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+/* Buttons */
+.flexit-bottom{font-family:'Plus Jakarta Sans',sans-serif;font-size:11px;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;text-align:center;padding:24px 0 4px;letter-spacing:0.12em;text-transform:uppercase}
+.flexit-btn{width:100%;padding:12px;border-radius:var(--radius-sm);border:1px solid rgba(185,167,255,0.2);background:rgba(185,167,255,0.06);font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+.flexit-btn-inner{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.reset-btn{width:100%;padding:10px;border-radius:var(--radius-sm);border:1px dashed var(--border2);background:transparent;font-size:13px;color:var(--text3);cursor:pointer;margin-top:8px}
+.reset-btn:hover{border-color:var(--coral);color:var(--coral)}
+hr{border:none;border-top:1px solid var(--border);margin:18px 0}
+
+/* Month view */
+.month-section{margin-bottom:28px}
+.month-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.month-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:600}
+.month-focus{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:12px}
+.cal-header{font-size:9px;color:var(--text3);text-align:center;padding:0 0 5px;text-transform:uppercase}
+.cal-day{aspect-ratio:1;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;border:1px solid transparent;cursor:default}
+.cal-day.empty,.cal-day.riposo{background:transparent;color:var(--text3);opacity:.35}
+.cal-day.rest-day{background:var(--bg3);color:var(--text3)}
+.cal-day.forza{background:rgba(185,167,255,0.12);border-color:rgba(185,167,255,0.2);color:var(--purple);font-weight:500;cursor:pointer}
+.cal-day.yoga{background:rgba(255,179,155,0.1);border-color:rgba(255,179,155,0.2);color:var(--peach);font-weight:500;cursor:pointer}
+.cal-day.cardio{background:rgba(143,228,207,0.1);border-color:rgba(143,228,207,0.2);color:var(--teal);font-weight:500;cursor:pointer}
+.cal-day.today-mark{box-shadow:0 0 0 2px var(--purple)}
+.cal-day.past{opacity:.3}
+.cal-icon{font-size:9px;line-height:1;margin-top:1px}
+.month-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.mstat{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px 8px;text-align:center}
+.mstat-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:600}
+.mstat-lbl{font-size:9px;color:var(--text3);text-transform:uppercase;letter-spacing:0.05em;margin-top:2px}
+.fase-card{border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;border:1px solid var(--border);background:var(--bg3)}
+.fase-card-title{font-size:13px;font-weight:500;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.fase-card-body{font-size:12px;color:var(--text2);line-height:1.5}
+.fase-pill{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500}
+.fp-riattivazione{background:rgba(143,228,207,0.12);color:var(--teal)}
+.fp-progressione{background:rgba(185,167,255,0.12);color:var(--purple)}
+.fp-volume{background:rgba(255,179,155,0.12);color:var(--peach)}
+.fp-consolidamento{background:rgba(255,124,92,0.12);color:var(--coral)}
+.suggestion-card{border-radius:var(--radius-sm);padding:12px 14px;margin-bottom:8px;border:1px solid rgba(185,167,255,0.15);background:rgba(185,167,255,0.04);display:flex;gap:10px;align-items:flex-start}
+.blocca-btn{display:flex;align-items:center;gap:8px;padding:11px 14px;border-radius:var(--radius-sm);border:1px dashed var(--border2);background:transparent;color:var(--text3);font-size:13px;cursor:pointer;width:100%;margin-bottom:8px}
+.blocca-btn:hover{border-color:var(--purple);color:var(--purple)}
+
+/* Profile */
+.profilo-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.profilo-row{display:flex;justify-content:space-between;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--border)}
+.profilo-row:last-child{border-bottom:none}
+.profilo-label{font-size:13px;color:var(--text2)}
+.profilo-val{font-size:14px;font-weight:500;color:var(--text)}
+.misura-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px}
+.misura-card{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;text-align:center}
+.misura-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:22px;font-weight:600;color:var(--purple)}
+.misura-lbl{font-size:11px;color:var(--text3);margin-top:2px}
+.misura-data{font-size:10px;color:var(--text3);margin-top:4px}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(7,7,12,0.85);z-index:100;align-items:flex-end;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal{width:100%;max-width:390px;background:var(--bg2);border-radius:20px 20px 0 0;border-top:1px solid var(--border2);padding:24px 22px 40px;max-height:88vh;overflow-y:auto}
+.modal-handle{width:36px;height:4px;background:var(--border2);border-radius:2px;margin:0 auto 20px}
+.modal-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:17px;font-weight:600;margin-bottom:14px}
+.modal-session-card{display:flex;align-items:center;gap:10px;background:var(--bg4);border:1px solid var(--border2);border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:18px}
+.modal-section-title{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin:16px 0 10px}
+.modal-options{display:flex;flex-direction:column;gap:8px;margin-bottom:4px}
+.modal-option{padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);display:flex;align-items:flex-start;justify-content:space-between;cursor:pointer;transition:border-color .15s}
+.modal-option:hover{border-color:var(--purple)}
+.modal-option.selected{border-color:var(--purple);background:rgba(185,167,255,0.08)}
+.modal-option-label{color:var(--text);font-size:14px;display:flex;align-items:center;gap:8px}
+.modal-option-meta{font-size:12px;color:var(--text3);margin-top:2px}
+.modal-option-warn{font-size:11px;color:#ffcf8b;margin-top:3px}
+.modal-check{color:var(--purple);font-size:16px;opacity:0;flex-shrink:0;margin-left:8px;margin-top:2px}
+.modal-option.selected .modal-check{opacity:1}
+.proposta-box{background:rgba(185,167,255,0.06);border:1px solid rgba(185,167,255,0.2);border-radius:var(--radius-sm);padding:12px 14px;margin-top:12px;display:none}
+.proposta-title{font-size:12px;font-weight:500;color:var(--purple);margin-bottom:8px}
+.proposta-item{display:flex;align-items:flex-start;gap:8px;font-size:13px;color:var(--text2);padding:6px 0;border-bottom:1px solid var(--border)}
+.proposta-item:last-child{border-bottom:none}
+.proposta-arrow{color:var(--purple);flex-shrink:0}
+.impatto-box{background:rgba(255,179,100,0.07);border:1px solid rgba(255,179,100,0.2);border-radius:var(--radius-sm);padding:12px 14px;margin-top:12px;display:none}
+.impatto-title{font-size:12px;font-weight:500;color:#ffcf8b;margin-bottom:6px}
+.scelta-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.scelta-btn{padding:10px;border-radius:var(--radius-sm);border:1px solid var(--border2);background:var(--bg3);font-size:12px;font-weight:500;cursor:pointer;text-align:center;transition:border-color .15s;color:var(--text)}
+.scelta-btn:hover{border-color:var(--purple)}
+.scelta-btn.selected{border-color:var(--purple);background:rgba(185,167,255,0.08);color:var(--purple)}
+.modal-confirm{width:100%;padding:14px;border-radius:var(--radius-sm);border:none;background:rgba(185,167,255,0.15);font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;margin-top:16px}
+.modal-confirm-inner{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.modal-cancel{width:100%;padding:12px;border:none;background:none;font-size:14px;color:var(--text3);cursor:pointer;margin-top:4px}
+
+/* Session detail sheet (replaces separate tab) */
+.scheda-modal{display:none;position:fixed;inset:0;background:rgba(7,7,12,0.92);z-index:200;overflow-y:auto}
+.scheda-modal.open{display:block}
+.scheda-inner{max-width:390px;margin:0 auto;padding:24px 22px 60px;min-height:100vh}
+.scheda-back{display:flex;align-items:center;gap:8px;color:var(--text3);font-size:13px;cursor:pointer;margin-bottom:20px;background:none;border:none}
+.scheda-back:hover{color:var(--text)}
+
+/* Block modal */
+.block-modal-overlay{display:none;position:fixed;inset:0;background:rgba(7,7,12,0.85);z-index:100;align-items:flex-end;justify-content:center}
+.block-modal-overlay.open{display:flex}
+
+/* ── Coach tab ─────────────────────────────────────────────────── */
+.coach-wrap{display:flex;flex-direction:column;height:calc(100vh - 160px);min-height:400px}
+.coach-intro{background:var(--bg3);border:1px solid rgba(185,167,255,0.18);border-radius:var(--radius);padding:14px 16px;margin-bottom:14px;position:relative;overflow:hidden}
+.coach-intro::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad)}
+.coach-intro-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:600;margin-bottom:2px}
+.coach-intro-sub{font-size:12px;color:var(--text3);line-height:1.5}
+.coach-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-bottom:8px;scrollbar-width:none}
+.coach-messages::-webkit-scrollbar{display:none}
+.msg{max-width:86%;display:flex;flex-direction:column;gap:3px}
+.msg.user{align-self:flex-end;align-items:flex-end}
+.msg.coach{align-self:flex-start;align-items:flex-start}
+.msg-bubble{padding:10px 13px;border-radius:14px;font-size:14px;line-height:1.55}
+.msg.user .msg-bubble{background:rgba(185,167,255,0.15);border:1px solid rgba(185,167,255,0.25);color:var(--text);border-bottom-right-radius:4px}
+.msg.coach .msg-bubble{background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-bottom-left-radius:4px}
+.msg-time{font-size:10px;color:var(--text3)}
+.coach-input-wrap{display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--border);margin-top:8px}
+.coach-input{flex:1;background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:10px 13px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;resize:none;outline:none;line-height:1.4;max-height:100px;overflow-y:auto}
+.coach-input::placeholder{color:var(--text3)}
+.coach-input:focus{border-color:rgba(185,167,255,0.4)}
+.coach-send{background:rgba(185,167,255,0.15);border:1px solid rgba(185,167,255,0.3);border-radius:10px;width:42px;height:42px;flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;transition:background .15s;align-self:flex-end}
+.coach-send:hover{background:rgba(185,167,255,0.25)}
+.coach-send:disabled{opacity:.4;cursor:default}
+.typing-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--text3);animation:tdot 1.2s infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes tdot{0%,60%,100%{opacity:.25}30%{opacity:1}}
+.plan-update-banner{background:rgba(143,228,207,0.08);border:1px solid rgba(143,228,207,0.2);border-radius:var(--radius-sm);padding:10px 13px;font-size:12px;color:var(--teal);display:flex;gap:8px;align-items:center;margin-top:6px}
+.coach-input:empty::before,.coach-input[data-empty="true"]::before{content:attr(data-placeholder);color:var(--text3);pointer-events:none}
+
+/* ── Check-in redesign ── */
+.ci-header{padding:4px 0 20px}
+.ci-date{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text3);margin-bottom:8px}
+.ci-status-card{border-radius:var(--radius);padding:20px;margin-bottom:20px;display:flex;align-items:center;gap:16px;border:1px solid}
+.ci-status-card.green{background:rgba(143,228,207,0.06);border-color:rgba(143,228,207,0.2)}
+.ci-status-card.yellow{background:rgba(255,179,155,0.06);border-color:rgba(255,179,155,0.2)}
+.ci-status-card.red{background:rgba(255,100,100,0.06);border-color:rgba(255,100,100,0.2)}
+.ci-status-icon{font-size:32px;flex-shrink:0}
+.ci-status-title{font-size:18px;font-weight:700;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-0.4px;margin-bottom:3px}
+.ci-status-sub{font-size:13px;color:var(--text2);line-height:1.5}
+.ci-inputs{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.ci-input-row{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ci-input-left{}
+.ci-input-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px}
+.ci-input-source{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em}
+.ci-input-right{display:flex;align-items:center;gap:8px}
+.ci-num{font-family:'Plus Jakarta Sans',sans-serif;font-size:28px;font-weight:700;min-width:52px;text-align:right;line-height:1}
+.ci-slider{-webkit-appearance:none;width:110px;height:4px;border-radius:2px;outline:none;cursor:pointer;background:var(--bg4)}
+.ci-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;cursor:pointer;border:2px solid var(--bg)}
+.ci-feel-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:20px}
+.ci-feel-btn{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:10px 4px;text-align:center;cursor:pointer;font-size:18px;transition:all .15s}
+.ci-feel-btn.selected{border-color:var(--purple);background:rgba(185,167,255,0.1)}
+.ci-feel-label{font-size:9px;color:var(--text3);margin-top:4px}
+.ci-submit{width:100%;padding:15px;border-radius:var(--radius-sm);border:none;font-size:15px;font-weight:700;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-0.2px;margin-bottom:16px}
+.ci-logic{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px}
+.ci-logic-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:12px}
+.ci-logic-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)}
+.ci-logic-row:last-child{border-bottom:none}
+.ci-logic-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ci-logic-text{font-size:12px;color:var(--text2);line-height:1.4}
+
+/* ── Floating bottom nav ── */
+.bottom-nav{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);width:calc(100% - 32px);max-width:358px;background:rgba(11,11,18,0.95);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.09);border-radius:30px;padding:10px 6px;display:flex;justify-content:space-around;align-items:center;z-index:50}
+.bn-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 10px;cursor:pointer;background:none;border:none}
+.bn-icon{font-size:17px;line-height:1}
+.bn-label{font-size:9px;color:var(--text3);font-weight:600;letter-spacing:0.03em;font-family:'Inter',sans-serif}
+.bn-item.active .bn-label{color:var(--text2)}
+.bn-coach{background:var(--grad);border-radius:22px;padding:9px 18px;font-size:12px;font-weight:700;color:#090910;cursor:pointer;border:none;font-family:'Plus Jakarta Sans',sans-serif;letter-spacing:-0.2px;white-space:nowrap}
+/* Adjust content padding so it doesn't hide behind nav */
+.app{padding-bottom:100px}
+/* Header redesign */
+.header{display:flex;align-items:center;justify-content:space-between;padding:52px 22px 16px}
+.header-left{}
+.header-sub{font-size:11px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:2px}
+.logo{font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:700;letter-spacing:-0.5px}
+.logo .dot{color:var(--peach)}
+.header-avatar{width:34px;height:34px;border-radius:50%;background:var(--grad);opacity:0.8;flex-shrink:0}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-left">
+      <div class="header-sub">Personal plan · Tatiana</div>
+      <div class="logo">Flexa<span class="dot">.</span></div>
+    </div>
+    <div class="header-avatar"></div>
+  </div>
+  <div class="nav" style="display:none">
+    <button class="nav-tab active" onclick="showSection('piano')">This week</button>
+    <button class="nav-tab" onclick="showSection('mesi')">Months</button>
+    <button class="nav-tab" onclick="showSection('coach')">Coach ✦</button>
+    <button class="nav-tab" onclick="showSection('profilo')">Profile</button>
+    <button class="nav-tab" onclick="showSection('checkin')">Check-in</button>
+  </div>
+  <div class="content">
+
+    <!-- THIS WEEK -->
+    <div id="piano" class="section active">
+
+      <!-- ① PLAN STATUS HERO — primary information -->
+      <div class="plan-status-hero" id="planStatusHero" style="margin-top:4px">
+        <div class="ps-eyebrow" id="psEyebrow">Your plan · —</div>
+        <div class="ps-state" id="psState">—</div>
+        <div class="ps-reason" id="psReason"></div>
+        <div class="sport-chips" id="sportChips"></div>
+        <div class="bal-bar-h" id="balBarH"></div>
+        <div class="bal-legend" id="balLegend"></div>
+        <div class="flexa-suggest" id="flexaSuggest" style="display:none">
+          <div class="fs-icon">✦</div>
+          <div>
+            <div class="fs-text" id="flexaSuggestText"></div>
+            <button class="fs-cta" id="flexaSuggestBtn" onclick="applyFlexaSuggestion()">Add to plan →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="s-divider"></div>
+
+      <!-- ② NEXT SESSION -->
+      <div id="nextSessionWrap">
+        <div class="s-eyebrow" id="nextSessionEyebrow">Next session</div>
+        <div class="next-card-v2" id="nextCardV2" style="display:none">
+          <div class="nc2-top">
+            <div class="nc2-emoji" id="nc2Emoji">🏋️</div>
+            <div class="nc2-type" id="nc2Type">Strength</div>
+          </div>
+          <div class="nc2-name" id="nc2Name">—</div>
+          <div class="nc2-why" id="nc2Why"></div>
+          <div class="nc2-meta">
+            <div class="nc2-time" id="nc2Time">—</div>
+            <div class="nc2-sep">·</div>
+            <div class="nc2-dur" id="nc2Dur">45 min</div>
+          </div>
+          <div class="nc2-actions">
+            <button class="nc2-done" id="nc2DoneBtn">✓ Done</button>
+            <button class="nc2-flex" id="nc2FlexBtn">✦ Flex it.</button>
+          </div>
+        </div>
+        <div id="restTodayMsg" style="display:none;font-size:14px;color:var(--text2);line-height:1.6;padding:4px 0 20px">
+          Rest day — good time to recover. <span style="color:var(--teal);cursor:pointer" onclick="openAggiungi(todayDayIdxGlobal, false)">+ Add a light activity</span>
+        </div>
+      </div>
+
+      <div class="s-divider"></div>
+
+      <!-- ③ WEEK STRIP + collapsible detail -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text2)" id="weekNavLabel">—</div>
+            <div style="font-size:10px;color:var(--text3);margin-top:1px" id="weekNavSub">—</div>
+          </div>
+          <div style="display:flex;gap:6px">
+            <button class="week-nav-arrow" onclick="changeWeek(-1)">‹</button>
+            <button class="week-nav-arrow" onclick="changeWeek(1)">›</button>
+          </div>
+        </div>
+        <div class="week-strip-v2" id="weekGrid"></div>
+
+        <!-- Collapsible week detail -->
+        <div class="week-detail-toggle" onclick="toggleWeekDetail()">
+          <div class="wdt-label">Week detail</div>
+          <div class="wdt-arrow" id="wdtArrow">▾</div>
+        </div>
+        <div class="week-detail-body" id="weekDetailBody" style="display:none">
+          <div class="week-list" id="weekList"></div>
+          <button class="reset-btn" onclick="resetPiano()">↺ Restore original plan</button>
+        </div>
+      </div>
+
+      <!-- hidden alert for compat -->
+      <div id="piano-alert" style="display:none" class="alert-box alert-info">
+        <span>✦</span><span id="piano-alert-text"></span>
+      </div>
+      <!-- hidden balance grid kept for JS compat -->
+      <div id="weekBalance" style="display:none"></div>
+      <!-- hidden next-card kept for JS compat -->
+      <div id="nextCard" style="display:none"></div>
+
+      <div style="padding-bottom:8px"></div>
+    </div>
+
+    <!-- 3 MONTHS -->
+    <div id="mesi" class="section">
+      <div style="margin-top:4px;margin-bottom:20px">
+        <div class="section-title">June – August</div>
+        <div style="font-size:13px;color:var(--text3);margin-bottom:16px">Goal: body recomposition + longevity</div>
+        <div class="legend">
+          <span class="legend-item"><span class="l-dot" style="background:var(--purple)"></span>Strength</span>
+          <span class="legend-item"><span class="l-dot" style="background:var(--peach)"></span>Mobility</span>
+          <span class="legend-item"><span class="l-dot" style="background:var(--teal)"></span>Cardio</span>
+        </div>
+      </div>
+      <!-- JUNE -->
+      <div class="month-section">
+        <div class="month-header">
+          <div><div class="month-name">June</div><div class="month-focus">Reactivation → Progression</div></div>
+          <span class="fase-pill fp-riattivazione">Reactivation</span>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-header">M</div><div class="cal-header">T</div><div class="cal-header">W</div><div class="cal-header">T</div><div class="cal-header">F</div><div class="cal-header">S</div><div class="cal-header">S</div>
+          <div class="cal-day rest-day past">1</div>
+          <div class="cal-day forza past" onclick="openMonthDay(2, 'Weights: Upper body')">2<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day past">3</div>
+          <div class="cal-day yoga past" onclick="openMonthDay(4, 'Yoga')">4<div class="cal-icon">🧘</div></div>
+          <div class="cal-day forza past" onclick="openMonthDay(5, 'Weights: Lower body')">5<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day past">6</div>
+          <div class="cal-day rest-day past">7</div>
+          <div class="cal-day rest-day past">8</div>
+          <div class="cal-day forza past" onclick="openMonthDay(9, 'Weights: Upper body')">9<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day cardio past" onclick="openMonthDay(10, 'Run')">10<div class="cal-icon">🏃</div></div>
+          <div class="cal-day rest-day past">11</div>
+          <div class="cal-day forza past" onclick="openMonthDay(12, 'Weights: Lower body')">12<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day past">13</div>
+          <div class="cal-day rest-day past">14</div>
+          <div class="cal-day rest-day today-mark" style="font-weight:600;color:var(--purple)" onclick="openMonthDay(15, null)">15</div>
+          <div class="cal-day forza" onclick="openMonthDay(16, 'Weights: Upper body')">16<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(17, null)">17</div>
+          <div class="cal-day yoga" onclick="openMonthDay(18, 'Yoga')">18<div class="cal-icon">🧘</div></div>
+          <div class="cal-day forza" onclick="openMonthDay(19, 'Weights: Lower body')">19<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(20, null)">20</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(21, null)">21</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(22, null)">22</div>
+          <div class="cal-day forza" onclick="openMonthDay(23, 'Weights: Upper body')">23<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day cardio" onclick="openMonthDay(24, 'Run')">24<div class="cal-icon">🏃</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(25, null)">25</div>
+          <div class="cal-day forza" onclick="openMonthDay(26, 'Weights: Lower body')">26<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(27, null)">27</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(28, null)">28</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(29, null)">29</div>
+          <div class="cal-day forza" onclick="openMonthDay(30, 'Weights: Upper body')">30<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+        </div>
+        <div class="month-stats">
+          <div class="mstat"><div class="mstat-num" style="color:var(--purple)">50%</div><div class="mstat-lbl">Strength</div></div>
+          <div class="mstat"><div class="mstat-num" style="color:var(--teal)">17%</div><div class="mstat-lbl">Cardio</div></div>
+          <div class="mstat"><div class="mstat-num" style="color:var(--peach)">33%</div><div class="mstat-lbl">Mobility</div></div>
+          <div class="mstat"><div class="mstat-num" style="color:var(--text2)">3–4</div><div class="mstat-lbl">Days/wk</div></div>
+        </div>
+        <button class="blocca-btn" onclick="openBlockModal('June')">+ Block days you can't train</button>
+        <div class="fase-card"><div class="fase-card-title"><span class="fase-pill fp-riattivazione">Reactivation</span> 3–4 sessions/wk</div><div class="fase-card-body">Strength at home, recovery yoga. From wk 3, run/walk intervals enter on Wednesday.</div></div>
+        <div class="suggestion-card"><div style="font-size:16px;flex-shrink:0;margin-top:1px">✦</div><div><div style="font-size:13px;font-weight:500;margin-bottom:3px">Flexa suggests</div><div style="font-size:12px;color:var(--text2);line-height:1.5">Keep strength at 50–60% of previous load while the right side heals. Flexa will signal when to progress.</div></div></div>
+      </div>
+      <hr>
+      <!-- JULY -->
+      <div class="month-section">
+        <div class="month-header">
+          <div><div class="month-name">July</div><div class="month-focus">Progression + Composition</div></div>
+          <span class="fase-pill fp-progressione">Progression</span>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-header">M</div><div class="cal-header">T</div><div class="cal-header">W</div><div class="cal-header">T</div><div class="cal-header">F</div><div class="cal-header">S</div><div class="cal-header">S</div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(1, null)">1</div>
+          <div class="cal-day yoga" onclick="openMonthDay(2, 'Yoga')">2<div class="cal-icon">🧘</div></div>
+          <div class="cal-day forza" onclick="openMonthDay(3, 'Weights: Lower body')">3<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(4, null)">4</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(5, null)">5</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(6, null)">6</div>
+          <div class="cal-day forza" onclick="openMonthDay(7, 'Weights: Upper body')">7<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day cardio" onclick="openMonthDay(8, 'Run')">8<div class="cal-icon">🏃</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(9, null)">9</div>
+          <div class="cal-day forza" onclick="openMonthDay(10, 'Weights: Lower body')">10<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(11, null)">11</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(12, null)">12</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(13, null)">13</div>
+          <div class="cal-day forza" onclick="openMonthDay(14, 'Weights: Upper body')">14<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(15, null)">15</div>
+          <div class="cal-day yoga" onclick="openMonthDay(16, 'Yoga')">16<div class="cal-icon">🧘</div></div>
+          <div class="cal-day forza" onclick="openMonthDay(17, 'Weights: Lower body')">17<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(18, null)">18</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(19, null)">19</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(20, null)">20</div>
+          <div class="cal-day forza" onclick="openMonthDay(21, 'Weights: Upper body')">21<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day cardio" onclick="openMonthDay(22, 'Run')">22<div class="cal-icon">🏃</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(23, null)">23</div>
+          <div class="cal-day forza" onclick="openMonthDay(24, 'Weights: Lower body')">24<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(25, null)">25</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(26, null)">26</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(27, null)">27</div>
+          <div class="cal-day forza" onclick="openMonthDay(28, 'Weights: Upper body')">28<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(29, null)">29</div>
+          <div class="cal-day yoga" onclick="openMonthDay(30, 'Yoga')">30<div class="cal-icon">🧘</div></div>
+          <div class="cal-day forza" onclick="openMonthDay(31, 'Weights: Lower body')">31<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+        </div>
+        <div class="month-stats">
+          <div class="mstat"><div class="mstat-num" style="color:var(--purple)">50%</div><div class="mstat-lbl">Strength</div></div>
+          <div class="mstat"><div class="mstat-num" style="color:var(--teal)">17%</div><div class="mstat-lbl">Cardio</div></div>
+          <div class="mstat"><div class="mstat-num" style="color:var(--peach)">33%</div><div class="mstat-lbl">Mobility</div></div>
+          <div class="mstat"><div class="mstat-num" style="color:var(--text2)">3–4</div><div class="mstat-lbl">Days/wk</div></div>
+        </div>
+        <button class="blocca-btn" onclick="openBlockModal('July')">+ Block days you can't train</button>
+        <div class="fase-card"><div class="fase-card-title"><span class="fase-pill fp-progressione">Progression</span> 3–4 sessions/wk</div><div class="fase-card-body">Running builds toward 25–30 continuous minutes. Strength load increases every 2 weeks.</div></div>
+        <div class="suggestion-card"><div style="font-size:16px;flex-shrink:0;margin-top:1px">✦</div><div><div style="font-size:13px;font-weight:500;margin-bottom:3px">Flexa suggests</div><div style="font-size:12px;color:var(--text2);line-height:1.5">15 min of post-run stretching improves body recomposition and reduces re-injury risk.</div></div></div>
+      </div>
+      <hr>
+      <!-- AUGUST -->
+      <div class="month-section">
+        <div class="month-header">
+          <div><div class="month-name">August</div><div class="month-focus">Consolidation + Shape</div></div>
+          <span class="fase-pill fp-consolidamento">Consolidation</span>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-header">M</div><div class="cal-header">T</div><div class="cal-header">W</div><div class="cal-header">T</div><div class="cal-header">F</div><div class="cal-header">S</div><div class="cal-header">S</div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day empty"></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(1, null)">1</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(2, null)">2</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(3, null)">3</div>
+          <div class="cal-day forza" onclick="openMonthDay(4, 'Weights: Upper body')">4<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day cardio" onclick="openMonthDay(5, 'Run')">5<div class="cal-icon">🏃</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(6, null)">6</div>
+          <div class="cal-day forza" onclick="openMonthDay(7, 'Weights: Lower body')">7<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(8, null)">8</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(9, null)">9</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(10, null)">10</div>
+          <div class="cal-day forza" onclick="openMonthDay(11, 'Weights: Upper body')">11<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(12, null)">12</div>
+          <div class="cal-day yoga" onclick="openMonthDay(13, 'Yoga')">13<div class="cal-icon">🧘</div></div>
+          <div class="cal-day forza" onclick="openMonthDay(14, 'Weights: Lower body')">14<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(15, null)">15</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(16, null)">16</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(17, null)">17</div>
+          <div class="cal-day forza" onclick="openMonthDay(18, 'Weights: Upper body')">18<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day cardio" onclick="openMonthDay(19, 'Run')">19<div class="cal-icon">🏃</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(20, null)">20</div>
+          <div class="cal-day forza" onclick="openMonthDay(21, 'Weights: Lower body')">21<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(22, null)">22</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(23, null)">23</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(24, null)">24</div>
+          <div class="cal-day forza" onclick="openMonthDay(25, 'Weights: Upper body')">25<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(26, null)">26</div>
+          <div class="cal-day yoga" onclick="openMonthDay(27, 'Yoga')">27<div class="cal-icon">🧘</div></div>
+          <div class="cal-day forza" onclick="openMonthDay(28, 'Weights: Lower body')">28<div class="cal-icon">🏋️</div></div>
+          <div class="cal-day rest-day" onclick="openMonthDay(29, null)">29</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(30, null)">30</div>
+          <div class="cal-day rest-day" onclick="openMonthDay(31, null)">31</div>
+        </div>
+        <div class="month-stats">
+          <div class="mstat"><div class="mstat-num" style="color:var(--purple)">50%</div><div class="mstat-lbl">Strength</div></div>
+          <div class="mstat"><div class="mstat-num" style="color:var(--teal)">17%</div><div class="mstat-lbl">Cardio</div></div>
+          <div class="mstat"><div class="mstat-num" style="color:var(--peach)">33%</div><div class="mstat-lbl">Mobility</div></div>
+          <div class="mstat"><div class="mstat-num" style="color:var(--text2)">3–4</div><div class="mstat-lbl">Days/wk</div></div>
+        </div>
+        <button class="blocca-btn" onclick="openBlockModal('August')">+ Block days you can't train</button>
+        <div class="fase-card"><div class="fase-card-title"><span class="fase-pill fp-consolidamento">Consolidation</span> 3–4 sessions/wk</div><div class="fase-card-body">Continuous runs 30–40 min. Strength at higher loads. End of August: fully reactivated.</div></div>
+        <div class="suggestion-card"><div style="font-size:16px;flex-shrink:0;margin-top:1px">✦</div><div><div style="font-size:13px;font-weight:500;margin-bottom:3px">Flexa suggests</div><div style="font-size:12px;color:var(--text2);line-height:1.5">In September consider padel as a complementary sport — agility that strength and linear cardio don't touch.</div></div></div>
+      </div>
+            <div class="flexit-bottom">Flex it.</div>
+    </div>
+
+    <!-- PROFILE (includes My Sports) -->
+    <div id="profilo" class="section">
+      <!-- Profile sub-nav -->
+      <div style="display:flex;gap:0;margin:4px 0 20px;border-bottom:1px solid var(--border)">
+        <button id="ptab-profile" class="nav-tab active" style="padding:8px 16px 9px;font-size:13px" onclick="showProfileTab('profile')">Profile</button>
+        <button id="ptab-sports" class="nav-tab" style="padding:8px 16px 9px;font-size:13px" onclick="showProfileTab('sports')">My sports</button>
+      </div>
+
+      <!-- ── PROFILE sub-tab ── -->
+      <div id="profilo-profile" style="display:block">
+      <div style="font-size:13px;color:var(--text3);margin-bottom:20px">Personal data and goals</div>
+      <div class="profilo-card">
+        <div class="profilo-row"><span class="profilo-label">Name</span><span class="profilo-val">Tatiana</span></div>
+        <div class="profilo-row"><span class="profilo-label">Age</span><span class="profilo-val">35</span></div>
+        <div class="profilo-row"><span class="profilo-label">City</span><span class="profilo-val">Barcelona</span></div>
+        <div class="profilo-row"><span class="profilo-label">Training slot</span><span class="profilo-val">07:00 – 07:45</span></div>
+        <div class="profilo-row"><span class="profilo-label">Days/week</span><span class="profilo-val">3–4</span></div>
+      </div>
+      <div class="block-title">Goal</div>
+      <div style="background:var(--bg3);border:1px solid rgba(185,167,255,0.18);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:16px">
+        <div style="font-size:13px;font-weight:500;margin-bottom:6px;color:var(--purple)">Body recomposition + longevity</div>
+        <div style="font-size:13px;color:var(--text2);line-height:1.6">Get back to 56 kg with more muscle than now. Work on strength, cardio and flexibility in balance. Feel good for the next decades — not just this summer.</div>
+      </div>
+      <div class="block-title">Measurements</div>
+      <div style="font-size:11px;color:var(--text3);margin-bottom:12px">Flexa reminds you to update every 4 weeks</div>
+      <div class="misura-grid">
+        <div class="misura-card"><div class="misura-num">61</div><div class="misura-lbl">Weight (kg)</div><div class="misura-data">Jun 15, 2026</div></div>
+        <div class="misura-card"><div class="misura-num" style="color:var(--peach)">56</div><div class="misura-lbl">Target (kg)</div><div class="misura-data">Goal</div></div>
+        <div class="misura-card"><div class="misura-num" style="color:var(--teal)">170</div><div class="misura-lbl">Height (cm)</div><div class="misura-data"></div></div>
+        <div class="misura-card"><div class="misura-num" style="color:var(--text3)">—</div><div class="misura-lbl">Lean mass</div><div class="misura-data">To measure</div></div>
+      </div>
+      <div class="note" style="margin-bottom:16px"><strong>Next measurement check:</strong> July 13, 2026<br>Flexa will remind you to weigh in and take body measurements to track progress toward your goal.</div>
+      <div class="block-title">Active injury</div>
+      <div class="alert-box alert-warn" style="margin-bottom:0"><span>⚠</span><span>Sub-costal right strain — returning to training. No direct core or rotations until physio clears you.</span></div>
+      <div class="flexit-bottom">Flex it.</div>
+      </div><!-- /profilo-profile -->
+
+      <!-- ── MY SPORTS sub-tab ── -->
+      <div id="profilo-sports" style="display:none">
+        <div style="font-size:13px;color:var(--text3);margin-bottom:20px">Flexa balances these into one weekly plan</div>
+
+        <!-- My sports list -->
+        <div class="block-title">Your sports <button onclick="openAddSportModal()" style="float:right;background:none;border:1px solid var(--border2);border-radius:20px;color:var(--teal);font-size:11px;padding:3px 10px;cursor:pointer;font-family:inherit">+ Add</button></div>
+        <div id="mySportsList" style="display:flex;flex-direction:column;gap:8px;margin-bottom:24px"></div>
+
+        <!-- Flexa gap analysis -->
+        <div class="block-title">✦ What Flexa suggests adding</div>
+        <div id="gapAnalysis" style="margin-bottom:24px"></div>
+
+        <div class="flexit-bottom">Flex it.</div>
+      </div><!-- /profilo-sports -->
+
+    </div><!-- /profilo -->
+
+    <!-- CHECK-IN -->
+    <div id="checkin" class="section">
+      <div class="ci-header">
+        <div class="ci-date" id="ciDate">Morning check-in · today</div>
+
+        <!-- Status card — updates live as sliders move -->
+        <div class="ci-status-card green" id="ciStatusCard">
+          <div class="ci-status-icon" id="ciStatusIcon">✅</div>
+          <div>
+            <div class="ci-status-title" id="ciStatusTitle">Ready to train</div>
+            <div class="ci-status-sub" id="ciStatusSub">Your numbers look good — plan is on. Go for it.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Input sliders -->
+      <div class="ci-inputs">
+
+        <div class="ci-input-row">
+          <div class="ci-input-left">
+            <div class="ci-input-label">Readiness</div>
+            <div class="ci-input-source">🔴 Oura Ring</div>
+          </div>
+          <div class="ci-input-right">
+            <input type="range" class="ci-slider" id="slReadiness" min="0" max="100" value="86" oninput="onCheckinChange()" style="accent-color:var(--teal)">
+            <div class="ci-num" id="numReadiness" style="color:var(--teal)">86</div>
+          </div>
+        </div>
+
+        <div class="ci-input-row">
+          <div class="ci-input-left">
+            <div class="ci-input-label">Sleep score</div>
+            <div class="ci-input-source">🔴 Oura Ring</div>
+          </div>
+          <div class="ci-input-right">
+            <input type="range" class="ci-slider" id="slSleep" min="0" max="100" value="84" oninput="onCheckinChange()" style="accent-color:var(--purple)">
+            <div class="ci-num" id="numSleep" style="color:var(--purple)">84</div>
+          </div>
+        </div>
+
+        <div class="ci-input-row">
+          <div class="ci-input-left">
+            <div class="ci-input-label">Body Battery</div>
+            <div class="ci-input-source">⌚ Garmin</div>
+          </div>
+          <div class="ci-input-right">
+            <input type="range" class="ci-slider" id="slBattery" min="0" max="100" value="72" oninput="onCheckinChange()" style="accent-color:var(--peach)">
+            <div class="ci-num" id="numBattery" style="color:var(--peach)">72</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- How do you feel -->
+      <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--text3);margin-bottom:10px">How do you feel?</div>
+      <div class="ci-feel-grid" id="ciFeelGrid">
+        <div class="ci-feel-btn" onclick="selectFeel(1)"><div>😴</div><div class="ci-feel-label">Exhausted</div></div>
+        <div class="ci-feel-btn" onclick="selectFeel(3)"><div>😐</div><div class="ci-feel-label">Meh</div></div>
+        <div class="ci-feel-btn selected" onclick="selectFeel(5)"><div>🙂</div><div class="ci-feel-label">OK</div></div>
+        <div class="ci-feel-btn" onclick="selectFeel(7)"><div>😊</div><div class="ci-feel-label">Good</div></div>
+        <div class="ci-feel-btn" onclick="selectFeel(10)"><div>🔥</div><div class="ci-feel-label">On fire</div></div>
+      </div>
+
+      <!-- Submit -->
+      <button class="ci-submit" id="ciSubmit" onclick="submitCheckin()" style="background:var(--teal);color:#090910">
+        Save · update plan
+      </button>
+
+      <!-- Logic legend -->
+      <div class="ci-logic">
+        <div class="ci-logic-title">How Flexa reads your numbers</div>
+        <div class="ci-logic-row">
+          <div class="ci-logic-dot" style="background:var(--teal)"></div>
+          <div class="ci-logic-text"><strong style="color:var(--teal)">Readiness ≥ 70</strong> — train as planned, full load</div>
+        </div>
+        <div class="ci-logic-row">
+          <div class="ci-logic-dot" style="background:var(--peach)"></div>
+          <div class="ci-logic-text"><strong style="color:var(--peach)">Readiness 50–69</strong> — reduce load or swap to Yoga</div>
+        </div>
+        <div class="ci-logic-row">
+          <div class="ci-logic-dot" style="background:#ff7a7a"></div>
+          <div class="ci-logic-text"><strong style="color:#ff7a7a">Readiness &lt; 50</strong> — rest or walk only, plan shifts</div>
+        </div>
+        <div class="ci-logic-row">
+          <div class="ci-logic-dot" style="background:var(--purple)"></div>
+          <div class="ci-logic-text"><strong style="color:var(--purple)">Body Battery &lt; 30</strong> — even if readiness is ok, Flexa suggests a lighter session</div>
+        </div>
+      </div>
+
+      <div class="flexit-bottom">Flex it.</div>
+    </div>
+
+    <!-- COACH -->
+    <div id="coach" class="section">
+      <div class="coach-wrap">
+        <div class="coach-intro">
+          <div class="coach-intro-name">Flexa Coach ✦</div>
+          <div class="coach-intro-sub">Tell me anything — days you can't train, a padel game tonight, how you feel — and I'll flex the week for you.</div>
+        </div>
+        <div class="coach-messages" id="coachMessages">
+          <div class="msg coach">
+            <div class="msg-bubble">Hey Tatiana 👋 I'm your Flexa Coach — I know your plan, your goals, and where you are in your recovery.<br><br>Talk to me like you'd talk to a coach: tell me what's happening this week, how your right side is feeling, or just drop your Oura readiness score. I'll adapt your plan accordingly.<br><br>What's going on?</div>
+            <div class="msg-time">Flexa Coach</div>
+          </div>
+        </div>
+        <div class="coach-input-wrap">
+          <div class="coach-input" id="coachInput" contenteditable="true" data-placeholder="Tell me about your week…" onkeydown="coachKeydown(event)" oninput="coachInputChange()"></div>
+          <button class="coach-send" id="coachSend" onclick="sendCoachMessage()" title="Send">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODAL FLEX IT / ADD SESSION -->
+<div class="modal-overlay" id="flexModal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalTitle">Flex it. ✦</div>
+    <div class="modal-session-card">
+      <div id="modalIcon" style="font-size:20px;flex-shrink:0;color:var(--purple)">▲</div>
+      <div>
+        <div style="font-size:15px;font-weight:500" id="modalSession"></div>
+        <div style="font-size:12px;color:var(--text3);margin-top:1px"><span id="modalDay"></span> · <span id="modalOrario"></span></div>
+      </div>
+    </div>
+    <div id="modalFlexContent"></div>
+    <button class="modal-confirm" id="modalConfirmBtn" onclick="confirmAction()"><span class="modal-confirm-inner">Confirm</span></button>
+    <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- MODAL BLOCK DAYS -->
+<div class="block-modal-overlay" id="blockModal" onclick="if(event.target===this)closeBlockModal()">
+  <div class="modal">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Block days ✦</div>
+    <div style="font-size:13px;color:var(--text3);margin-bottom:20px" id="blockSub"></div>
+    <div class="modal-options">
+      <div class="modal-option selected" id="bt1" onclick="this.classList.add('selected');document.getElementById('bt2').classList.remove('selected')"><div><div class="modal-option-label">— Single day</div></div><span class="modal-check">✓</span></div>
+      <div class="modal-option" id="bt2" onclick="this.classList.add('selected');document.getElementById('bt1').classList.remove('selected')"><div><div class="modal-option-label">— Period / holiday</div></div><span class="modal-check">✓</span></div>
+    </div>
+    <div class="note" style="margin-bottom:16px">In the real Flexa app, blocked days automatically trigger a rebalance of the whole plan.</div>
+    <button class="modal-confirm" onclick="alert('Days blocked. Flexa rebalanced your plan.');closeBlockModal()"><span class="modal-confirm-inner">Confirm block</span></button>
+    <button class="modal-cancel" onclick="closeBlockModal()">Cancel</button>
+  </div>
+</div>
+
+<!-- SESSION DETAIL SHEET -->
+<div class="scheda-modal" id="schedaModal">
+  <div class="scheda-inner">
+    <button class="scheda-back" onclick="closeScheda()">← Back to plan</button>
+    <div id="schedaContent"></div>
+  </div>
+</div>
+
+<script>
+// ─── Sport config ───────────────────────────────────────────────────────────
+var ICONS = {
+  'Weights: Upper body':'🏋️','Weights: Lower body':'🏋️','Yoga':'🧘','Run':'🏃',
+  'Walk':'🚶','Rest':'—','Dance':'💃','Swimming':'🏊',
+  'Padel':'🎾','Hiking':'🥾','Pole dance':'🩰',
+  'Stand-up Paddle':'🏄','Beach Volley':'🏐','Beach Tennis':'🎾'
+};
+var COLORS = {
+  'Weights: Upper body':'var(--purple)','Weights: Lower body':'var(--purple)',
+  'Yoga':'var(--peach)','Run':'var(--teal)',
+  'Walk':'var(--border2)','Rest':'var(--border2)',
+  'Dance':'var(--teal)','Swimming':'var(--teal)',
+  'Padel':'var(--teal)','Hiking':'var(--teal)','Pole dance':'var(--purple)',
+  'Stand-up Paddle':'var(--teal)','Beach Volley':'var(--teal)','Beach Tennis':'var(--teal)'
+};
+var TIPI = {
+  'Weights: Upper body':'forza','Weights: Lower body':'forza','Yoga':'yoga','Run':'cardio',
+  'Walk':'riposo','Rest':'riposo','Dance':'cardio','Swimming':'cardio',
+  'Padel':'cardio','Hiking':'cardio','Pole dance':'forza',
+  'Stand-up Paddle':'cardio','Beach Volley':'cardio','Beach Tennis':'cardio'
+};
+var CARICHI = {
+  'Weights: Upper body':'high','Weights: Lower body':'high','Yoga':'low','Run':'medium',
+  'Walk':'minimal','Rest':'zero','Dance':'medium','Swimming':'medium',
+  'Padel':'high','Hiking':'medium','Pole dance':'medium',
+  'Stand-up Paddle':'medium','Beach Volley':'medium','Beach Tennis':'medium'
+};
+
+// ─── Dynamic calendar generation from real date ───────────────────────────────
+var MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var DAY_NAMES   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+
+// Training pattern: alternates A/B each week
+// Week A: Tue=StrengthA, Thu=Yoga, Fri=StrengthB  (3 sessions)
+// Week B: Tue=StrengthA, Wed=Run,  Fri=StrengthB  (3 sessions)
+var PLAN_A = {1:{n:'Weights: Upper body',t:'forza',o:'07:00–07:45'}, 3:{n:'Yoga',t:'yoga',o:'07:00–07:45'}, 4:{n:'Weights: Lower body',t:'forza',o:'07:00–07:45'}};
+var PLAN_B = {1:{n:'Weights: Upper body',t:'forza',o:'07:00–07:45'}, 2:{n:'Run',  t:'cardio',o:'07:00–07:30'}, 4:{n:'Weights: Lower body',t:'forza',o:'07:00–07:45'}};
+
+// Today
+var TODAY = new Date();
+TODAY.setHours(0,0,0,0);
+
+// Find Monday of the current week
+function getMondayOf(d){
+  var day = d.getDay(); // 0=Sun
+  var diff = (day===0) ? -6 : 1-day; // adjust so Mon=0
+  var m = new Date(d);
+  m.setDate(d.getDate()+diff);
+  m.setHours(0,0,0,0);
+  return m;
+}
+
+// Build N weeks starting from weekOffset relative to current week
+function buildWeeks(numWeeks, startOffset){
+  var weeks=[], labels=[], phases=[];
+  var currentMonday = getMondayOf(TODAY);
+  // Week number from a fixed reference (Jun 15 2026 = week 0 of plan)
+  var planStart = new Date(2026,5,15); // Jun 15 2026
+  planStart.setHours(0,0,0,0);
+
+  for(var w=startOffset; w<startOffset+numWeeks; w++){
+    var monday = new Date(currentMonday);
+    monday.setDate(currentMonday.getDate() + w*7);
+    var weekDays=[];
+    // Absolute week number from plan start (for alternating pattern)
+    var msPerWeek = 7*24*60*60*1000;
+    var weekNum = Math.round((monday - planStart)/msPerWeek);
+    var plan = (weekNum%2===0) ? PLAN_A : PLAN_B;
+
+    for(var d=0; d<7; d++){
+      var date = new Date(monday);
+      date.setDate(monday.getDate()+d);
+      var dayName = DAY_NAMES[date.getDay()];
+      var monthStr = MONTH_NAMES[date.getMonth()];
+      var session = plan[d];
+      weekDays.push({
+        id:d,
+        nome: session ? session.n : 'Rest',
+        giorno: dayName,
+        data: date.getDate(),
+        orario: session ? session.o : '—',
+        tipo: session ? session.t : 'riposo',
+        month: monthStr,
+        fullDate: new Date(date) // store for today comparison
+      });
+    }
+
+    // Label: "Jun 15 – 21" style
+    var sun = weekDays[6];
+    var mon = weekDays[0];
+    var label = mon.month+(mon.month!==sun.month?' '+mon.data:'')+(mon.month!==sun.month?' – ':' – ')+
+                (mon.month!==sun.month?sun.month+' ':'')+sun.data;
+    // Simplified label
+    label = mon.month+' '+mon.data+' – '+(mon.month!==sun.month?sun.month+' ':'')+sun.data;
+
+    // Phase: weeks 1-2 reactivation, 3-4 progression, 5-6 volume, etc.
+    var absWk = weekNum+1;
+    var phase = absWk<=0?'Pre-start': absWk<=2?'Wk '+absWk+' · Reactivation': absWk<=4?'Wk '+absWk+' · Progression': absWk<=8?'Wk '+absWk+' · Volume':'Wk '+absWk+' · Consolidation';
+
+    weeks.push(weekDays);
+    labels.push(label);
+    phases.push(phase);
+  }
+  return {weeks:weeks, labels:labels, phases:phases};
+}
+
+// Generate 6 weeks: 1 past + current + 4 future
+var WEEK_OFFSET_START = -1; // start from last week
+var NUM_WEEKS = 6;
+var generated = buildWeeks(NUM_WEEKS, WEEK_OFFSET_START);
+var WEEKS       = generated.weeks;
+var WEEK_LABELS = generated.labels;
+var WEEK_PHASE  = generated.phases;
+
+// currentWeekIdx = index of this week in WEEKS array
+var currentWeekIdx = -WEEK_OFFSET_START; // offset 1 past week → current is index 1
+
+// Per-week extras: {weekIdx: {dayIdx: [{nome, orario}]}}
+var extras = {};
+// Per-week completions: {weekIdx: {dayIdx: true}}
+var completions = {};
+
+// ─── Persistence helpers ──────────────────────────────────────────────────────
+var LS_KEY = 'flexa_state_v1';
+function saveState(){
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      pianos: pianos, extras: extras, completions: completions, currentWeekIdx: currentWeekIdx
+    }));
+  } catch(e){}
+}
+function loadState(){
+  try {
+    var raw = localStorage.getItem(LS_KEY);
+    if(!raw) return false;
+    var s = JSON.parse(raw);
+    if(s.pianos)      pianos      = s.pianos;
+    if(s.extras)      extras      = s.extras;
+    if(s.completions) completions = s.completions;
+    if(s.currentWeekIdx != null) currentWeekIdx = s.currentWeekIdx;
+    return true;
+  } catch(e){ return false; }
+}
+
+// ─── Weekly plan state ────────────────────────────────────────────────────────
+// pianos[weekIdx] = modified copy of that week's plan (null = unmodified)
+var pianos = {};
+var loaded = loadState();
+var piano = pianos[currentWeekIdx]
+  ? JSON.parse(JSON.stringify(pianos[currentWeekIdx]))
+  : JSON.parse(JSON.stringify(WEEKS[currentWeekIdx]));
+var pianoOrig = JSON.parse(JSON.stringify(WEEKS[currentWeekIdx]));
+var modalMode = 'flex';
+var modalIdx = -1;
+var selAction = null;
+var selSub = null;
+var selScelta = null;
+
+// Sporadic sports available to add
+var SPORT_SPORADICI = [
+  {nome:'Padel',     icon:'🎾',carico:'high',   note:'High articular impact'},
+  {nome:'Swimming',  icon:'🏊',carico:'medium', note:'Low-impact cardio'},
+  {nome:'Hiking',    icon:'🥾',carico:'medium', note:'Cardio + legs'},
+  {nome:'Dance',     icon:'💃',carico:'light',  note:'Light cardio'},
+  {nome:'Pole dance',icon:'🩰',carico:'medium', note:'Isometric strength + mobility'},
+  {nome:'Walk',      icon:'🚶',carico:'minimal',note:'Active recovery'}
+];
+
+function icona(n){ return ICONS[n] || '🏋️'; }
+function colore(n){ return COLORS[n] || 'var(--text3)'; }
+
+// ─── Week navigation ──────────────────────────────────────────────────────────
+function changeWeek(dir){
+  var next = currentWeekIdx + dir;
+  if(next < 0 || next >= WEEKS.length) return;
+  // Save current week state before switching
+  pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano));
+  saveState();
+  currentWeekIdx = next;
+  piano = pianos[currentWeekIdx]
+    ? JSON.parse(JSON.stringify(pianos[currentWeekIdx]))
+    : JSON.parse(JSON.stringify(WEEKS[currentWeekIdx]));
+  pianoOrig = JSON.parse(JSON.stringify(WEEKS[currentWeekIdx]));
+  renderPiano();
+}
+
+function getWeekExtras(dayIdx){
+  if(!extras[currentWeekIdx]) return [];
+  return extras[currentWeekIdx][dayIdx] || [];
+}
+function addExtraActivity(dayIdx, actNome, actOrario){
+  if(!extras[currentWeekIdx]) extras[currentWeekIdx]={};
+  if(!extras[currentWeekIdx][dayIdx]) extras[currentWeekIdx][dayIdx]=[];
+  extras[currentWeekIdx][dayIdx].push({nome:actNome, orario:actOrario});
+  saveState();
+}
+
+// ─── Render week ─────────────────────────────────────────────────────────────
+var todayDayIdxGlobal = -1; // exposed for HTML onclick
+
+var MY_SPORTS = [
+  {name:'Weightlifting / HIIT', emoji:'🏋️', cat:'strength', freq:'3×/wk', note:'Home weights + bench. Upper/lower split — see session cards for muscle focus.'},
+  {name:'Yoga',                 emoji:'🧘', cat:'mobility', freq:'2×/wk', note:'Mobility, flexibility and recovery.'},
+  {name:'Running',              emoji:'🏃', cat:'cardio',   freq:'2×/wk', note:'Progressive cardio. 30–40 min by August.'},
+  {name:'Dance',                emoji:'💃', cat:'cardio',   freq:'1×/wk', note:'Light cardio. Counts in weekly balance.'},
+  {name:'Padel',                emoji:'🎾', cat:'cardio',   freq:'sporadic', note:'High impact — Flexa adds recovery after.'},
+  {name:'Swimming',             emoji:'🏊', cat:'cardio',   freq:'sporadic', note:'Low-impact cardio. Great run substitute.'},
+  {name:'Hiking',               emoji:'🥾', cat:'cardio',   freq:'sporadic', note:'If 2h+, Flexa lightens next day.'},
+  {name:'Pole dance',           emoji:'✨', cat:'strength', freq:'sporadic', note:'Isometric strength + mobility.'},
+  {name:'Skiing',               emoji:'⛷️', cat:'cardio',   freq:'seasonal', note:'Flexa pauses plan and resumes after.'},
+  {name:'Stand-up Paddle',      emoji:'🏄', cat:'cardio',   freq:'sporadic', note:'Full-body balance + low-impact cardio. Great for active recovery.'},
+  {name:'Beach Volley',         emoji:'🏐', cat:'cardio',   freq:'sporadic', note:'High-intensity intervals. Flexa adds recovery the day after.'},
+  {name:'Beach Tennis',         emoji:'🎾', cat:'cardio',   freq:'sporadic', note:'Agility + cardio. Similar load to padel — Flexa adjusts accordingly.'}
+];
+
+function renderWeekBalance(){
+  // ── Balance data ──────────────────────────────────────────────────
+  var bal={strength:0,mobility:0,cardio:0,rest:0};
+  var activeNames = [], total=7;
+  piano.forEach(function(s){
+    if(s.tipo==='forza'){ bal.strength++; if(activeNames.indexOf(s.nome)<0) activeNames.push(s.nome); }
+    else if(s.tipo==='yoga'){ bal.mobility++; if(activeNames.indexOf(s.nome)<0) activeNames.push(s.nome); }
+    else if(s.tipo==='cardio'){ bal.cardio++; if(activeNames.indexOf(s.nome)<0) activeNames.push(s.nome); }
+    else bal.rest++;
+  });
+
+  // ── Plan state headline ────────────────────────────────────────────
+  var missing = [];
+  if(bal.cardio===0) missing.push({label:'Cardio', color:'var(--peach)'});
+  if(bal.mobility===0) missing.push({label:'Mobility', color:'var(--peach)'});
+  if(bal.strength===0) missing.push({label:'Strength', color:'var(--peach)'});
+
+  var stateEl = document.getElementById('psState');
+  var reasonEl = document.getElementById('psReason');
+  var eyebrowEl = document.getElementById('psEyebrow');
+  if(eyebrowEl) eyebrowEl.textContent = 'Your plan · '+WEEK_LABELS[currentWeekIdx];
+
+  if(missing.length===0){
+    if(stateEl) stateEl.innerHTML='<span class="ok">Balanced ✓</span>';
+    if(reasonEl) reasonEl.innerHTML='Strength, cardio and mobility are all covered this week. Flexa will keep them in sync.';
+  } else {
+    var missingLabel = missing.map(function(m){ return '<span class="warn">'+m.label+'</span>'; }).join(' + ');
+    if(stateEl) stateEl.innerHTML = missingLabel+' uncovered';
+    // Build reason from active sports
+    var activeStr = activeNames.map(function(n){ return icona(n)+' <strong>'+n+'</strong>'; }).join(' and ');
+    if(reasonEl) reasonEl.innerHTML = 'This week you have '+(activeStr||'no sessions planned')+'. '+missing.map(function(m){return m.label+' is missing.';}).join(' ')+' Flexa found a window.';
+  }
+
+  // ── Sport chips ────────────────────────────────────────────────────
+  var chipsEl = document.getElementById('sportChips');
+  if(chipsEl){
+    var chips = '';
+    // Active sports this week
+    activeNames.forEach(function(n){
+      chips += '<div class="sport-chip active">'+icona(n)+' '+n+'</div>';
+    });
+    // Suggested sport (first missing cat)
+    var suggestSport = null;
+    if(bal.cardio===0){
+      // Find a cardio sport in MY_SPORTS not already active
+      var cSport = MY_SPORTS.find(function(sp){ return sp.cat==='cardio' && activeNames.indexOf(sp.name)<0; });
+      if(cSport) suggestSport = cSport;
+    }
+    if(suggestSport) chips += '<div class="sport-chip suggested">'+suggestSport.emoji+' '+suggestSport.name+' — suggested</div>';
+    // Don't show all missing sports — too noisy. Just active + 1 suggested.
+    chipsEl.innerHTML = chips;
+  }
+
+  // ── Horizontal balance bar ─────────────────────────────────────────
+  var barEl = document.getElementById('balBarH');
+  var legEl = document.getElementById('balLegend');
+  if(barEl){
+    var strPct = Math.round(bal.strength/total*100);
+    var mobPct = Math.round(bal.mobility/total*100);
+    var carPct = Math.round(bal.cardio/total*100);
+    var restPct= 100-strPct-mobPct-carPct;
+    barEl.innerHTML =
+      '<div class="bal-seg" style="width:'+strPct+'%;background:var(--purple)"></div>'+
+      '<div class="bal-seg" style="width:'+mobPct+'%;background:var(--peach)"></div>'+
+      '<div class="bal-seg" style="width:'+carPct+'%;background:var(--teal)"></div>'+
+      '<div class="bal-seg" style="width:'+Math.max(restPct,0)+'%;background:rgba(255,255,255,0.08)"></div>';
+  }
+  if(legEl){
+    legEl.innerHTML =
+      '<div class="bl-item"><div class="bl-dot" style="background:var(--purple)"></div>Strength<span class="bl-val">'+bal.strength+'</span></div>'+
+      '<div class="bl-item"><div class="bl-dot" style="background:var(--peach)"></div>Mobility<span class="bl-val">'+bal.mobility+'</span></div>'+
+      '<div class="bl-item"><div class="bl-dot" style="background:var(--teal)"></div>Cardio<span class="bl-val">'+bal.cardio+'</span></div>'+
+      '<div class="bl-item"><div class="bl-dot" style="background:rgba(255,255,255,0.15)"></div>Rest<span class="bl-val">'+bal.rest+'</span></div>';
+  }
+
+  // ── Flexa suggestion ───────────────────────────────────────────────
+  var suggestBox = document.getElementById('flexaSuggest');
+  var suggestText = document.getElementById('flexaSuggestText');
+  if(suggestBox && suggestSport){
+    // Find best day (first rest day with >=48h from last training)
+    var lastTrainIdx = -1;
+    piano.forEach(function(s,i){ if(s.tipo!=='riposo') lastTrainIdx=i; });
+    var bestDay = null;
+    piano.forEach(function(s,di){
+      if(!bestDay && s.tipo==='riposo' && di>lastTrainIdx && (di-lastTrainIdx)>=2){
+        bestDay=s;
+        window._flexaSuggestDay=di;
+        window._flexaSuggestSport=suggestSport;
+      }
+    });
+    if(bestDay && suggestText){
+      var hGap = (window._flexaSuggestDay - lastTrainIdx)*24;
+      suggestText.innerHTML = 'Flexa suggests <strong>'+suggestSport.emoji+' '+suggestSport.name+' 30 min</strong> on '+bestDay.giorno+' '+bestDay.data+' — '+hGap+'h after last session. Optimal recovery window.';
+      suggestBox.style.display='flex';
+    } else {
+      suggestBox.style.display='none';
+    }
+  } else if(suggestBox && missing.length===0){
+    suggestBox.style.display='none';
+  }
+}
+
+function applyFlexaSuggestion(){
+  var di = window._flexaSuggestDay;
+  var sp = window._flexaSuggestSport;
+  if(di==null||!sp) return;
+  var CAT_TYPE={'strength':'forza','mobility':'yoga','cardio':'cardio'};
+  if(!extras[currentWeekIdx]) extras[currentWeekIdx]={};
+  if(!extras[currentWeekIdx][di]) extras[currentWeekIdx][di]=[];
+  extras[currentWeekIdx][di].push({nome:sp.name,orario:'07:00'});
+  saveState();
+  renderPiano();
+}
+
+function toggleWeekDetail(){
+  var body = document.getElementById('weekDetailBody');
+  var arrow = document.getElementById('wdtArrow');
+  if(!body) return;
+  var isOpen = body.style.display!=='none';
+  body.style.display = isOpen?'none':'block';
+  if(arrow) arrow.classList.toggle('open', !isOpen);
+}
+
+function renderPiano(){
+  // Real-date helpers for this render
+  var isTodayWeek = false;
+  var todayDayIdx = -1;
+  var todayDate = TODAY.getDate();
+  var todayMonth = TODAY.getMonth();
+  var todayYear  = TODAY.getFullYear();
+  // Check if current week contains today
+  piano.forEach(function(s,i){
+    if(s.fullDate){
+      var fd = s.fullDate instanceof Date ? s.fullDate : new Date(s.fullDate);
+      if(fd.getDate()===todayDate && fd.getMonth()===todayMonth && fd.getFullYear()===todayYear){
+        isTodayWeek=true; todayDayIdx=i;
+      }
+    }
+  });
+
+  // Update readiness card label
+  var rl=document.getElementById('readinessLabel');
+  var ra=document.getElementById('readinessAction');
+  if(rl){
+    var DAY_LONG=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    var MON_LONG=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    rl.textContent='Readiness · '+DAY_LONG[TODAY.getDay()]+' '+MON_LONG[TODAY.getMonth()]+' '+TODAY.getDate();
+  }
+  if(ra && todayDayIdx>=0){
+    var todaySess=piano[todayDayIdx];
+    ra.textContent = todaySess.tipo==='riposo' ? 'Rest day — tap + to add an activity' : todaySess.nome+' · '+todaySess.orario;
+  } else if(ra){
+    ra.textContent="Navigate to this week to see today's session";
+  }
+
+  // Update week nav label
+  document.getElementById('weekNavLabel').textContent = WEEK_LABELS[currentWeekIdx];
+  document.getElementById('weekNavSub').textContent = WEEK_PHASE[currentWeekIdx];
+
+  var modified = piano.some(function(s,i){
+    return s.nome!==pianoOrig[i].nome || s.orario!==pianoOrig[i].orario;
+  });
+  var al = document.getElementById('piano-alert');
+  var alt = document.getElementById('piano-alert-text');
+  if(modified){
+    al.style.display='flex';
+    alt.textContent='Plan updated with Flex it. — modified sessions are highlighted.';
+  } else {
+    al.style.display='none';
+  }
+
+  // Week grid (new dp-v2 pills)
+  todayDayIdxGlobal = todayDayIdx; // expose for HTML onclick
+  var grid = document.getElementById('weekGrid');
+  if(grid) grid.className = 'week-strip-v2';
+  if(grid) grid.innerHTML='';
+  // Find next training day after today
+  var nextTrainIdx = -1;
+  piano.forEach(function(s,i){
+    if(s.tipo!=='riposo' && nextTrainIdx===-1 && (!isTodayWeek || i>todayDayIdx)) nextTrainIdx=i;
+  });
+  piano.forEach(function(s,i){
+    var isVuoto = s.tipo==='riposo' && !isTodayWeek;
+    var isModified = s.nome!==pianoOrig[i].nome || s.orario!==pianoOrig[i].orario;
+    var dayExtras = getWeekExtras(i);
+    var hasExtra = dayExtras.length > 0;
+    var isPillDone = !!(completions[currentWeekIdx] && completions[currentWeekIdx][i]);
+    var pill = document.createElement('div');
+    var cls = 'dp-v2';
+    if(isTodayWeek && i===todayDayIdx) cls += ' dp-today';
+    else if(i===nextTrainIdx) cls += ' dp-next';
+    if(isModified) cls += ' dp-modified';
+    if(isPillDone) cls += ' dp-done';
+    if(s.tipo==='riposo' && !hasExtra) cls += ' dp-rest';
+    pill.className = cls;
+    if(s.tipo!=='riposo'){
+      pill.onclick = (function(ss,ii){ return function(){ openScheda(ss.nome); }; })(s,i);
+    } else {
+      pill.onclick = (function(ii){ return function(){ openAggiungi(ii, false); }; })(i);
+    }
+    var iconStr = isPillDone ? '✓' : (s.tipo!=='riposo' ? icona(s.nome) : (hasExtra?'+':''));
+    pill.innerHTML =
+      '<div class="dpv2-d">'+s.giorno.substring(0,1)+'</div>'+
+      '<div class="dpv2-n">'+s.data+'</div>'+
+      '<div class="dpv2-icon" style="color:'+(isPillDone?'var(--teal)':colore(s.nome))+'">'+iconStr+'</div>';
+    if(grid) grid.appendChild(pill);
+  });
+
+  // Next session card v2
+  var todayData = isTodayWeek ? TODAY.getDate() : 0;
+  var prossima = piano.find(function(s){ return s.tipo!=='riposo' && (!isTodayWeek || s.data>todayData); });
+  var prossimaIdx = prossima ? piano.indexOf(prossima) : -1;
+
+  var eyebrowEl2 = document.getElementById('nextSessionEyebrow');
+  var cardV2     = document.getElementById('nextCardV2');
+  var restMsg    = document.getElementById('restTodayMsg');
+  var isTodayRest = isTodayWeek && todayDayIdx>=0 && piano[todayDayIdx].tipo==='riposo';
+
+  if(prossima){
+    var im2 = prossima.nome!==pianoOrig[prossima.id].nome || prossima.orario!==pianoOrig[prossima.id].orario;
+    var monthStr2 = prossima.month||'';
+    var isToday2  = isTodayWeek && prossimaIdx===todayDayIdx;
+    var dayLabel  = isToday2 ? 'Today' : prossima.giorno+' '+prossima.data+(monthStr2?' '+monthStr2:'');
+    if(eyebrowEl2) eyebrowEl2.textContent = 'Next session · '+dayLabel;
+    var typeLabel = prossima.tipo==='forza'?'Strength':prossima.tipo==='yoga'?'Mobility':prossima.tipo==='cardio'?'Cardio':'Training';
+    var typeBg    = prossima.tipo==='forza'?'rgba(185,167,255,0.1)':prossima.tipo==='yoga'?'rgba(255,179,155,0.1)':'rgba(143,228,207,0.1)';
+    var typeBd    = prossima.tipo==='forza'?'rgba(185,167,255,0.25)':prossima.tipo==='yoga'?'rgba(255,179,155,0.25)':'rgba(143,228,207,0.25)';
+    var typeTxt   = prossima.tipo==='forza'?'var(--purple)':prossima.tipo==='yoga'?'var(--peach)':'var(--teal)';
+    var whyText   = im2 ? 'Modified with Flex it. <span style="color:var(--peach)">✦</span>'
+                        : 'Positioned by Flexa — <span>optimal recovery window</span> from your last session.';
+    var isDoneNext= !!(completions[currentWeekIdx]&&completions[currentWeekIdx][prossimaIdx]);
+    var e = function(id){ return document.getElementById(id); };
+    if(e('nc2Emoji')) e('nc2Emoji').textContent = icona(prossima.nome);
+    if(e('nc2Type')) { e('nc2Type').textContent=typeLabel; e('nc2Type').style.cssText='background:'+typeBg+';border-color:'+typeBd+';color:'+typeTxt; }
+    if(e('nc2Name')) e('nc2Name').textContent = prossima.nome;
+    if(e('nc2Why'))  e('nc2Why').innerHTML    = whyText;
+    if(e('nc2Time')) e('nc2Time').textContent = prossima.orario;
+    var doneBtn = e('nc2DoneBtn');
+    if(doneBtn){
+      doneBtn.textContent = isDoneNext ? '✓ Done' : '○ Done';
+      doneBtn.style.background = isDoneNext ? 'rgba(143,228,207,0.15)' : 'var(--teal)';
+      doneBtn.style.color = isDoneNext ? 'var(--teal)' : '#090910';
+      doneBtn.onclick = function(){ toggleDone(prossimaIdx); };
+    }
+    var flexBtn = e('nc2FlexBtn');
+    if(flexBtn) flexBtn.onclick = function(){ openModal(prossima.nome,prossima.giorno+' '+prossima.data,prossima.orario,prossimaIdx,'flex'); };
+    if(cardV2) cardV2.style.display='block';
+    if(restMsg) restMsg.style.display = isTodayRest ? 'block' : 'none';
+  } else {
+    if(eyebrowEl2) eyebrowEl2.textContent='Week complete';
+    if(cardV2) cardV2.style.display='none';
+    if(restMsg){ restMsg.style.display='block'; restMsg.innerHTML='All sessions done this week. Rest up — Flexa will rebalance next week. 🎉'; }
+  }
+  // Week list
+  var wl = document.getElementById('weekList');
+  wl.innerHTML='';
+  piano.forEach(function(s,i){
+    var isVuoto = s.tipo==='riposo' && !isTodayWeek;
+    var isModified = s.nome!==pianoOrig[i].nome || s.orario!==pianoOrig[i].orario;
+    var dayExtras = getWeekExtras(i);
+    var row = document.createElement('div');
+
+    if(isVuoto && dayExtras.length===0){
+      // Pure free day — tap to add
+      row.className='week-row add-row';
+      row.onclick=(function(ii){return function(){openAggiungi(ii,false);};})(i);
+      row.innerHTML=
+        '<div class="wr-left">'+
+          '<div class="wr-date" style="color:var(--text3)">'+s.giorno+' '+s.data+'</div>'+
+          '<div style="font-size:18px;color:var(--teal);line-height:1">+</div>'+
+          '<div><div class="wr-name" style="color:var(--text3);font-weight:400">Add activity</div>'+
+          '<div class="wr-orario">Tap to log a sport</div></div>'+
+        '</div>';
+    } else {
+      var isDone = !!(completions[currentWeekIdx] && completions[currentWeekIdx][i]);
+      row.className='week-row'+(isTodayWeek&&i===todayDayIdx?' highlight':'')+(isModified?' modified-row':'')+(isDone?' done-row':'');
+      if(s.tipo!=='riposo'){
+        row.onclick=(function(ss){return function(){openScheda(ss.nome);};})(s);
+      }
+      var actionLabel = s.tipo!=='riposo' ? 'tap to see details' : (isTodayWeek&&i===todayDayIdx?'Today · rest':'Active recovery');
+
+      // Build extras sub-rows
+      var extrasHTML = '';
+      dayExtras.forEach(function(ex){
+        extrasHTML +=
+          '<div style="display:flex;align-items:center;gap:8px;padding:6px 0 0;border-top:1px solid var(--border);margin-top:6px">'+
+            '<span>'+icona(ex.nome)+'</span>'+
+            '<span style="font-size:13px;color:var(--peach)">+'+ex.nome+'</span>'+
+            '<span style="font-size:11px;color:var(--text3)">'+ex.orario+'</span>'+
+          '</div>';
+      });
+
+      var mainContent =
+        '<div style="flex:1;min-width:0">'+
+          '<div class="wr-name">'+s.nome+(isModified?' <span style="color:var(--peach);font-size:11px">✦</span>':'')+'</div>'+
+          '<div class="wr-orario">'+(s.orario!=='—'?s.orario+' · 45 min':actionLabel)+'</div>'+
+          extrasHTML+
+        '</div>';
+
+      row.innerHTML=
+        '<div class="wr-left" style="align-items:flex-start;flex:1;min-width:0">'+
+          '<div class="wr-date" style="padding-top:2px">'+s.giorno+' '+s.data+'</div>'+
+          '<div style="font-size:16px;padding-top:2px">'+icona(s.nome)+'</div>'+
+          mainContent+
+        '</div>'+
+        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;margin-left:8px">'+
+          (s.tipo!=='riposo'?'<button class="add-extra-btn" style="color:var(--purple);border-color:rgba(185,167,255,0.3)" onclick="event.stopPropagation();openModal(\''+s.nome+'\',\''+s.giorno+' '+s.data+'\',\''+s.orario+'\','+i+',\'flex\')">✦ Flex</button>':'')+
+          '<button class="add-extra-btn" onclick="event.stopPropagation();openAggiungi('+i+','+( s.tipo!=='riposo')+')">+ Add</button>'+
+          '<div class="sport-dot" style="background:'+colore(s.nome)+'"></div>'+
+        '</div>';
+    }
+    wl.appendChild(row);
+  });
+  renderWeekBalance();
+}
+
+function toggleDone(dayIdx){
+  if(!completions[currentWeekIdx]) completions[currentWeekIdx]={};
+  completions[currentWeekIdx][dayIdx] = !completions[currentWeekIdx][dayIdx];
+  saveState();
+  renderPiano();
+}
+
+function resetPiano(){
+  piano=JSON.parse(JSON.stringify(pianoOrig));
+  extras[currentWeekIdx]={};
+  pianos[currentWeekIdx]=null;
+  saveState();
+  renderPiano();
+}
+
+// ─── Modal: Flex it. ─────────────────────────────────────────────────────────
+function openModal(session,day,orario,idx,mode){
+  modalMode=mode||'flex';
+  modalIdx=idx!=null?idx:-1;
+  selAction=null; selSub=null; selScelta=null;
+  document.getElementById('modalTitle').textContent = mode==='aggiungi'?'+ Add session':'Flex it. ✦';
+  document.getElementById('modalSession').textContent=session;
+  document.getElementById('modalDay').textContent=day;
+  document.getElementById('modalOrario').textContent=orario||'—';
+  document.getElementById('modalIcon').textContent=icona(session);
+  document.getElementById('modalIcon').style.color=colore(session);
+  document.getElementById('flexModal').classList.add('open');
+  if(mode==='aggiungi'){ renderAggiungiContent(idx); }
+  else { renderFlexContent(session,idx); }
+}
+
+function openAggiungi(idx, onOccupiedDay){
+  var s=piano[idx];
+  var title = onOccupiedDay ? '+ Add extra activity' : '+ Add activity';
+  openModal(title, s.giorno+' '+s.data, '—', idx, 'aggiungi');
+  document.getElementById('modalTitle').textContent = title;
+  document.getElementById('modalIcon').textContent = '+';
+  document.getElementById('modalIcon').style.color='var(--teal)';
+  // store context for confirmAction
+  modalMode = onOccupiedDay ? 'aggiungi-extra' : 'aggiungi';
+}
+
+function renderFlexContent(session,idx){
+  var html=
+    '<div class="modal-section-title">What do you want to change?</div>'+
+    '<div class="modal-options" id="actionOptions">'+
+      '<div class="modal-option selected" onclick="selectAction(this,\'orario\')">'+
+        '<div><div class="modal-option-label">○ Change time</div><div class="modal-option-meta">Same day, different slot</div></div>'+
+        '<span class="modal-check">✓</span></div>'+
+      '<div class="modal-option" onclick="selectAction(this,\'giorno\')">'+
+        '<div><div class="modal-option-label">— Move to another day</div><div class="modal-option-meta">Flexa recalculates recovery</div></div>'+
+        '<span class="modal-check">✓</span></div>'+
+      '<div class="modal-option" onclick="selectAction(this,\'sessione\')">'+
+        '<div><div class="modal-option-label">↻ Change session type</div><div class="modal-option-meta">Same day, different sport</div></div>'+
+        '<span class="modal-check">✓</span></div>'+
+      '<div class="modal-option" onclick="openScheda(\''+session+'\');closeModal()">'+
+        '<div><div class="modal-option-label">↗ View session details</div><div class="modal-option-meta">See exercises and timing</div></div>'+
+        '<span style="color:var(--text3);font-size:16px;margin-left:8px">→</span></div>'+
+    '</div>'+
+    '<div id="subSection"></div>'+
+    '<div class="proposta-box" id="propostaBox">'+
+      '<div class="proposta-title">✦ Flexa\'s proposal — confirm to apply</div>'+
+      '<div id="propostaItems"></div>'+
+    '</div>';
+  document.getElementById('modalFlexContent').innerHTML=html;
+  selAction='orario';
+  showSubSection('orario',session);
+}
+
+function selectAction(el,action){
+  selAction=action; selSub=null; selScelta=null;
+  document.querySelectorAll('#actionOptions .modal-option').forEach(function(o){o.classList.remove('selected');});
+  el.classList.add('selected');
+  if(action!=='sessione'&&action!=='orario'&&action!=='giorno') return;
+  showSubSection(action, document.getElementById('modalSession').textContent);
+  var pb=document.getElementById('propostaBox');
+  if(pb) pb.style.display='none';
+}
+
+function showSubSection(action,session){
+  var html='';
+  if(action==='orario'){
+    var ALL_SLOTS=[
+      {val:'07:00',label:'🌅 07:00 — morning',    meta:'Ideal slot · full recovery',warn:''},
+      {val:'12:30',label:'☀️ 12:30 — lunch break',meta:'Fine for medium sessions',  warn:''},
+      {val:'18:30',label:'🌆 18:30 — evening',     meta:'~12h recovery before tomorrow',warn:'<div class="modal-option-warn">⚠️ Flexa will propose adapting tomorrow</div>'},
+      {val:'20:00',label:'🌙 20:00 — late evening',meta:'~11h recovery before tomorrow',warn:'<div class="modal-option-warn">⚠️ Flexa will propose adapting tomorrow</div>'}
+    ];
+    var curOrario=modalIdx>=0&&piano[modalIdx]?piano[modalIdx].orario.split('–')[0].trim():'';
+    html='<div class="modal-section-title">New time</div><div class="modal-options" id="subOptions">';
+    ALL_SLOTS.forEach(function(sl){
+      if(sl.val===curOrario) return;
+      html+='<div class="modal-option" onclick="selectSub(this,&quot;'+sl.val+'&quot;)">'+
+        '<div><div class="modal-option-label">'+sl.label+'</div>'+
+        '<div class="modal-option-meta">'+sl.meta+'</div>'+sl.warn+'</div>'+
+        '<span class="modal-check">✓</span></div>';
+    });
+    html+='</div>';
+  } else if(action==='giorno'){
+    var DAY_NAMES=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+    var sessionDay=modalIdx>=0?modalIdx:-1;
+    var prevTrain=-1;
+    for(var pi2=sessionDay-1;pi2>=0;pi2--){if(piano[pi2].tipo!=='riposo'){prevTrain=pi2;break;}}
+    var nextTrain=-1;
+    for(var pi3=sessionDay+1;pi3<piano.length;pi3++){if(piano[pi3].tipo!=='riposo'){nextTrain=pi3;break;}}
+    var recDay=-1;
+    piano.forEach(function(dd,di){
+      if(di===sessionDay||dd.tipo!=='riposo') return;
+      var hPrev=prevTrain>=0?(di-prevTrain)*24:999;
+      var hNext=nextTrain>=0?(nextTrain-di)*24:999;
+      if(hPrev>=48&&hNext>=24&&recDay===-1) recDay=di;
+    });
+    html='<div class="modal-section-title">Choose a new day</div>'+
+      '<div style="font-size:11px;color:var(--text3);margin-bottom:10px">'+
+        (recDay>=0?'<span style="color:var(--teal)">★ = Flexa recommended</span> · all days available':'All days available')+
+      '</div>'+
+      '<div id="subOptions" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px">';
+    var todayIdx = isTodayWeek ? todayDayIdx : -1;
+    piano.forEach(function(dd,di){
+      var isPast = di < sessionDay && (currentWeekIdx!==1 || di <= todayIdx);
+      if(di===sessionDay){
+        html+='<div style="text-align:center;padding:8px 2px;border-radius:6px;background:var(--bg4);opacity:.35">'+
+          '<div style="font-size:9px;color:var(--text3)">'+dd.giorno+'</div>'+
+          '<div style="font-size:12px;font-weight:500">'+dd.data+'</div>'+
+          '<div style="font-size:8px;color:var(--text3)">now</div></div>';
+        return;
+      }
+      if(isPast){
+        html+='<div style="text-align:center;padding:8px 2px;border-radius:6px;opacity:.2">'+
+          '<div style="font-size:9px;color:var(--text3)">'+dd.giorno+'</div>'+
+          '<div style="font-size:12px;font-weight:500;color:var(--text3)">'+dd.data+'</div>'+
+          '<div style="font-size:8px;color:var(--text3)">past</div></div>';
+        return;
+      }
+      var isRec=di===recDay;
+      var isBusy=dd.tipo!=='riposo';
+      var bdr=isRec?'border:1.5px solid var(--teal);background:rgba(143,228,207,0.07)':
+               isBusy?'border:1px solid var(--border);opacity:.5':'border:1px solid var(--border)';
+      var key=dd.giorno.toLowerCase()+dd.data;
+      html+='<div onclick="selectSub(this,&quot;'+key+'&quot;)" class="modal-option" style="text-align:center;padding:8px 2px;border-radius:6px;cursor:pointer;'+bdr+'">'+
+        '<div style="font-size:9px;color:var(--text3)">'+dd.giorno+'</div>'+
+        '<div style="font-size:12px;font-weight:500">'+dd.data+'</div>'+
+        '<div style="font-size:8px;color:'+(isRec?'var(--teal)':isBusy?'var(--peach)':'var(--text3)')+'">'+
+          (isRec?'★ rec':isBusy?'busy':'—')+'</div>'+
+      '</div>';
+    });
+    html+='</div><div id="subOptions-detail" style="font-size:11px;color:var(--text3);margin-top:8px;min-height:16px"></div>';
+  } else if(action==='sessione'){
+    var CAT_TYPE={'strength':'forza','mobility':'yoga','cardio':'cardio'};
+    var LOAD={'strength':'Medium-high load · builds muscle','mobility':'Low load · recovery & flexibility','cardio':'Medium load · aerobic base'};
+    html='<div class="modal-section-title">Replace with…</div><div class="modal-options" id="subOptions">';
+    MY_SPORTS.forEach(function(sp){
+      if(sp.name===session) return;
+      var tipo=CAT_TYPE[sp.cat]||'riposo';
+      var safeVal=sp.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'")+'|'+tipo;
+      html+='<div class="modal-option" onclick="selectSub(this,&quot;'+safeVal+'&quot;)">'+
+        '<div style="display:flex;align-items:center;gap:8px">'+
+          '<span style="font-size:16px">'+sp.emoji+'</span>'+
+          '<div><div class="modal-option-label">'+sp.name+'</div>'+
+          '<div class="modal-option-meta">'+(LOAD[sp.cat]||sp.cat)+'</div></div>'+
+        '</div><span class="modal-check">✓</span></div>';
+    });
+    html+='<div class="modal-option" onclick="selectSub(this,&quot;Rest|riposo&quot;)">'+
+      '<div><div class="modal-option-label">— Rest</div>'+
+      '<div class="modal-option-meta">Sometimes the body knows best</div></div>'+
+      '<span class="modal-check">✓</span></div>';
+    html+='</div>';
+  }
+  document.getElementById('subSection').innerHTML=html;
+}
+
+function selectSub(el,val){
+  selSub=val;
+  document.querySelectorAll('#subOptions .modal-option').forEach(function(o){o.classList.remove('selected');});
+  el.classList.add('selected');
+  var session=document.getElementById('modalSession').textContent;
+  var pb=document.getElementById('propostaBox');
+  var pi=document.getElementById('propostaItems');
+  if(!pb||!pi) return;
+
+  if(selAction==='orario'){
+    var nextNome = modalIdx>=0&&piano[modalIdx+1]?piano[modalIdx+1].nome:'next session';
+    if(val==='18:30'||val==='20:00'){
+      var oreRec=val==='18:30'?'~12h':'~11h';
+      pb.style.display='block';
+      pi.innerHTML=
+        '<div class="proposta-item"><span class="proposta-arrow">→</span><span>'+session+' moved to '+val+'</span></div>'+
+        '<div class="proposta-item"><span class="proposta-arrow">→</span><span>With '+oreRec+' of recovery, tomorrow\'s '+nextNome+' may be impacted</span></div>'+
+        '<div class="proposta-item"><span class="proposta-arrow">→</span><span>Proposal: convert '+nextNome+' to Yoga (active recovery) — confirm below</span></div>';
+      selScelta=null;
+      pi.innerHTML+='<div class="scelta-grid" style="margin-top:8px">'+
+        '<div class="scelta-btn" id="scelta1" onclick="selectScelta(\'mantieni\')">Keep '+nextNome+'<br><span style="font-size:10px;color:var(--text3);font-weight:400">I accept the risk</span></div>'+
+        '<div class="scelta-btn" id="scelta2" onclick="selectScelta(\'ribilancia\')">Convert to Yoga<br><span style="font-size:10px;color:var(--text3);font-weight:400">Flexa adapts</span></div>'+
+        '</div>';
+    } else {
+      pb.style.display='block';
+      pi.innerHTML=
+        '<div class="proposta-item"><span class="proposta-arrow">→</span><span>'+session+' moved to '+val+'</span></div>'+
+        '<div class="proposta-item"><span class="proposta-arrow">→</span><span>Optimal recovery — plan unchanged ✓</span></div>';
+      selScelta='mantieni';
+    }
+  } else if(selAction==='giorno'){
+    var det=document.getElementById('subOptions-detail');
+    var selDayObj=piano.find(function(dd){return(dd.giorno.toLowerCase()+dd.data)===val;});
+    var dayLabel=selDayObj?selDayObj.giorno+' '+selDayObj.data:val;
+    if(det) det.textContent=dayLabel+' selected — Flexa will verify recovery and rebalance ✓';
+    pb.style.display='block';
+    pi.innerHTML=
+      '<div class="proposta-item"><span class="proposta-arrow">→</span><span>'+session+' moved to '+dayLabel+'</span></div>'+
+      '<div class="proposta-item"><span class="proposta-arrow">→</span><span>Recovery windows verified and rebalanced ✓</span></div>';
+    selScelta='ribilancia';
+  } else if(selAction==='sessione'){
+    pb.style.display='block';
+    var nuova=val.split('|')[0];
+    pi.innerHTML=
+      '<div class="proposta-item"><span class="proposta-arrow">→</span><span>'+session+' replaced with '+nuova+'</span></div>'+
+      '<div class="proposta-item"><span class="proposta-arrow">→</span><span>Weekly balance updated</span></div>';
+    selScelta='ribilancia';
+  }
+}
+
+function selectScelta(tipo){
+  selScelta=tipo;
+  document.getElementById('scelta1').classList.toggle('selected',tipo==='mantieni');
+  document.getElementById('scelta2').classList.toggle('selected',tipo==='ribilancia');
+}
+
+// ─── Modal: Add sporadic sport ───────────────────────────────────────────────
+function renderAggiungiContent(idx){
+  var CAT_LOAD={'strength':'high','cardio':'medium','mobility':'light'};
+  var html='<div class="modal-section-title">Which sport do you want to add?</div><div class="modal-options" id="sportOptions">';
+  MY_SPORTS.forEach(function(sp){
+    var carico=CAT_LOAD[sp.cat]||'medium';
+    html+='<div class="modal-option" onclick="selectSportSporadico(this,&quot;'+sp.name+'&quot;,&quot;'+carico+'&quot;)">'+
+      '<div style="display:flex;align-items:center;gap:8px">'+
+        '<span style="font-size:16px">'+sp.emoji+'</span>'+
+        '<div>'+
+          '<div class="modal-option-label">'+sp.name+'</div>'+
+          '<div class="modal-option-meta" style="text-transform:capitalize">'+sp.cat+' · '+sp.note+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<span class="modal-check">✓</span>'+
+    '</div>';
+  });
+  html+=
+    '</div>'+
+    '<div class="impatto-box" id="impattoBox">'+
+      '<div class="impatto-title">⚠ Impact on your plan</div>'+
+      '<div id="impattoText" style="font-size:13px;color:var(--text2);line-height:1.6"></div>'+
+      '<div class="modal-section-title" style="margin-top:12px">What do you want to do?</div>'+
+      '<div class="scelta-grid">'+
+        '<div class="scelta-btn" id="scelta1" onclick="selectScelta(&quot;mantieni&quot;)">Keep the plan<br><span style="font-size:10px;color:var(--text3);font-weight:400">I\'ll get an alert</span></div>'+
+        '<div class="scelta-btn" id="scelta2" onclick="selectScelta(&quot;ribilancia&quot;)">Rebalance<br><span style="font-size:10px;color:var(--text3);font-weight:400">Flexa adapts</span></div>'+
+      '</div>'+
+    '</div>';
+  document.getElementById('modalFlexContent').innerHTML=html;
+}
+function selectSportSporadico(el,nome,carico){
+  document.querySelectorAll('#sportOptions .modal-option').forEach(function(o){o.classList.remove('selected');});
+  el.classList.add('selected');
+  selSub=nome;
+  selOrario='Evening';
+  var ibox=document.getElementById('impattoBox');
+  var itxt=document.getElementById('impattoText');
+  ibox.style.display='block';
+  var next=piano[modalIdx+1];
+  var isExtra = modalMode==='aggiungi-extra';
+  var mainSession = isExtra ? piano[modalIdx].nome : null;
+  var impatti={
+    'high': (isExtra
+      ? 'High load on top of your '+mainSession+' today — double-session day. Flexa suggests converting tomorrow\'s '+(next?next.nome:'session')+' to Yoga.'
+      : 'High articular impact — the next session ('+(next?next.nome:'—')+') may be affected. Recommend: reduce intensity tomorrow or add 15 min stretching.'),
+    'medium': (isExtra
+      ? 'Medium load added to your day. Flexa can slightly reduce tomorrow\'s session intensity.'
+      : 'Medium load — moderate recovery impact. You can keep the plan with a slight intensity reduction tomorrow.'),
+    'light': 'Light load — minimal impact. Weekly plan stays balanced.',
+    'minimal': 'Minimal load — zero recovery impact. Plan unchanged.'
+  };
+  itxt.textContent=impatti[carico]||'Impact to be assessed.';
+  selScelta=null;
+  document.getElementById('scelta1').classList.remove('selected');
+  document.getElementById('scelta2').classList.remove('selected');
+}
+
+// ─── Confirm action ───────────────────────────────────────────────────────────
+var selOrario = null; // stores chosen time for extra activity
+
+function confirmAction(){
+  if(modalMode==='aggiungi' || modalMode==='aggiungi-extra'){
+    if(!selSub){ alert('Select a sport.'); return; }
+    if(!selScelta){ alert('Choose whether to keep or rebalance the plan.'); return; }
+    var orarioScelto = selOrario || 'Evening';
+    if(modalMode==='aggiungi-extra'){
+      // Log extra activity on an already-occupied day
+      addExtraActivity(modalIdx, selSub, orarioScelto);
+      // If high/medium load + rebalance: soften next day
+      var CAT_LOAD2={'strength':'high','cardio':'medium','mobility':'light'};
+      var sp2=MY_SPORTS.find(function(s){return s.name===selSub;});
+      var carico2 = sp2?CAT_LOAD2[sp2.cat]:'medium';
+      if((carico2==='high'||carico2==='medium') && selScelta==='ribilancia'){
+        var nextIdx = modalIdx+1;
+        if(nextIdx<piano.length && piano[nextIdx].tipo==='forza'){
+          piano[nextIdx].nome='Yoga';
+          piano[nextIdx].tipo='yoga';
+        }
+      }
+    } else {
+      // Add to a free day
+      var CAT_TYPE2={'strength':'forza','mobility':'yoga','cardio':'cardio'};
+      var sp=MY_SPORTS.find(function(s){return s.name===selSub;});
+      if(sp && modalIdx>=0){
+        piano[modalIdx].nome=sp.name;
+        piano[modalIdx].tipo=CAT_TYPE2[sp.cat]||'cardio';
+        piano[modalIdx].orario=orarioScelto;
+        if(selScelta==='ribilancia'&&modalIdx<piano.length-1&&piano[modalIdx+1].tipo==='forza'){
+          piano[modalIdx+1].nome='Yoga';
+          piano[modalIdx+1].tipo='yoga';
+        }
+      }
+    }
+    closeModal(); renderPiano(); pianos[currentWeekIdx]=JSON.parse(JSON.stringify(piano)); saveState(); return;
+  }
+  if(!selSub){ alert('Select an option to continue.'); return; }
+  var idx=modalIdx;
+  if(selAction==='orario'){
+    if(idx>=0) piano[idx].orario=selSub+' – '+(parseInt(selSub)+1)+':'+selSub.split(':')[1];
+    if((selSub==='18:30'||selSub==='20:00')&&selScelta==='ribilancia'){
+      var ni=piano.findIndex(function(s,i){return i>idx&&s.tipo==='forza';});
+      if(ni>=0){piano[ni].nome='Yoga';piano[ni].tipo='yoga';}
+    }
+  } else if(selAction==='giorno'){
+    var di=-1;
+    piano.forEach(function(dd,ddi){if((dd.giorno.toLowerCase()+dd.data)===selSub)di=ddi;});
+    if(di!=null&&idx>=0){
+      var tmp={nome:piano[di].nome,tipo:piano[di].tipo,orario:piano[di].orario};
+      piano[di].nome=piano[idx].nome; piano[di].tipo=piano[idx].tipo; piano[di].orario=piano[idx].orario;
+      piano[idx].nome=tmp.nome; piano[idx].tipo=tmp.tipo; piano[idx].orario=tmp.orario;
+    }
+  } else if(selAction==='sessione'){
+    var parti=selSub.split('|');
+    if(idx>=0){piano[idx].nome=parti[0].trim();piano[idx].tipo=parti[1]||'riposo';}
+  }
+  closeModal(); renderPiano(); pianos[currentWeekIdx]=JSON.parse(JSON.stringify(piano)); saveState();
+}
+
+function closeModal(){ document.getElementById('flexModal').classList.remove('open'); }
+function openBlockModal(m){ document.getElementById('blockSub').textContent='Days in '+m+' when you can\'t train'; document.getElementById('blockModal').classList.add('open'); }
+function closeBlockModal(){ document.getElementById('blockModal').classList.remove('open'); }
+
+// ─── Section navigation ───────────────────────────────────────────────────────
+function showSection(id){
+  document.querySelectorAll('.section').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active');});
+  document.getElementById(id).classList.add('active');
+  // Update bottom nav active state
+  ['piano','mesi','profilo','checkin'].forEach(function(t){
+    var btn=document.getElementById('bn-'+t);
+    if(btn) btn.classList.toggle('active',t===id);
+  });
+  window.scrollTo(0,0);
+  // Scroll coach to bottom when opening
+  if(id==='coach'){
+    setTimeout(function(){
+      var m=document.getElementById('coachMessages');
+      if(m) m.scrollTop=m.scrollHeight;
+    },50);
+  }
+}
+
+// ─── Session detail sheets ────────────────────────────────────────────────────
+var SCHEDE = {
+  'Weights: Upper body':
+    '<div class="fase-banner f1"><span>Wk 1–2 · Reactivation</span></div>'+
+    '<div class="section-title">🏋️ Weights: Upper body</div>'+
+    '<div class="section-meta" style="color:var(--purple);font-size:12px;margin-bottom:8px">Chest · Shoulders · Triceps · Back · Core (light)</div>'+
+    '<div class="section-meta"><span class="orario-badge">○ 07:00 – 07:45</span><span>45 min · Home</span></div>'+
+    '<div class="alert-box alert-warn"><span>⚠</span><span>No direct core, no rotations, no deadlift. Stop if you feel the right side.</span></div>'+
+    '<div class="block-title">Warm-up — 8 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Exercise</th><th style="width:26%">Duration</th><th>Notes</th></tr>'+
+    '<tr><td>Walk + arm circles</td><td>2 min</td><td>Mobilise shoulders</td></tr>'+
+    '<tr><td>Leg swings front/back</td><td>10 each side</td><td>Hold support, no rotation</td></tr>'+
+    '<tr><td>Bodyweight squat</td><td>10 reps</td><td>Comfortable depth</td></tr>'+
+    '<tr><td>Slow cat-cow</td><td>8 reps</td><td>Stop if right side aches</td></tr></table>'+
+    '<div class="block-title">Main block — 30 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Exercise</th><th style="width:26%">Sets × Reps</th><th>Rest</th></tr>'+
+    '<tr><td>Goblet squat</td><td>3 × 12</td><td>60 s</td></tr>'+
+    '<tr><td>Dumbbell row (bench)</td><td>3 × 10/side</td><td>45 s</td></tr>'+
+    '<tr><td>Split squat (static)</td><td>3 × 10/leg</td><td>60 s</td></tr>'+
+    '<tr><td>Shoulder press (seated)</td><td>3 × 12</td><td>60 s</td></tr>'+
+    '<tr><td>Glute bridge</td><td>3 × 15</td><td>45 s</td></tr></table>'+
+    '<div class="block-title">Cool-down — 7 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Stretch</th><th style="width:26%">Duration</th><th>Notes</th></tr>'+
+    '<tr><td>Hip flexor stretch</td><td>40 s/side</td><td>No right side tilt</td></tr>'+
+    '<tr><td>Chest opener</td><td>30 s</td><td></td></tr>'+
+    '<tr><td>Seated forward fold</td><td>40 s</td><td>Straight back</td></tr></table>'+
+    '<div class="note"><strong>Load:</strong> start at 50–60% of what you used before.</div>',
+
+  'Weights: Lower body':
+    '<div class="fase-banner f1"><span>Wk 1–2 · Reactivation</span></div>'+
+    '<div class="section-title">🏋️ Weights: Lower body</div>'+
+    '<div class="section-meta" style="color:var(--purple);font-size:12px;margin-bottom:8px">Glutes · Quads · Hamstrings · Shoulders · Arms</div>'+
+    '<div class="section-meta"><span class="orario-badge">○ 07:00 – 07:45</span><span>45 min · Home</span></div>'+
+    '<div class="alert-box alert-warn"><span>⚠</span><span>No deadlift, no loaded hip hinge, no lateral crunch.</span></div>'+
+    '<div class="block-title">Warm-up — 8 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Exercise</th><th style="width:26%">Duration</th><th>Notes</th></tr>'+
+    '<tr><td>March on the spot</td><td>2 min</td><td>Drive knees up</td></tr>'+
+    '<tr><td>Standing hip circles</td><td>10/direction</td><td>Small circles</td></tr>'+
+    '<tr><td>Band pull-apart</td><td>15 reps</td><td>Activate shoulders</td></tr>'+
+    '<tr><td>Box breath</td><td>4 cycles</td><td>Inhale 4, hold 4, exhale 4</td></tr></table>'+
+    '<div class="block-title">Main block — 30 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Exercise</th><th style="width:26%">Sets × Reps</th><th>Rest</th></tr>'+
+    '<tr><td>Sumo squat</td><td>3 × 12</td><td>60 s</td></tr>'+
+    '<tr><td>Lateral raise</td><td>3 × 15</td><td>45 s</td></tr>'+
+    '<tr><td>Step-up (chair)</td><td>3 × 10/leg</td><td>60 s</td></tr>'+
+    '<tr><td>Bicep + hammer curl</td><td>3 × 12</td><td>45 s</td></tr>'+
+    '<tr><td>Wall sit</td><td>3 × 30 s</td><td>45 s</td></tr></table>'+
+    '<div class="block-title">Cool-down — 7 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Stretch</th><th style="width:26%">Duration</th><th>Notes</th></tr>'+
+    '<tr><td>Figure-4 on floor</td><td>45 s/side</td><td>Don\'t push right side</td></tr>'+
+    '<tr><td>Doorway chest stretch</td><td>30 s</td><td></td></tr>'+
+    '<tr><td>Child\'s pose</td><td>45 s</td><td>Release everything</td></tr></table>',
+
+  'Yoga':
+    '<div class="fase-banner f1"><span>Wk 1–2 · Yin / Restorative</span></div>'+
+    '<div class="section-title"><span style="color:var(--peach)">◈</span> Yoga</div>'+
+    '<div class="section-meta"><span class="orario-badge">○ 07:00 – 07:45</span><span>40 min · Mat</span></div>'+
+    '<div class="alert-box alert-warn"><span>⚠</span><span>No deep twists to the right, no loaded side stretch on the right.</span></div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Pose</th><th style="width:20%">Duration</th><th>Focus</th></tr>'+
+    '<tr><td>Supine breathing</td><td>3 min</td><td>Feel the side</td></tr>'+
+    '<tr><td>Knees to chest</td><td>2 min</td><td>Lumbar decompression</td></tr>'+
+    '<tr><td>Supine figure-4</td><td>2 min/side</td><td>Piriformis</td></tr>'+
+    '<tr><td>Slow cat-cow</td><td>2 min</td><td>Spinal mobility</td></tr>'+
+    '<tr><td>Child\'s pose</td><td>3 min</td><td>Release</td></tr>'+
+    '<tr><td>Low lunge</td><td>90 s/side</td><td>Hip flexor</td></tr>'+
+    '<tr><td>Seated forward fold</td><td>3 min</td><td>Hamstrings</td></tr>'+
+    '<tr><td>Legs up the wall</td><td>5 min</td><td>Venous recovery</td></tr>'+
+    '<tr><td>Savasana</td><td>5 min</td><td>Integration</td></tr></table>'+
+    '<div class="note"><strong>Wk 3–4:</strong> add Warrior I and II, Triangle pose with caution.</div>',
+
+  'Run':
+    '<div class="fase-banner f2"><span>From wk 3 only</span></div>'+
+    '<div class="section-title"><span style="color:var(--teal)">→</span> Run</div>'+
+    '<div class="section-meta"><span class="orario-badge">○ 07:00 – 07:30</span><span>25 min · Flat terrain</span></div>'+
+    '<div class="alert-box alert-warn"><span>⚠</span><span>Don\'t run if the right side isn\'t completely silent.</span></div>'+
+    '<div class="block-title">Week 3 — Run/Walk 2:1</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Phase</th><th style="width:20%">Duration</th><th>Intensity</th></tr>'+
+    '<tr><td>Walking warm-up</td><td>5 min</td><td>Normal</td></tr>'+
+    '<tr><td>Easy run</td><td>2 min</td><td>Conversational</td></tr>'+
+    '<tr><td>Walking recovery</td><td>1 min</td><td>—</td></tr>'+
+    '<tr><td>Repeat × 5</td><td>15 min</td><td>—</td></tr>'+
+    '<tr><td>Cool-down</td><td>5 min</td><td>—</td></tr></table>'+
+    '<div class="block-title">Week 4 — Run/Walk 3:1</div>'+
+    '<table class="ex-table"><tr><th>Phase</th><th>Duration</th><th>Intensity</th></tr>'+
+    '<tr><td>Walking warm-up</td><td>5 min</td><td>Normal</td></tr>'+
+    '<tr><td>Easy run</td><td>3 min</td><td>Conversational</td></tr>'+
+    '<tr><td>Walking recovery</td><td>1 min</td><td>—</td></tr>'+
+    '<tr><td>Repeat × 4</td><td>16 min</td><td>—</td></tr>'+
+    '<tr><td>Cool-down</td><td>4 min</td><td>—</td></tr></table>',
+
+  'Dance':
+    '<div class="fase-banner f2"><span>From July</span></div>'+
+    '<div class="section-title">💃 Dance</div>'+
+    '<div class="section-meta"><span class="orario-badge">○ 20:00 – 21:00</span><span>60 min · Studio</span></div>'+
+    '<div class="alert-box alert-info"><span>✦</span><span>Counted as light cardio in the weekly balance. No specific restrictions.</span></div>'+
+    '<div class="note">Flexa logs dance as light cardio (~MET 4.5). If the session runs long or intense, it will suggest lightening the next day.</div>',
+
+  'Stand-up Paddle':
+    '<div class="section-title">🏄 Stand-up Paddle</div>'+
+    '<div class="section-meta" style="color:var(--teal);font-size:12px;margin-bottom:8px">Core · Balance · Upper body · Low-impact cardio</div>'+
+    '<div class="section-meta"><span class="orario-badge">○ Sporadic</span><span>60–90 min · Sea / lake</span></div>'+
+    '<div class="alert-box alert-info"><span>✦</span><span>Excellent active recovery — low impact on joints, high proprioception demand.</span></div>'+
+    '<div class="note"><strong>What Flexa does:</strong> logs as medium cardio. If you paddle 90+ min, it lightens the next day\'s session. Great substitute for a rest day when you want to move without loading the body.<br><br><strong>Muscles:</strong> obliques, transverse abdominis, deltoids, lats, legs for balance.</div>',
+
+  'Beach Volley':
+    '<div class="section-title">🏐 Beach Volley</div>'+
+    '<div class="section-meta" style="color:var(--teal);font-size:12px;margin-bottom:8px">Legs · Shoulders · Explosive cardio · Agility</div>'+
+    '<div class="section-meta"><span class="orario-badge">○ Sporadic</span><span>60–120 min · Beach</span></div>'+
+    '<div class="alert-box alert-warn"><span>⚠</span><span>High-intensity intervals. Jumping on sand = high glute and posterior chain load. Flexa adds recovery the day after.</span></div>'+
+    '<div class="note"><strong>What Flexa does:</strong> logs as high cardio. Adjusts the following day — usually suggests yoga or rest depending on duration.<br><br><strong>Muscles:</strong> glutes, quads, calves, deltoids, core stability.</div>',
+
+  'Beach Tennis':
+    '<div class="section-title">🎾 Beach Tennis</div>'+
+    '<div class="section-meta" style="color:var(--teal);font-size:12px;margin-bottom:8px">Agility · Cardio · Shoulders · Lateral movement</div>'+
+    '<div class="section-meta"><span class="orario-badge">○ Sporadic</span><span>60–90 min · Beach</span></div>'+
+    '<div class="alert-box alert-info"><span>✦</span><span>Similar load to padel — medium-high. Flexa applies same recovery logic.</span></div>'+
+    '<div class="note"><strong>What Flexa does:</strong> logs as high cardio (same as Padel). Suggests lighter session or rest the day after if played 90+ min.<br><br><strong>Muscles:</strong> shoulders, forearms, obliques, legs — full-body agility pattern.</div>'
+};
+
+function openScheda(nome){
+  var content = SCHEDE[nome];
+  if(!content){
+    content='<div class="section-title">'+icona(nome)+' '+nome+'</div><div class="note">Session details coming soon.</div>';
+  }
+  document.getElementById('schedaContent').innerHTML=content;
+  document.getElementById('schedaModal').classList.add('open');
+  document.getElementById('schedaModal').scrollTop=0;
+}
+function closeScheda(){ document.getElementById('schedaModal').classList.remove('open'); }
+
+// ─── Init ────────────────────────────────────────────────────────────────────
+renderPiano();
+
+// ─── Coach AI ────────────────────────────────────────────────────────────────
+var coachHistory = [];
+
+var COACH_SYSTEM = `You are Flexa Coach — the AI coach inside Flexa, a multi-sport training planner.
+
+## Who you are coaching
+Name: Tatiana, 35, Barcelona. Italian founder of Flexa, currently using the app on herself.
+Goal: body recomposition — get from 61 kg to ~56 kg with more lean mass. Longevity is the deeper why.
+Training availability: 3–4 sessions/week, preferred slot 07:00–07:45. Summer = outdoor running is fine.
+Equipment: home weights + bench, outdoor running, access to a pool (no gym).
+Sports she does: weightlifting/HIIT, yoga, running, swimming, hiking, dance, pole dance, padel, stand-up paddle, beach volley, beach tennis (all sporadic/seasonal).
+Injury: right sub-costal strain (intercostal/oblique area), currently recovering. Status unclear — she says she "thinks she's free" but is taking it slow. Treat this as: no loaded core, no deep right-side twists, no deadlifts, no heavy hip hinges until she confirms physio clearance. Progress conservatively.
+
+## Her current week plan (Jun 15–21)
+Mon 15: Rest (today — intentional, evening plans)
+Tue 16: Strength A — 07:00–07:45, home
+Wed 17: Yoga — 07:00–07:45, mat
+Thu 18: Active walk — recovery
+Fri 19: Strength B — 07:00–07:45, home
+Sat 20: Free slot
+Sun 21: Rest
+
+## Training philosophy you follow
+- Balance is non-negotiable: strength + cardio + mobility every week, proportions shift with phase.
+- Week 1–2 (now): reactivation. Conservative loads, 3 sessions. No running yet.
+- Week 3–4: progression. Add running (run/walk intervals). 4 sessions.
+- Week 5–8: volume. 4–5 sessions. Running builds to 30 min continuous. Dance/pole dance can enter.
+- Recovery is training. A bad night of sleep or low readiness = legitimate reason to downgrade a session.
+- Sporadic sports (padel, hiking, dance) count as sessions — log them and adjust surrounding days.
+- Never add two high-load days back to back.
+
+## How you communicate
+- Warm, direct, expert. Like a coach who knows you well.
+- Keep responses concise — this is a mobile chat, not an email.
+- When she tells you something happened (padel tonight, skipped a session, felt tired), respond with a concrete plan update: what changes, why, and what stays the same.
+- When she gives Oura/Garmin data, read it: readiness ≥70 = train as planned; 50–69 = reduce intensity or sub yoga; <50 = walk or rest.
+- If she wants to try pole dance or dance, find the right slot based on load balance (treat as medium load, strength + mobility).
+- Always end with a clear next action or confirmation question — don't leave things open.
+- Use light emoji sparingly. Never use bullet-point walls.
+
+## What you can do
+- Adjust this week's sessions conversationally.
+- Suggest when to add sporadic sports based on recovery.
+- Interpret daily readiness data and adapt the day's session.
+- Remind her of injury precautions without being annoying about it.
+- Track progress toward her goal over time based on what she tells you.`;
+
+function getPlanContext(){
+  var days = piano.map(function(s){
+    return s.giorno+' '+s.data+': '+s.nome+(s.orario!=='—'?' ('+s.orario+')':'');
+  }).join('\n');
+  return '\n\n## Current week plan state:\n'+days;
+}
+
+var coachIsTyping = false;
+
+async function sendCoachMessage(){
+  if(coachIsTyping) return;
+  var inputEl = document.getElementById('coachInput');
+  var text = inputEl.innerText.trim();
+  if(!text) return;
+
+  // Add user bubble
+  appendMsg('user', text);
+  inputEl.innerText = '';
+  inputEl.dispatchEvent(new Event('input'));
+
+  // Add to history
+  coachHistory.push({role:'user', content: text + getPlanContext()});
+
+  // Show typing indicator
+  coachIsTyping = true;
+  var typingId = appendTyping();
+  document.getElementById('coachSend').disabled = true;
+
+  try {
+    var res = await fetch('/.netlify/functions/coach', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system: COACH_SYSTEM,
+        messages: coachHistory
+      })
+    });
+    var data = await res.json();
+    var reply = (data.content && data.content[0] && data.content[0].text) || 'Something went wrong — try again.';
+
+    // Add to history
+    coachHistory.push({role:'assistant', content: reply});
+
+    // Remove typing, show reply
+    removeTyping(typingId);
+    appendMsg('coach', reply);
+
+    // Check if reply contains a plan update (coach says it's updating)
+    if(/i('ve| have) (updated|moved|shifted|swapped|changed|added|removed|converted)/i.test(reply) ||
+       /your (plan|week|tuesday|wednesday|thursday|friday|saturday|sunday|monday)/i.test(reply)){
+      appendPlanBanner();
+    }
+
+  } catch(e){
+    removeTyping(typingId);
+    appendMsg('coach', 'Connection issue — check your internet and try again.');
+  }
+
+  coachIsTyping = false;
+  document.getElementById('coachSend').disabled = false;
+}
+
+function appendMsg(role, text){
+  var wrap = document.getElementById('coachMessages');
+  var d = document.createElement('div');
+  d.className = 'msg '+role;
+  // Convert newlines to <br>
+  var safe = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>');
+  d.innerHTML =
+    '<div class="msg-bubble">'+safe+'</div>'+
+    '<div class="msg-time">'+(role==='user'?'You':'Flexa Coach')+'</div>';
+  wrap.appendChild(d);
+  wrap.scrollTop = wrap.scrollHeight;
+  return d;
+}
+
+function appendTyping(){
+  var wrap = document.getElementById('coachMessages');
+  var id = 'typing_'+Date.now();
+  var d = document.createElement('div');
+  d.className = 'msg coach';
+  d.id = id;
+  d.innerHTML = '<div class="msg-bubble"><span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span></div>';
+  wrap.appendChild(d);
+  wrap.scrollTop = wrap.scrollHeight;
+  return id;
+}
+
+function removeTyping(id){
+  var el = document.getElementById(id);
+  if(el) el.remove();
+}
+
+function appendPlanBanner(){
+  var wrap = document.getElementById('coachMessages');
+  var last = wrap.querySelector('.msg.coach:last-child');
+  if(!last) return;
+  var b = document.createElement('div');
+  b.className = 'plan-update-banner';
+  b.innerHTML = '<span>✦</span><span>Plan updated — check <strong>This week</strong> to see changes.</span>';
+  last.appendChild(b);
+}
+
+function coachKeydown(e){
+  if(e.key==='Enter' && !e.shiftKey){
+    e.preventDefault();
+    sendCoachMessage();
+  }
+}
+
+function coachInputChange(){
+  var el = document.getElementById('coachInput');
+  // placeholder via CSS attr
+  if(el.innerText.trim()===''){
+    el.setAttribute('data-empty','true');
+  } else {
+    el.removeAttribute('data-empty');
+  }
+}
+// ─── Profile sub-tabs ────────────────────────────────────────────────────────
+function showProfileTab(tab){
+  document.getElementById('profilo-profile').style.display = tab==='profile' ? 'block' : 'none';
+  document.getElementById('profilo-sports').style.display  = tab==='sports'  ? 'block' : 'none';
+  document.getElementById('ptab-profile').classList.toggle('active', tab==='profile');
+  document.getElementById('ptab-sports').classList.toggle('active', tab==='sports');
+  if(tab==='sports') renderMySports();
+}
+
+// ─── My Sports data ──────────────────────────────────────────────────────────
+var ALL_SPORTS_CATALOG = [
+  {name:'Padel',       emoji:'🎾', cat:'cardio'},
+  {name:'Running',     emoji:'🏃', cat:'cardio'},
+  {name:'Yoga',        emoji:'🧘', cat:'mobility'},
+  {name:'Cycling',     emoji:'🚴', cat:'cardio'},
+  {name:'Swimming',    emoji:'🏊', cat:'cardio'},
+  {name:'Weightlifting',emoji:'🏋️',cat:'strength'},
+  {name:'Dance',       emoji:'💃', cat:'cardio'},
+  {name:'Hiking',      emoji:'🥾', cat:'cardio'},
+  {name:'Crossfit',    emoji:'⚡', cat:'strength'},
+  {name:'TRX',         emoji:'🔗', cat:'strength'},
+  {name:'Pilates',     emoji:'🌀', cat:'mobility'},
+  {name:'Climbing',    emoji:'🧗', cat:'strength'},
+  {name:'Pole dance',  emoji:'✨', cat:'strength'},
+  {name:'Skiing',      emoji:'⛷️', cat:'cardio'},
+  {name:'Tennis',      emoji:'🎾', cat:'cardio'},
+  {name:'Rowing',      emoji:'🚣', cat:'cardio'},
+  {name:'Kickboxing',  emoji:'🥊', cat:'strength'}
+];
+
+var CAT_COLOR = {strength:'var(--purple)', mobility:'var(--peach)', cardio:'var(--teal)'};
+
+function renderMySports(){
+  var list = document.getElementById('mySportsList');
+  var gap  = document.getElementById('gapAnalysis');
+  if(!list || !gap) return;
+
+  // Render sports list
+  list.innerHTML = MY_SPORTS.map(function(s,i){
+    var col = CAT_COLOR[s.cat] || 'var(--text3)';
+    return '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px;display:flex;align-items:center;gap:12px">'+
+      '<span style="font-size:20px;flex-shrink:0">'+s.emoji+'</span>'+
+      '<div style="flex:1;min-width:0">'+
+        '<div style="font-size:13px;font-weight:500;margin-bottom:2px">'+s.name+
+          '<span style="font-size:10px;font-weight:400;color:'+col+';margin-left:6px;text-transform:uppercase;letter-spacing:0.05em">'+s.cat+'</span>'+
+        '</div>'+
+        '<div style="font-size:11px;color:var(--text3);line-height:1.4">'+s.note+'</div>'+
+      '</div>'+
+      '<button onclick="removeSport('+i+')" style="background:none;border:1px solid var(--border);border-radius:50%;width:24px;height:24px;cursor:pointer;color:var(--text3);font-size:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:0">−</button>'+
+    '</div>';
+  }).join('');
+
+  // Gap analysis
+  var cats = {strength:0, mobility:0, cardio:0};
+  MY_SPORTS.forEach(function(s){ cats[s.cat]++; });
+  var total = MY_SPORTS.length || 1;
+  var gaps = [];
+  if(cats.strength/total < 0.25) gaps.push({label:'More strength', why:'You have <25% strength sports. Crucial for body recomp and longevity.', emoji:'🏋️', suggest:'Crossfit, TRX or Climbing'});
+  if(cats.mobility/total < 0.20) gaps.push({label:'More mobility', why:'Flexibility and recovery are underrepresented. Helps prevent injury long-term.', emoji:'🧘', suggest:'Pilates or more Yoga sessions'});
+  if(cats.cardio/total < 0.30)   gaps.push({label:'More cardio',   why:'Cardio variety builds aerobic base and keeps training sustainable.', emoji:'🏃', suggest:'Cycling or Rowing'});
+
+  if(gaps.length===0){
+    gap.innerHTML = '<div class="alert-box" style="border-color:rgba(143,228,207,0.3);background:rgba(143,228,207,0.06)"><span>✓</span><span style="color:var(--teal)">Great balance — strength, cardio and mobility are all well covered. Flexa will keep them in sync.</span></div>';
+  } else {
+    gap.innerHTML = gaps.map(function(g){
+      return '<div style="background:var(--bg3);border:1px solid rgba(185,167,255,0.15);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:10px">'+
+        '<div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">'+
+          '<span style="font-size:18px">'+g.emoji+'</span>'+
+          '<span style="font-size:13px;font-weight:500;color:var(--purple)">'+g.label+'</span>'+
+        '</div>'+
+        '<div style="font-size:12px;color:var(--text2);line-height:1.5;margin-bottom:6px">'+g.why+'</div>'+
+        '<div style="font-size:11px;color:var(--teal)">→ '+g.suggest+'</div>'+
+      '</div>';
+    }).join('');
+  }
+}
+
+function removeSport(i){
+  MY_SPORTS.splice(i,1);
+  renderMySports();
+}
+
+function openAddSportModal(){
+  var existing = MY_SPORTS.map(function(s){return s.name.toLowerCase();});
+  var html = '<div class="modal-section-title">Add a sport</div><div class="modal-options" id="addSportOptions">';
+  ALL_SPORTS_CATALOG.forEach(function(s,i){
+    var already = existing.indexOf(s.name.toLowerCase())>=0;
+    if(!already){
+      var col = CAT_COLOR[s.cat]||'var(--text3)';
+      html += '<div class="modal-option" onclick="addSportFromCatalog('+i+')">'+
+        '<div style="display:flex;align-items:center;gap:10px">'+
+          '<span style="font-size:18px">'+s.emoji+'</span>'+
+          '<div><div class="modal-option-label">'+s.name+'</div>'+
+          '<div class="modal-option-meta" style="color:'+col+'">'+s.cat+'</div></div>'+
+        '</div>'+
+        '<span class="modal-check">+</span></div>';
+    }
+  });
+  html += '</div>';
+  document.getElementById('modalTitle').textContent='+ Add sport';
+  document.getElementById('modalSession').textContent='';
+  document.getElementById('modalDay').textContent='';
+  document.getElementById('modalOrario').textContent='';
+  document.getElementById('modalIcon').textContent='🏅';
+  document.getElementById('modalFlexContent').innerHTML=html;
+  document.getElementById('flexModal').classList.add('open');
+}
+
+function addSportFromCatalog(i){
+  var s = ALL_SPORTS_CATALOG[i];
+  MY_SPORTS.push({name:s.name, emoji:s.emoji, cat:s.cat, freq:'sporadic', note:'Added by you — Flexa will include it in your balance.'});
+  closeModal();
+  renderMySports();
+}
+
+// ─── Month calendar day click ─────────────────────────────────────────────────
+function openMonthDay(day, session){
+  if(session){
+    // Has a training session — show scheda + option to flex or add
+    document.getElementById('modalTitle').textContent = 'Session · '+day;
+    document.getElementById('modalSession').textContent = session;
+    document.getElementById('modalDay').textContent = 'Day '+day;
+    document.getElementById('modalOrario').textContent = '07:00';
+    document.getElementById('modalIcon').textContent = icona(session);
+    document.getElementById('modalIcon').style.color = colore(session);
+    document.getElementById('modalFlexContent').innerHTML =
+      '<div class="modal-section-title">What do you want to do?</div>'+
+      '<div class="modal-options">'+
+        '<div class="modal-option" onclick="openScheda(&quot;'+session+'&quot;);closeModal()">'+
+          '<div><div class="modal-option-label">↗ View session details</div><div class="modal-option-meta">Exercises and timing</div></div>'+
+          '<span style="color:var(--text3);font-size:16px;margin-left:8px">→</span></div>'+
+        '<div class="modal-option" onclick="closeModal()">'+
+          '<div><div class="modal-option-label">✦ Flex it.</div><div class="modal-option-meta">Move or change this session</div></div>'+
+          '<span class="modal-check">✓</span></div>'+
+        '<div class="modal-option" onclick="closeModal()">'+
+          '<div><div class="modal-option-label">+ Add extra activity</div><div class="modal-option-meta">Log something alongside this session</div></div>'+
+          '<span class="modal-check">✓</span></div>'+
+      '</div>';
+    document.getElementById('flexModal').classList.add('open');
+  } else {
+    // Rest/empty day — tap to add
+    document.getElementById('modalTitle').textContent = '+ Add activity';
+    document.getElementById('modalSession').textContent = 'Day '+day;
+    document.getElementById('modalDay').textContent = 'Rest day';
+    document.getElementById('modalOrario').textContent = '—';
+    document.getElementById('modalIcon').textContent = '➕';
+    document.getElementById('modalIcon').style.color = 'var(--teal)';
+    document.getElementById('modalFlexContent').innerHTML =
+      '<div class="modal-section-title">Add a sport to this day</div>'+
+      '<div class="modal-options" id="monthAddOptions">'+
+        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">🎾 Padel</div><div class="modal-option-meta">High impact · Flexa adjusts recovery</div></div><span class="modal-check">✓</span></div>'+
+        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">🏃 Run</div><div class="modal-option-meta">Medium load · progressive cardio</div></div><span class="modal-check">✓</span></div>'+
+        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">🧘 Yoga</div><div class="modal-option-meta">Low load · recovery and mobility</div></div><span class="modal-check">✓</span></div>'+
+        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">💃 Dance</div><div class="modal-option-meta">Light cardio · counts in balance</div></div><span class="modal-check">✓</span></div>'+
+        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">🏋️ Weightlifting</div><div class="modal-option-meta">Strength · Flexa rebalances load</div></div><span class="modal-check">✓</span></div>'+
+      '</div>';
+    document.getElementById('flexModal').classList.add('open');
+  }
+}
+
+</script>
+<!-- Floating bottom nav -->
+<nav class="bottom-nav" id="bottomNav">
+  <button class="bn-item active" id="bn-piano" onclick="showSection('piano')">
+    <div class="bn-icon">📅</div>
+    <div class="bn-label">This week</div>
+  </button>
+  <button class="bn-item" id="bn-mesi" onclick="showSection('mesi')">
+    <div class="bn-icon">🗓</div>
+    <div class="bn-label">Months</div>
+  </button>
+  <button class="bn-coach" onclick="showSection('coach')">✦ Coach</button>
+  <button class="bn-item" id="bn-profilo" onclick="showSection('profilo')">
+    <div class="bn-icon">👤</div>
+    <div class="bn-label">Profile</div>
+  </button>
+  <button class="bn-item" id="bn-checkin" onclick="showSection('checkin')">
+    <div class="bn-icon">☀️</div>
+    <div class="bn-label">Check-in</div>
+  </button>
+</nav>
+</body>
+</html>
