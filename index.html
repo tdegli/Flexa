@@ -523,7 +523,7 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
           <div class="cal-day forza past" onclick="openMonthDay(12, 'Weights: Lower body')">12<div class="cal-icon">🏋️</div></div>
           <div class="cal-day rest-day past">13</div>
           <div class="cal-day rest-day past">14</div>
-          <div class="cal-day rest-day today-mark" style="font-weight:600;color:var(--purple)" onclick="openMonthDay(15, null)">15</div>
+          <div class="cal-day rest-day" id="calToday-6-15" onclick="openMonthDay(15, null)">15</div>
           <div class="cal-day forza" onclick="openMonthDay(16, 'Weights: Upper body')">16<div class="cal-icon">🏋️</div></div>
           <div class="cal-day rest-day" onclick="openMonthDay(17, null)">17</div>
           <div class="cal-day yoga" onclick="openMonthDay(18, 'Yoga')">18<div class="cal-icon">🧘</div></div>
@@ -883,6 +883,9 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
 </div>
 
 <script>
+// ─── API config ─────────────────────────────────────────────────────────────
+var ANTHROPIC_KEY = 'INSERISCI_QUI_LA_TUA_CHIAVE';
+
 // ─── Sport config ───────────────────────────────────────────────────────────
 var ICONS = {
   'Weights: Upper body':'🏋️','Weights: Lower body':'🏋️','Yoga':'🧘','Run':'🏃',
@@ -918,8 +921,19 @@ var DAY_NAMES   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 // Training pattern: alternates A/B each week
 // Week A: Tue=StrengthA, Thu=Yoga, Fri=StrengthB  (3 sessions)
 // Week B: Tue=StrengthA, Wed=Run,  Fri=StrengthB  (3 sessions)
-var PLAN_A = {1:{n:'Weights: Upper body',t:'forza',o:'07:00–07:45'}, 3:{n:'Yoga',t:'yoga',o:'07:00–07:45'}, 4:{n:'Weights: Lower body',t:'forza',o:'07:00–07:45'}};
-var PLAN_B = {1:{n:'Weights: Upper body',t:'forza',o:'07:00–07:45'}, 2:{n:'Run',  t:'cardio',o:'07:00–07:30'}, 4:{n:'Weights: Lower body',t:'forza',o:'07:00–07:45'}};
+// Week A (3 sessions): Tue=Weights Upper, Thu=Run, Fri=Weights Lower
+// Week B (4 sessions): Tue=Weights Upper, Thu=Run, Fri=Weights Lower, Sun=Yoga
+var PLAN_A = {
+  1:{n:'Weights: Upper body',t:'forza',  o:'07:00–07:45'},  // Tue
+  3:{n:'Run',                t:'cardio', o:'07:00–07:30'},  // Thu
+  4:{n:'Weights: Lower body',t:'forza',  o:'07:00–07:45'}   // Fri
+};
+var PLAN_B = {
+  1:{n:'Weights: Upper body',t:'forza',  o:'07:00–07:45'},  // Tue
+  3:{n:'Run',                t:'cardio', o:'07:00–07:30'},  // Thu
+  4:{n:'Weights: Lower body',t:'forza',  o:'07:00–07:45'},  // Fri
+  6:{n:'Yoga',               t:'yoga',   o:'07:00–07:45'}   // Sun
+};
 
 // Today
 var TODAY = new Date();
@@ -1916,6 +1930,38 @@ function closeScheda(){ document.getElementById('schedaModal').classList.remove(
 // ─── Init ────────────────────────────────────────────────────────────────────
 renderPiano();
 
+// Highlight real today in month calendar
+(function highlightToday(){
+  var m = TODAY.getMonth()+1; // 1-12
+  var d = TODAY.getDate();
+  // Remove any existing today-mark
+  document.querySelectorAll('.cal-day.today-mark').forEach(function(el){
+    el.classList.remove('today-mark');
+    el.style.fontWeight='';
+    el.style.color='';
+  });
+  // Find the right cell — month calendars show Jun(6), Jul(7), Aug(8)
+  // Each cal-day shows just the day number as text
+  // We need to find the cell in the right month section
+  var monthSections = document.querySelectorAll('.month-section');
+  var monthNames = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  monthSections.forEach(function(sec){
+    var nameEl = sec.querySelector('.month-name');
+    if(!nameEl) return;
+    var secMonth = monthNames.indexOf(nameEl.textContent.trim())+1;
+    if(secMonth !== m) return;
+    // Find cal-day with matching number
+    sec.querySelectorAll('.cal-day').forEach(function(cell){
+      var txt = cell.textContent.trim().replace(/[^0-9]/g,'').substring(0,2);
+      if(parseInt(txt) === d){
+        cell.classList.add('today-mark');
+        cell.style.fontWeight='700';
+        cell.style.color='var(--purple)';
+      }
+    });
+  });
+})();
+
 // ─── Coach AI ────────────────────────────────────────────────────────────────
 var coachHistory = [];
 
@@ -1929,14 +1975,21 @@ Equipment: home weights + bench, outdoor running, access to a pool (no gym).
 Sports she does: weightlifting/HIIT, yoga, running, swimming, hiking, dance, pole dance, padel, stand-up paddle, beach volley, beach tennis (all sporadic/seasonal).
 Injury: right sub-costal strain (intercostal/oblique area), currently recovering. Status unclear — she says she "thinks she's free" but is taking it slow. Treat this as: no loaded core, no deep right-side twists, no deadlifts, no heavy hip hinges until she confirms physio clearance. Progress conservatively.
 
-## Her current week plan (Jun 15–21)
-Mon 15: Rest (today — intentional, evening plans)
-Tue 16: Strength A — 07:00–07:45, home
-Wed 17: Yoga — 07:00–07:45, mat
-Thu 18: Active walk — recovery
-Fri 19: Strength B — 07:00–07:45, home
-Sat 20: Free slot
-Sun 21: Rest
+## Training plan (from Jun 23 onwards)
+Pattern alternates Week A (3 sessions) and Week B (4 sessions):
+- Tuesday: Weights Upper body — 07:00–07:45 (chest, shoulders, back, triceps)
+- Thursday: Run — 07:00–07:30 (zone 2 cardio, progressive)
+- Friday: Weights Lower body + glutes — 07:00–07:45
+- Sunday (Week B only): Yoga — 07:00–07:45 (recovery + mobility)
+
+Week Jun 15–21: free/flex week — Tatiana is adding sporadic activities herself.
+Week Jun 23–29: first full week of new plan (Week A).
+
+## Why this plan
+Body recomp + longevity: Upper/lower split maximises muscle stimulus with adequate recovery.
+Zone 2 running on Thu (48h after upper body) oxidises fat without muscle catabolism.
+Yoga on Sunday (Week B) reduces cortisol, improves hip and right shoulder mobility.
+Sporadic sports (paddle, beach volley, padel, hiking) added on free days — Flexa adjusts surrounding sessions.
 
 ## Training philosophy you follow
 - Balance is non-negotiable: strength + cardio + mobility every week, proportions shift with phase.
@@ -1992,9 +2045,14 @@ async function sendCoachMessage(){
   document.getElementById('coachSend').disabled = true;
 
   try {
-    var res = await fetch('/.netlify/functions/coach', {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': ANTHROPIC_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
         model:'claude-sonnet-4-6',
         max_tokens:1000,
@@ -2243,6 +2301,113 @@ function openMonthDay(day, session){
     document.getElementById('flexModal').classList.add('open');
   }
 }
+
+// ─── Check-in ────────────────────────────────────────────────────────────────
+var checkinData = {readiness:86, sleep:84, battery:72, feel:5};
+
+function loadCheckin(){
+  try { var raw=localStorage.getItem('flexa_checkin_v1'); if(raw) checkinData=JSON.parse(raw); } catch(e){}
+}
+function saveCheckin(){
+  try { localStorage.setItem('flexa_checkin_v1', JSON.stringify(checkinData)); } catch(e){}
+}
+loadCheckin();
+
+function onCheckinChange(){
+  var r=parseInt(document.getElementById('slReadiness').value);
+  var s=parseInt(document.getElementById('slSleep').value);
+  var b=parseInt(document.getElementById('slBattery').value);
+  document.getElementById('numReadiness').textContent=r;
+  document.getElementById('numSleep').textContent=s;
+  document.getElementById('numBattery').textContent=b;
+  updateCheckinStatus(r,s,b,checkinData.feel);
+}
+
+function selectFeel(val){
+  checkinData.feel=val;
+  document.querySelectorAll('.ci-feel-btn').forEach(function(b){b.classList.remove('selected');});
+  var vals=[1,3,5,7,10];
+  var btns=document.querySelectorAll('.ci-feel-btn');
+  vals.forEach(function(v,i){if(v===val&&btns[i])btns[i].classList.add('selected');});
+  var r=parseInt(document.getElementById('slReadiness').value);
+  var s=parseInt(document.getElementById('slSleep').value);
+  var b=parseInt(document.getElementById('slBattery').value);
+  updateCheckinStatus(r,s,b,val);
+}
+
+function updateCheckinStatus(r,s,b,feel){
+  var card=document.getElementById('ciStatusCard');
+  var icon=document.getElementById('ciStatusIcon');
+  var title=document.getElementById('ciStatusTitle');
+  var sub=document.getElementById('ciStatusSub');
+  var submit=document.getElementById('ciSubmit');
+  if(!card) return;
+  var state=(r>=70&&b>=30&&feel>=5)?'green':(r>=50)?'yellow':'red';
+  card.className='ci-status-card '+state;
+  if(state==='green'){
+    icon.textContent='OK'; title.textContent='Ready to train';
+    sub.textContent='Readiness '+r+' · Sleep '+s+' · Battery '+b+' — green light.';
+    if(submit){submit.style.background='var(--teal)';submit.style.color='#090910';submit.style.border='none';}
+  } else if(state==='yellow'){
+    icon.textContent='!'; title.textContent='Reduce load today';
+    sub.textContent='Readiness '+r+(b<30?' · Battery low ('+b+')':'')+' — lighter session suggested.';
+    if(submit){submit.style.background='var(--peach)';submit.style.color='#090910';submit.style.border='none';}
+  } else {
+    icon.textContent='X'; title.textContent='Recovery day';
+    sub.textContent='Readiness '+r+' — body needs rest.';
+    if(submit){submit.style.background='rgba(255,100,100,0.15)';submit.style.color='#ff7a7a';submit.style.border='1px solid rgba(255,100,100,0.3)';}
+  }
+}
+
+function submitCheckin(){
+  var r=parseInt(document.getElementById('slReadiness').value);
+  var s=parseInt(document.getElementById('slSleep').value);
+  var b=parseInt(document.getElementById('slBattery').value);
+  checkinData={readiness:r,sleep:s,battery:b,feel:checkinData.feel,date:TODAY.toDateString()};
+  saveCheckin();
+  renderPlanStatusFromCheckin();
+  var btn=document.getElementById('ciSubmit');
+  btn.textContent='Saved — plan updated';
+  setTimeout(function(){btn.textContent='Save · update plan';},2000);
+  setTimeout(function(){showSection('piano');},800);
+}
+
+function renderPlanStatusFromCheckin(){
+  var r=checkinData.readiness||86;
+  var b=checkinData.battery||72;
+  var feel=checkinData.feel||5;
+  var stateEl=document.getElementById('psState');
+  var reasonEl=document.getElementById('psReason');
+  if(!stateEl) return;
+  var state=(r>=70&&b>=30&&feel>=5)?'green':(r>=50)?'yellow':'red';
+  if(state==='green'){
+    stateEl.innerHTML='<span class="ok">Ready to train</span>';
+    if(reasonEl) reasonEl.innerHTML='Readiness <strong>'+r+'</strong> · Sleep <strong>'+checkinData.sleep+'</strong> · Battery <strong>'+b+'</strong> — green light. ';
+  } else if(state==='yellow'){
+    stateEl.innerHTML='<span class="warn">Reduce load</span>';
+    if(reasonEl) reasonEl.innerHTML='Readiness <strong>'+r+'</strong> — lighter session suggested. ';
+  } else {
+    stateEl.innerHTML='<span style="color:#ff7a7a">Recovery day</span>';
+    if(reasonEl) reasonEl.innerHTML='Readiness <strong>'+r+'</strong> — body needs rest. ';
+  }
+}
+
+(function initCI(){
+  var DAY=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var ci=document.getElementById('ciDate');
+  if(ci) ci.textContent='Morning check-in · '+DAY[TODAY.getDay()]+' '+MON[TODAY.getMonth()]+' '+TODAY.getDate();
+  setTimeout(function(){
+    var slR=document.getElementById('slReadiness');
+    var slS=document.getElementById('slSleep');
+    var slB=document.getElementById('slBattery');
+    if(slR){slR.value=checkinData.readiness;document.getElementById('numReadiness').textContent=checkinData.readiness;}
+    if(slS){slS.value=checkinData.sleep;document.getElementById('numSleep').textContent=checkinData.sleep;}
+    if(slB){slB.value=checkinData.battery;document.getElementById('numBattery').textContent=checkinData.battery;}
+    updateCheckinStatus(checkinData.readiness,checkinData.sleep,checkinData.battery,checkinData.feel);
+    if(checkinData.date===TODAY.toDateString()) renderPlanStatusFromCheckin();
+  },300);
+})();
 
 </script>
 <!-- Floating bottom nav -->
