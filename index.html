@@ -888,7 +888,7 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
 
 <script>
 // ─── API config ─────────────────────────────────────────────────────────────
-var ANTHROPIC_KEY = 'INSERISCI_QUI_LA_TUA_CHIAVE';
+// API calls go through a secure Netlify Function — no key needed in this file.
 
 // ─── Sport config ───────────────────────────────────────────────────────────
 var ICONS = {
@@ -1600,14 +1600,9 @@ async function sendFlexChat(){
   if(sendBtn) sendBtn.disabled = true;
 
   try {
-    var res = await fetch('https://api.anthropic.com/v1/messages', {
+    var res = await fetch('/.netlify/functions/coach', {
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
+      headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         model:'claude-sonnet-4-6',
         max_tokens:600,
@@ -2276,14 +2271,9 @@ async function sendCoachMessage(){
   document.getElementById('coachSend').disabled = true;
 
   try {
-    var res = await fetch('https://api.anthropic.com/v1/messages', {
+    var res = await fetch('/.netlify/functions/coach', {
       method:'POST',
-      headers:{
-        'Content-Type':'application/json',
-        'x-api-key': ANTHROPIC_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
+      headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         model:'claude-sonnet-4-6',
         max_tokens:1000,
