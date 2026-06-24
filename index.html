@@ -86,11 +86,12 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 /* Week strip redesigned */
 .week-strip-v2{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:0}
 .dp-v2{display:flex;flex-direction:column;align-items:center;padding:9px 2px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);gap:4px;cursor:pointer}
-.dp-v2.dp-today{border-color:rgba(185,167,255,0.3);background:rgba(185,167,255,0.04)}
+.dp-v2.dp-today{border-color:var(--purple);border-width:2px;background:rgba(185,167,255,0.1);box-shadow:0 0 0 1px rgba(185,167,255,0.15)}
 .dp-v2.dp-next{border-color:rgba(185,167,255,0.18)}
 .dp-v2.dp-suggest{border-color:rgba(143,228,207,0.3);background:rgba(143,228,207,0.04);border-style:dashed}
-.dp-v2.dp-rest{opacity:0.3}
-.dp-v2.dp-done{border-color:rgba(143,228,207,0.3);background:rgba(143,228,207,0.04)}
+.dp-v2.dp-rest-past{opacity:0.35}
+.dp-v2.dp-rest-future{background:rgba(143,228,207,0.03);border-color:rgba(143,228,207,0.15)}
+.dp-v2.dp-done{border-color:rgba(143,228,207,0.3);background:rgba(143,228,207,0.04);opacity:0.6}
 .dp-v2.dp-modified{border-color:rgba(255,179,155,0.3)}
 .dpv2-d{font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;font-weight:700}
 .dpv2-n{font-size:12px;font-weight:700}
@@ -851,6 +852,7 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
 <!-- MODAL FLEX IT / ADD SESSION -->
 <div class="modal-overlay" id="flexModal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
+    <button class="scheda-back" onclick="closeModal()" style="margin-bottom:12px">← Back to plan</button>
     <div class="modal-handle"></div>
     <div class="modal-title" id="modalTitle">Flex it. ✦</div>
     <div class="modal-session-card">
@@ -1022,37 +1024,76 @@ var WEEK_PHASE  = generated.phases;
 // currentWeekIdx = index of this week in WEEKS array
 var currentWeekIdx = -WEEK_OFFSET_START; // offset 1 past week → current is index 1
 
-// Per-week extras: {weekIdx: {dayIdx: [{nome, orario}]}}
-var extras = {};
-// Per-week completions: {weekIdx: {dayIdx: true}}
-var completions = {};
-
 // ─── Persistence helpers ──────────────────────────────────────────────────────
 var LS_KEY = 'flexa_state_v1';
+// We persist pianos/extras/completions keyed by the Monday DATE STRING of each week
+// (e.g. "2026-06-22"), not by array index — array indices shift every time the
+// page reloads (because WEEKS is rebuilt centered on "today"), but the Monday
+// date of a given week never changes. This is what keeps the data attached to
+// the correct calendar week across reloads and across changeWeek() navigation.
+
+function mondayKeyForIndex(idx){
+  if(!WEEKS[idx] || !WEEKS[idx][0] || !WEEKS[idx][0].fullDate) return null;
+  var d = WEEKS[idx][0].fullDate instanceof Date ? WEEKS[idx][0].fullDate : new Date(WEEKS[idx][0].fullDate);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
 function saveState(){
   try {
+    // Convert index-keyed in-memory maps to date-keyed maps for storage
+    var pianosByDate = {}, extrasByDate = {}, completionsByDate = {};
+    Object.keys(pianos).forEach(function(idx){
+      var key = mondayKeyForIndex(parseInt(idx,10));
+      if(key) pianosByDate[key] = pianos[idx];
+    });
+    Object.keys(extras).forEach(function(idx){
+      var key = mondayKeyForIndex(parseInt(idx,10));
+      if(key) extrasByDate[key] = extras[idx];
+    });
+    Object.keys(completions).forEach(function(idx){
+      var key = mondayKeyForIndex(parseInt(idx,10));
+      if(key) completionsByDate[key] = completions[idx];
+    });
     localStorage.setItem(LS_KEY, JSON.stringify({
-      pianos: pianos, extras: extras, completions: completions, currentWeekIdx: currentWeekIdx
+      pianosByDate: pianosByDate, extrasByDate: extrasByDate, completionsByDate: completionsByDate
     }));
   } catch(e){}
 }
+
+var _pendingLoadedState = null;
+
 function loadState(){
   try {
     var raw = localStorage.getItem(LS_KEY);
     if(!raw) return false;
-    var s = JSON.parse(raw);
-    if(s.pianos)      pianos      = s.pianos;
-    if(s.extras)      extras      = s.extras;
-    if(s.completions) completions = s.completions;
-    if(s.currentWeekIdx != null) currentWeekIdx = s.currentWeekIdx;
+    _pendingLoadedState = JSON.parse(raw);
     return true;
   } catch(e){ return false; }
+}
+
+function applyLoadedStateToCurrentWeeks(){
+  // Called AFTER WEEKS has been built, to map date-keyed saved data back onto
+  // whatever array indices the freshly-built WEEKS array currently has.
+  if(!_pendingLoadedState) return;
+  var s = _pendingLoadedState;
+  pianos = {}; extras = {}; completions = {};
+  for(var idx=0; idx<WEEKS.length; idx++){
+    var key = mondayKeyForIndex(idx);
+    if(!key) continue;
+    if(s.pianosByDate && s.pianosByDate[key]) pianos[idx] = s.pianosByDate[key];
+    if(s.extrasByDate && s.extrasByDate[key]) extras[idx] = s.extrasByDate[key];
+    if(s.completionsByDate && s.completionsByDate[key]) completions[idx] = s.completionsByDate[key];
+  }
+  _pendingLoadedState = null;
 }
 
 // ─── Weekly plan state ────────────────────────────────────────────────────────
 // pianos[weekIdx] = modified copy of that week's plan (null = unmodified)
 var pianos = {};
+var extras = {};
+var completions = {};
 var loaded = loadState();
+applyLoadedStateToCurrentWeeks();
 var piano = pianos[currentWeekIdx]
   ? JSON.parse(JSON.stringify(pianos[currentWeekIdx]))
   : JSON.parse(JSON.stringify(WEEKS[currentWeekIdx]));
@@ -1077,21 +1118,34 @@ function icona(n){ return ICONS[n] || '🏋️'; }
 function colore(n){ return COLORS[n] || 'var(--text3)'; }
 
 // ─── Week navigation ──────────────────────────────────────────────────────────
+function shiftIndexedObject(obj, delta){
+  // Re-key an object like {0:{...}, 1:{...}} by adding delta to every numeric key
+  var out = {};
+  Object.keys(obj).forEach(function(k){
+    out[(parseInt(k,10) + delta)] = obj[k];
+  });
+  return out;
+}
+
 function changeWeek(dir){
   var next = currentWeekIdx + dir;
   // Infinite scroll: generate more weeks on the fly when reaching the edge
   if(next < 0){
-    // Prepend one week
+    // Prepend one week — shift ALL index-keyed state by +1 so saved data stays attached to the right week
     var extra = buildWeeks(1, WEEK_OFFSET_START - 1);
     WEEKS.unshift(extra.weeks[0]);
     WEEK_LABELS.unshift(extra.labels[0]);
     WEEK_PHASE.unshift(extra.phases[0]);
     WEEK_OFFSET_START -= 1;
+    pianos      = shiftIndexedObject(pianos, 1);
+    extras      = shiftIndexedObject(extras, 1);
+    completions = shiftIndexedObject(completions, 1);
     currentWeekIdx += 1; // shift index since we added at front
     next = currentWeekIdx + dir;
+    saveState();
   }
   if(next >= WEEKS.length){
-    // Append one week
+    // Append one week — no re-keying needed, indices below stay valid
     var lastOffset = WEEK_OFFSET_START + WEEKS.length;
     var extra2 = buildWeeks(1, lastOffset);
     WEEKS.push(extra2.weeks[0]);
@@ -1324,30 +1378,39 @@ function renderPiano(){
   piano.forEach(function(s,i){
     if(s.tipo!=='riposo' && nextTrainIdx===-1 && (!isTodayWeek || i>todayDayIdx)) nextTrainIdx=i;
   });
+  // Is this whole week strictly in the past (only relevant if not today's week)?
+  var weekIsPast = !isTodayWeek && currentWeekIdx < (-WEEK_OFFSET_START);
   piano.forEach(function(s,i){
-    var isVuoto = s.tipo==='riposo' && !isTodayWeek;
+    var isRest = s.tipo==='riposo';
     var isModified = s.nome!==pianoOrig[i].nome || s.orario!==pianoOrig[i].orario;
     var dayExtras = getWeekExtras(i);
     var hasExtra = dayExtras.length > 0;
     var isPillDone = !!(completions[currentWeekIdx] && completions[currentWeekIdx][i]);
+    var isToday = isTodayWeek && i===todayDayIdx;
+    var isPastDayThisWeek = isTodayWeek && i<todayDayIdx;
+    var isPastEmpty = isRest && !hasExtra && (isToday===false) && (weekIsPast || isPastDayThisWeek);
+    var isFutureEmpty = isRest && !hasExtra && !isPastEmpty && !isToday;
+
     var pill = document.createElement('div');
     var cls = 'dp-v2';
-    if(isTodayWeek && i===todayDayIdx) cls += ' dp-today';
+    if(isToday) cls += ' dp-today';
     else if(i===nextTrainIdx) cls += ' dp-next';
     if(isModified) cls += ' dp-modified';
     if(isPillDone) cls += ' dp-done';
-    if(s.tipo==='riposo' && !hasExtra) cls += ' dp-rest';
+    if(isPastEmpty) cls += ' dp-rest-past';
+    if(isFutureEmpty) cls += ' dp-rest-future';
     pill.className = cls;
-    if(s.tipo!=='riposo'){
-      pill.onclick = (function(ss,ii){ return function(){ openScheda(ss.nome); }; })(s,i);
+    if(!isRest){
+      pill.onclick = (function(ss,ii){ return function(){ openScheda(ss.nome,ii); }; })(s,i);
     } else {
       pill.onclick = (function(ii){ return function(){ openAggiungi(ii, false); }; })(i);
     }
-    var iconStr = isPillDone ? '✓' : (s.tipo!=='riposo' ? icona(s.nome) : (hasExtra?'+':''));
+    var iconStr = isPillDone ? '✓' : (!isRest ? icona(s.nome) : (hasExtra ? '+' : '+'));
+    var iconColor = isPillDone ? 'var(--teal)' : (!isRest ? colore(s.nome) : (isFutureEmpty ? 'var(--teal)' : 'var(--text3)'));
     pill.innerHTML =
-      '<div class="dpv2-d">'+s.giorno.substring(0,1)+'</div>'+
+      '<div class="dpv2-d">'+s.giorno.substring(0,1)+(isToday?' <span style=\'color:var(--purple)\'>•</span>':'')+'</div>'+
       '<div class="dpv2-n">'+s.data+'</div>'+
-      '<div class="dpv2-icon" style="color:'+(isPillDone?'var(--teal)':colore(s.nome))+'">'+iconStr+'</div>';
+      '<div class="dpv2-icon" style="color:'+iconColor+'">'+iconStr+'</div>';
     if(grid) grid.appendChild(pill);
   });
 
@@ -1493,6 +1556,9 @@ function openModal(session,day,orario,idx,mode){
   document.getElementById('modalIcon').textContent=icona(session);
   document.getElementById('modalIcon').style.color=colore(session);
   document.getElementById('flexModal').classList.add('open');
+  document.getElementById('flexModal').scrollTop = 0;
+  var modalElScroll = document.querySelector('#flexModal .modal');
+  if(modalElScroll) modalElScroll.scrollTop = 0;
   // Flex mode uses its own inline confirm/cancel inside the AI chat — hide the global confirm button
   var confirmBtn = document.getElementById('modalConfirmBtn');
   if(confirmBtn) confirmBtn.style.display = (mode==='aggiungi') ? '' : 'none';
