@@ -86,11 +86,12 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 /* Week strip redesigned */
 .week-strip-v2{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:0}
 .dp-v2{display:flex;flex-direction:column;align-items:center;padding:9px 2px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);gap:4px;cursor:pointer}
-.dp-v2.dp-today{border-color:var(--purple);border-width:2px;background:rgba(185,167,255,0.1);box-shadow:0 0 0 1px rgba(185,167,255,0.15)}
+.dp-v2.dp-today{border-color:var(--purple) !important;border-width:2px;background:rgba(185,167,255,0.16) !important;box-shadow:0 0 0 2px rgba(185,167,255,0.25)}
 .dp-v2.dp-next{border-color:rgba(185,167,255,0.18)}
 .dp-v2.dp-suggest{border-color:rgba(143,228,207,0.3);background:rgba(143,228,207,0.04);border-style:dashed}
 .dp-v2.dp-rest-past{opacity:0.35}
 .dp-v2.dp-rest-future{background:rgba(143,228,207,0.03);border-color:rgba(143,228,207,0.15)}
+.dp-v2.dp-past-day{opacity:0.45}
 .dp-v2.dp-done{border-color:rgba(143,228,207,0.3);background:rgba(143,228,207,0.04);opacity:0.6}
 .dp-v2.dp-modified{border-color:rgba(255,179,155,0.3)}
 .dpv2-d{font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;font-weight:700}
@@ -138,7 +139,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 /* Week list */
 .week-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
 .week-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);cursor:pointer;transition:border-color .15s}
-.week-row.highlight{border-color:rgba(185,167,255,0.2);background:rgba(185,167,255,0.05)}
+.week-row.highlight{border-color:var(--purple) !important;border-width:2px;background:rgba(185,167,255,0.12) !important;box-shadow:0 0 0 2px rgba(185,167,255,0.25)}
 .week-row.modified-row{border-color:rgba(255,179,155,0.3);background:rgba(255,179,155,0.04)}
 .week-row.add-row{border-style:dashed;border-color:var(--border2);background:transparent}
 .week-row.add-row:hover{border-color:var(--teal);background:rgba(143,228,207,0.04)}
@@ -166,6 +167,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .done-btn.completed{background:rgba(143,228,207,0.12);border-color:var(--teal);color:var(--teal)}
 .week-row.done-row{opacity:.55}
 .week-row.done-row .wr-name{text-decoration:line-through;color:var(--text3)}
+.week-row.past-day-row{opacity:.45}
 
 /* Add-to-day button inside week-row */
 .add-extra-btn{font-size:11px;color:var(--teal);background:none;border:1px solid rgba(143,228,207,0.25);border-radius:6px;padding:3px 8px;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif}
@@ -403,7 +405,7 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
     <div class="header-avatar"></div>
   </div>
   <div class="nav" style="display:none">
-    <button class="nav-tab active" onclick="showSection('piano')">This week</button>
+    <button class="nav-tab active" onclick="showSection('piano')">Week</button>
     <button class="nav-tab" onclick="showSection('mesi')">Months</button>
     <button class="nav-tab" onclick="showSection('coach')">Coach ✦</button>
     <button class="nav-tab" onclick="showSection('profilo')">Profile</button>
@@ -1444,7 +1446,7 @@ function renderPiano(){
   piano.forEach(function(s,i){
     if(s.tipo!=='riposo' && nextTrainIdx===-1 && (!isTodayWeek || i>todayDayIdx)) nextTrainIdx=i;
   });
-  // Is this whole week strictly in the past (only relevant if not today's week)?
+  // Is this whole week strictly in the past (i.e. we've navigated backwards from the current week)?
   var weekIsPast = !isTodayWeek && currentWeekIdx < (-WEEK_OFFSET_START);
   piano.forEach(function(s,i){
     var isRest = s.tipo==='riposo';
@@ -1454,8 +1456,10 @@ function renderPiano(){
     var isPillDone = !!(completions[currentWeekIdx] && completions[currentWeekIdx][i]);
     var isToday = isTodayWeek && i===todayDayIdx;
     var isPastDayThisWeek = isTodayWeek && i<todayDayIdx;
-    var isPastEmpty = isRest && !hasExtra && (isToday===false) && (weekIsPast || isPastDayThisWeek);
-    var isFutureEmpty = isRest && !hasExtra && !isPastEmpty && !isToday;
+    // ANY past day (rest or with a session) gets greyed out — not just empty ones
+    var isPastDayAny = !isToday && (weekIsPast || isPastDayThisWeek);
+    var isPastEmpty = isRest && !hasExtra && isPastDayAny;
+    var isFutureEmpty = isRest && !hasExtra && !isPastDayAny && !isToday;
 
     var pill = document.createElement('div');
     var cls = 'dp-v2';
@@ -1465,6 +1469,7 @@ function renderPiano(){
     if(isPillDone) cls += ' dp-done';
     if(isPastEmpty) cls += ' dp-rest-past';
     if(isFutureEmpty) cls += ' dp-rest-future';
+    if(isPastDayAny && !isPastEmpty) cls += ' dp-past-day'; // past day WITH a session — still greyed
     pill.className = cls;
     if(!isRest){
       pill.onclick = (function(ss,ii){ return function(){ openScheda(ss.nome,ii); }; })(s,i);
@@ -1583,13 +1588,15 @@ function renderPiano(){
     var isToday = isTodayWeek && i===todayDayIdx;
     var isPastDay = isTodayWeek && i<todayDayIdx; // earlier this week
     var isFutureDay = !isTodayWeek ? true : (i>todayDayIdx); // future week entirely, or later this week
+    // ANY past day (rest or with a session, done or not) — used to grey out the whole row
+    var isPastDayAnyList = !isToday && (isPastDay || (!isTodayWeek && currentWeekIdx < (-WEEK_OFFSET_START)));
     // "Past empty" = a rest day that already happened and nothing was logged — fades out
-    var isPastEmpty = isVuoto && dayExtras.length===0 && (isPastDay || (!isTodayWeek && currentWeekIdx < (-WEEK_OFFSET_START)));
+    var isPastEmpty = isVuoto && dayExtras.length===0 && isPastDayAnyList;
     var row = document.createElement('div');
 
     if(isVuoto && dayExtras.length===0){
       // Free day — tap to add. Future/today = active teal "+". Past = faded, still tappable.
-      row.className = 'week-row add-row' + (isPastEmpty ? ' past-empty' : '');
+      row.className = 'week-row add-row' + (isPastEmpty ? ' past-empty' : '') + (isToday ? ' highlight' : '');
       row.onclick=(function(ii){return function(){openAggiungi(ii,false);};})(i);
       var plusColor = isPastEmpty ? 'var(--text3)' : 'var(--teal)';
       var labelColor = isPastEmpty ? 'var(--text3)' : 'var(--text3)';
@@ -1602,7 +1609,7 @@ function renderPiano(){
           '<div class="wr-orario">'+(isPastEmpty?'Tap to log retroactively':'Tap to log a sport')+'</div></div>'+
         '</div>';
     } else {
-      row.className='week-row'+(isToday?' highlight':'')+(isModified?' modified-row':'')+(isDone?' done-row':'');
+      row.className='week-row'+(isToday?' highlight':'')+(isModified?' modified-row':'')+(isDone?' done-row':'')+(isPastDayAnyList && !isDone?' past-day-row':'');
       if(s.tipo!=='riposo'){
         row.onclick=(function(ss,ii){return function(){openScheda(ss.nome,ii);};})(s,i);
       }
@@ -1823,17 +1830,20 @@ function buildFlexSystemPrompt(){
     'FULL WEEK PLAN:\n'+weekSummary+'\n\n'+
     'TODAY\'S CHECK-IN: '+checkinSummary+'\n\n'+
     'Tatiana will tell you what she wants to change about this session (move day, change time, change sport, or delete it). '+
+    'IMPORTANT: whenever she moves this session to a different day OR changes what sport it is, you MUST also ask or confirm what TIME she wants to train that day '+
+    '(default to the same time slot 07:00-07:45 unless she says otherwise) — never finalize a move/change without knowing the time, because the time determines whether there is enough recovery before/after neighbouring sessions. '+
+    'If the new day+time creates a recovery conflict with the session before or after it (e.g. less than 24h between a heavy session and the next, or back-to-back strength on the same muscle group), say so explicitly and propose adjusting the time or suggest also shifting the neighbouring session — do not silently ignore it. '+
     'Reason like a real personal trainer — consider recovery windows (48h between strength sessions on the same muscle group, at least 24h before/after cardio), her goals (body recomposition + longevity), and her plan pattern (Weights Upper / Run / Weights Lower / Yoga).\n\n'+
     'RESPONSE FORMAT — always respond with valid JSON only, no markdown, no extra text:\n'+
     '{\n'+
     '  "message": "<your conversational reply to show her, 1-3 sentences, can include <strong> tags>",\n'+
     '  "proposal": null OR {\n'+
     '    "action": "move_day" | "change_time" | "change_sport" | "delete",\n'+
-    '    "target_day_index": <0-6, only for move_day>,\n'+
-    '    "new_time": "<HH:MM–HH:MM, only for change_time>",\n'+
+    '    "target_day_index": <0-6, only for move_day — REQUIRED together with new_time>,\n'+
+    '    "new_time": "<HH:MM–HH:MM — REQUIRED for move_day AND change_time AND change_sport, defaults to current time if she did not specify>",\n'+
     '    "new_sport": "<sport name from her list, only for change_sport>",\n'+
     '    "new_type": "<forza|cardio|yoga|riposo, only for change_sport>",\n'+
-    '    "summary": "<short human-readable description of what will change, e.g. \'Move Weights Upper to Thursday, Run shifts to Friday\'>"\n'+
+    '    "summary": "<short human-readable description of what will change, including the time, e.g. \'Move Weights Upper to Thursday 18:00, Run shifts to Friday\'>"\n'+
     '  }\n'+
     '}\n\n'+
     'Set "proposal" to null if you are still asking a clarifying question. Only set a concrete proposal once you know exactly what to do. '+
@@ -1911,13 +1921,14 @@ function confirmFlexProposal(){
     var tmp = {nome:piano[a.target_day_index].nome, tipo:piano[a.target_day_index].tipo, orario:piano[a.target_day_index].orario};
     piano[a.target_day_index].nome = piano[idx].nome;
     piano[a.target_day_index].tipo = piano[idx].tipo;
-    piano[a.target_day_index].orario = piano[idx].orario;
+    piano[a.target_day_index].orario = a.new_time || piano[idx].orario;
     piano[idx].nome = tmp.nome; piano[idx].tipo = tmp.tipo; piano[idx].orario = tmp.orario;
   } else if(a.action === 'change_time' && a.new_time){
     piano[idx].orario = a.new_time;
   } else if(a.action === 'change_sport' && a.new_sport){
     piano[idx].nome = a.new_sport;
     piano[idx].tipo = a.new_type || piano[idx].tipo;
+    if(a.new_time) piano[idx].orario = a.new_time;
   } else if(a.action === 'delete'){
     piano[idx].nome = 'Rest';
     piano[idx].tipo = 'riposo';
@@ -2377,6 +2388,64 @@ function showSection(id){
 
 // ─── Session detail sheets ────────────────────────────────────────────────────
 var SCHEDE = {
+  'Weights: Upper body (light)':
+    '<div class="fase-banner f1"><span>Recovery · Wk 1–2</span></div>'+
+    '<div class="section-title">🏋️ Weights: Upper body (light)</div>'+
+    '<div class="section-meta" style="color:var(--purple);font-size:12px;margin-bottom:8px">Chest · Shoulders · Back · Core (gentle)</div>'+
+    '<div class="section-meta"><span class="orario-badge">○ 07:00 – 07:30</span><span>30 min · Home</span></div>'+
+    '<div class="alert-box alert-info"><span>✦</span><span>First sessions back after 6 weeks off — load is intentionally light. Stop any exercise that feels off.</span></div>'+
+    '<div class="block-title">Warm-up — 6 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Exercise</th><th style="width:26%">Duration</th><th>Notes</th></tr>'+
+    '<tr><td>Walk in place + arm circles</td><td>2 min</td><td>Easy pace</td></tr>'+
+    '<tr><td>Cat-cow</td><td>8 reps</td><td>Slow, no forcing</td></tr>'+
+    '<tr><td>Bodyweight squat</td><td>8 reps</td><td>Comfortable depth</td></tr></table>'+
+    '<div class="block-title">Main block — 18 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Exercise</th><th style="width:26%">Sets × Reps</th><th>Rest</th></tr>'+
+    '<tr><td>Goblet squat (light)</td><td>2 × 10</td><td>60 s</td></tr>'+
+    '<tr><td>Dumbbell row (light)</td><td>2 × 10/side</td><td>60 s</td></tr>'+
+    '<tr><td>Wall push-up</td><td>2 × 10</td><td>45 s</td></tr>'+
+    '<tr><td>Glute bridge</td><td>2 × 12</td><td>45 s</td></tr></table>'+
+    '<div class="block-title">Cool-down — 6 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Stretch</th><th style="width:26%">Duration</th><th>Notes</th></tr>'+
+    '<tr><td>Chest opener</td><td>30 s</td><td></td></tr>'+
+    '<tr><td>Seated forward fold</td><td>40 s</td><td>Gentle</td></tr></table>'+
+    '<div class="note"><strong>Load:</strong> very light, focus on movement quality and re-learning the patterns. Will progress over the next 2 weeks.</div>',
+
+  'Weights: Lower body (light)':
+    '<div class="fase-banner f1"><span>Recovery · Wk 1–2</span></div>'+
+    '<div class="section-title">🏋️ Weights: Lower body (light)</div>'+
+    '<div class="section-meta" style="color:var(--purple);font-size:12px;margin-bottom:8px">Glutes · Quads · Hamstrings (gentle)</div>'+
+    '<div class="section-meta"><span class="orario-badge">○ 07:00 – 07:30</span><span>30 min · Home</span></div>'+
+    '<div class="alert-box alert-info"><span>✦</span><span>First sessions back — bodyweight and light load only. Build base before adding weight.</span></div>'+
+    '<div class="block-title">Warm-up — 6 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Exercise</th><th style="width:26%">Duration</th><th>Notes</th></tr>'+
+    '<tr><td>March on the spot</td><td>2 min</td><td>Easy pace</td></tr>'+
+    '<tr><td>Standing hip circles</td><td>8/direction</td><td>Small circles</td></tr></table>'+
+    '<div class="block-title">Main block — 18 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Exercise</th><th style="width:26%">Sets × Reps</th><th>Rest</th></tr>'+
+    '<tr><td>Bodyweight squat</td><td>2 × 12</td><td>60 s</td></tr>'+
+    '<tr><td>Step-up (low step)</td><td>2 × 8/leg</td><td>60 s</td></tr>'+
+    '<tr><td>Glute bridge</td><td>2 × 12</td><td>45 s</td></tr>'+
+    '<tr><td>Wall sit</td><td>2 × 20 s</td><td>45 s</td></tr></table>'+
+    '<div class="block-title">Cool-down — 6 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Stretch</th><th style="width:26%">Duration</th><th>Notes</th></tr>'+
+    '<tr><td>Quad stretch</td><td>30 s/side</td><td></td></tr>'+
+    '<tr><td>Seated forward fold</td><td>40 s</td><td>Gentle</td></tr></table>'+
+    '<div class="note"><strong>Load:</strong> bodyweight or very light. This is about reactivating the pattern, not building strength yet.</div>',
+
+  'Run (easy)':
+    '<div class="fase-banner f2"><span>Recovery · Wk 3–4</span></div>'+
+    '<div class="section-title">🏃 Run (easy)</div>'+
+    '<div class="section-meta" style="color:var(--teal);font-size:12px;margin-bottom:8px">Zone 2 cardio · Conversational pace</div>'+
+    '<div class="section-meta"><span class="orario-badge">○ 07:00 – 07:20</span><span>20 min · Outdoor</span></div>'+
+    '<div class="alert-box alert-info"><span>✦</span><span>Reintroducing cardio after the break — easy pace, you should be able to hold a conversation throughout.</span></div>'+
+    '<div class="block-title">Structure</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Block</th><th style="width:26%">Duration</th><th>Notes</th></tr>'+
+    '<tr><td>Walk warm-up</td><td>3 min</td><td>Easy pace</td></tr>'+
+    '<tr><td>Run/walk intervals</td><td>14 min</td><td>2 min run / 1 min walk</td></tr>'+
+    '<tr><td>Walk cool-down</td><td>3 min</td><td>Bring heart rate down</td></tr></table>'+
+    '<div class="note"><strong>Load:</strong> low. Goal is aerobic base, not pace. Progresses to continuous running in Phase 3.</div>',
+
   'Weights: Upper body':
     '<div class="fase-banner f1"><span>Wk 1–2 · Reactivation</span></div>'+
     '<div class="section-title">🏋️ Weights: Upper body</div>'+
@@ -2551,6 +2620,12 @@ window.addEventListener('scroll', function(){
 });
 
 // ─── Init ────────────────────────────────────────────────────────────────────
+// Set bottom nav "Week" icon to today's real date number (like a calendar app icon)
+(function setWeekNavIcon(){
+  var icon = document.getElementById('bnPianoIcon');
+  if(icon) icon.textContent = TODAY.getDate();
+})();
+
 renderPiano();
 
 // Highlight real today in month calendar
@@ -2740,7 +2815,7 @@ function appendPlanBanner(){
   if(!last) return;
   var b = document.createElement('div');
   b.className = 'plan-update-banner';
-  b.innerHTML = '<span>✦</span><span>Plan updated — check <strong>This week</strong> to see changes.</span>';
+  b.innerHTML = '<span>✦</span><span>Plan updated — check <strong>Week</strong> to see changes.</span>';
   last.appendChild(b);
 }
 
@@ -3011,8 +3086,8 @@ function renderPlanStatusFromCheckin(){
 <!-- Floating bottom nav -->
 <nav class="bottom-nav" id="bottomNav">
   <button class="bn-item active" id="bn-piano" onclick="showSection('piano')">
-    <div class="bn-icon">📅</div>
-    <div class="bn-label">This week</div>
+    <div class="bn-icon" id="bnPianoIcon" style="font-size:13px;font-weight:700;width:18px;height:18px;border-radius:4px;border:1.5px solid var(--text2);display:flex;align-items:center;justify-content:center;line-height:1">17</div>
+    <div class="bn-label">Week</div>
   </button>
   <button class="bn-item" id="bn-mesi" onclick="showSection('mesi')">
     <div class="bn-icon">🗓</div>
