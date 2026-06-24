@@ -422,20 +422,39 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
         </div>
         <div class="ps-state" id="psState">—</div>
         <div class="ps-reason" id="psReason"></div>
+        <div id="psVibe" style="font-size:12px;color:var(--text3);margin-top:-4px;margin-bottom:11px;font-style:italic"></div>
         <div class="bal-bar-h" id="balBarH"></div>
         <div class="bal-legend" id="balLegend"></div>
-        <div class="flexa-suggest" id="flexaSuggest" style="display:none">
-          <div class="fs-icon">✦</div>
-          <div>
-            <div class="fs-text" id="flexaSuggestText"></div>
-            <button class="fs-cta" id="flexaSuggestBtn" onclick="applyFlexaSuggestion()">Add to plan →</button>
-          </div>
-        </div>
+        <div id="flexaSuggestStack"></div>
       </div>
 
       <div class="s-divider"></div>
 
-      <!-- ② NEXT SESSION -->
+      <!-- ② TODAY — always answers "what do I do today" -->
+      <div id="todayWrap" style="margin-bottom:14px">
+        <div class="s-eyebrow" id="todayEyebrow">Today</div>
+        <div class="next-card-v2" id="todayCard" style="display:none">
+          <div class="nc2-top">
+            <div class="nc2-emoji" id="tdEmoji">🏋️</div>
+            <div class="nc2-type" id="tdType">Strength</div>
+          </div>
+          <div class="nc2-name" id="tdName">—</div>
+          <div class="nc2-meta">
+            <div class="nc2-time" id="tdTime">—</div>
+            <div class="nc2-sep">·</div>
+            <div class="nc2-dur">45 min</div>
+          </div>
+          <div class="nc2-actions">
+            <button class="nc2-done" id="tdDoneBtn">✓ Done</button>
+            <button class="nc2-flex" id="tdFlexBtn">✦ Flex it.</button>
+          </div>
+        </div>
+        <div id="todayRestMsg" style="display:none;font-size:13px;color:var(--text2);line-height:1.6;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px">
+          Rest day — good time to recover. <span style="color:var(--teal);cursor:pointer;font-weight:600" id="todayAddLink">+ Add an activity</span>
+        </div>
+      </div>
+
+      <!-- ③ NEXT SESSION -->
       <div id="nextSessionWrap">
         <div class="s-eyebrow" id="nextSessionEyebrow">Next session</div>
         <div class="next-card-v2" id="nextCardV2" style="display:none">
@@ -476,12 +495,7 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
         </div>
         <div class="week-strip-v2" id="weekGrid"></div>
 
-        <!-- Collapsible week detail -->
-        <div class="week-detail-toggle" onclick="toggleWeekDetail()">
-          <div class="wdt-label">Week detail</div>
-          <div class="wdt-arrow" id="wdtArrow">▾</div>
-        </div>
-        <div class="week-detail-body" id="weekDetailBody" style="display:none">
+        <div class="week-detail-body" id="weekDetailBody" style="display:block;margin-top:16px">
           <div class="week-list" id="weekList"></div>
           <button class="reset-btn" onclick="resetPiano()">↺ Restore original plan</button>
         </div>
@@ -909,36 +923,48 @@ var COLORS = {
   'Walk':'var(--border2)','Rest':'var(--border2)',
   'Dance':'var(--teal)','Swimming':'var(--teal)',
   'Padel':'var(--teal)','Hiking':'var(--teal)','Pole dance':'var(--purple)',
-  'Stand-up Paddle':'var(--teal)','Beach Volley':'var(--teal)','Beach Tennis':'var(--teal)'
+  'Stand-up Paddle':'var(--teal)','Beach Volley':'var(--teal)','Beach Tennis':'var(--teal)',
+  'Weights: Upper body (light)':'var(--purple)','Weights: Lower body (light)':'var(--purple)','Run (easy)':'var(--teal)'
 };
 var TIPI = {
   'Weights: Upper body':'forza','Weights: Lower body':'forza','Yoga':'yoga','Run':'cardio',
   'Walk':'riposo','Rest':'riposo','Dance':'cardio','Swimming':'cardio',
   'Padel':'cardio','Hiking':'cardio','Pole dance':'forza',
-  'Stand-up Paddle':'cardio','Beach Volley':'cardio','Beach Tennis':'cardio'
+  'Stand-up Paddle':'cardio','Beach Volley':'cardio','Beach Tennis':'cardio',
+  'Weights: Upper body (light)':'forza','Weights: Lower body (light)':'forza','Run (easy)':'cardio'
 };
 var CARICHI = {
   'Weights: Upper body':'high','Weights: Lower body':'high','Yoga':'low','Run':'medium',
   'Walk':'minimal','Rest':'zero','Dance':'medium','Swimming':'medium',
   'Padel':'high','Hiking':'medium','Pole dance':'medium',
-  'Stand-up Paddle':'medium','Beach Volley':'medium','Beach Tennis':'medium'
+  'Stand-up Paddle':'medium','Beach Volley':'medium','Beach Tennis':'medium',
+  'Weights: Upper body (light)':'low','Weights: Lower body (light)':'low','Run (easy)':'low'
 };
 
 // ─── Dynamic calendar generation from real date ───────────────────────────────
 var MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var DAY_NAMES   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-// Training pattern: alternates A/B each week
-// Week A: Tue=StrengthA, Thu=Yoga, Fri=StrengthB  (3 sessions)
-// Week B: Tue=StrengthA, Wed=Run,  Fri=StrengthB  (3 sessions)
-// Week A (3 sessions): Tue=Weights Upper, Thu=Run, Fri=Weights Lower
-// Week B (4 sessions): Tue=Weights Upper, Thu=Run, Fri=Weights Lower, Sun=Yoga
-var PLAN_A = {
+// ── Recovery progression plan (after 6 weeks off, restarting Jun 25 2026) ──
+// Phase 1 (wk 1-2): 2 light sessions/wk — light weights only, body reactivating
+// Phase 2 (wk 3-4): 3 sessions/wk — weights + run reintroduced, medium load
+// Phase 3 (wk 5+):  3-4 sessions/wk — full pattern, alternating A/B at full load
+
+var PHASE1 = { // 2x/week, light load
+  1:{n:'Weights: Upper body (light)',t:'forza', o:'07:00–07:30'}, // Tue
+  4:{n:'Weights: Lower body (light)',t:'forza', o:'07:00–07:30'}  // Fri
+};
+var PHASE2 = { // 3x/week, medium load
+  1:{n:'Weights: Upper body',t:'forza',  o:'07:00–07:45'}, // Tue
+  3:{n:'Run (easy)',         t:'cardio', o:'07:00–07:20'}, // Thu
+  4:{n:'Weights: Lower body',t:'forza',  o:'07:00–07:45'}  // Fri
+};
+var PLAN_A = { // Phase 3, 3 sessions
   1:{n:'Weights: Upper body',t:'forza',  o:'07:00–07:45'},  // Tue
   3:{n:'Run',                t:'cardio', o:'07:00–07:30'},  // Thu
   4:{n:'Weights: Lower body',t:'forza',  o:'07:00–07:45'}   // Fri
 };
-var PLAN_B = {
+var PLAN_B = { // Phase 3, 4 sessions
   1:{n:'Weights: Upper body',t:'forza',  o:'07:00–07:45'},  // Tue
   3:{n:'Run',                t:'cardio', o:'07:00–07:30'},  // Thu
   4:{n:'Weights: Lower body',t:'forza',  o:'07:00–07:45'},  // Fri
@@ -963,18 +989,29 @@ function getMondayOf(d){
 function buildWeeks(numWeeks, startOffset){
   var weeks=[], labels=[], phases=[];
   var currentMonday = getMondayOf(TODAY);
-  // Week number from a fixed reference (Jun 15 2026 = week 0 of plan)
-  var planStart = new Date(2026,5,15); // Jun 15 2026
+  // Plan restart reference: Monday Jun 22 2026 is week 0 (the week containing the Jun 25 restart)
+  var planStart = new Date(2026,5,22); // Jun 22 2026 (Monday)
   planStart.setHours(0,0,0,0);
 
   for(var w=startOffset; w<startOffset+numWeeks; w++){
     var monday = new Date(currentMonday);
     monday.setDate(currentMonday.getDate() + w*7);
     var weekDays=[];
-    // Absolute week number from plan start (for alternating pattern)
     var msPerWeek = 7*24*60*60*1000;
-    var weekNum = Math.round((monday - planStart)/msPerWeek);
-    var plan = (weekNum%2===0) ? PLAN_A : PLAN_B;
+    var weekNum = Math.round((monday - planStart)/msPerWeek); // 0-indexed from restart week
+    var absWk = weekNum+1; // 1-indexed week number of the recovery plan
+
+    // Choose plan based on recovery phase
+    var plan;
+    if(absWk<=0){
+      plan = {}; // weeks before restart: no plan, free/flex (handled by Tatiana manually)
+    } else if(absWk<=2){
+      plan = PHASE1;
+    } else if(absWk<=4){
+      plan = PHASE2;
+    } else {
+      plan = (weekNum%2===0) ? PLAN_A : PLAN_B;
+    }
 
     for(var d=0; d<7; d++){
       var date = new Date(monday);
@@ -997,14 +1034,13 @@ function buildWeeks(numWeeks, startOffset){
     // Label: "Jun 15 – 21" style
     var sun = weekDays[6];
     var mon = weekDays[0];
-    var label = mon.month+(mon.month!==sun.month?' '+mon.data:'')+(mon.month!==sun.month?' – ':' – ')+
-                (mon.month!==sun.month?sun.month+' ':'')+sun.data;
-    // Simplified label
-    label = mon.month+' '+mon.data+' – '+(mon.month!==sun.month?sun.month+' ':'')+sun.data;
+    var label = mon.month+' '+mon.data+' – '+(mon.month!==sun.month?sun.month+' ':'')+sun.data;
 
-    // Phase: weeks 1-2 reactivation, 3-4 progression, 5-6 volume, etc.
-    var absWk = weekNum+1;
-    var phase = absWk<=0?'Pre-start': absWk<=2?'Wk '+absWk+' · Reactivation': absWk<=4?'Wk '+absWk+' · Progression': absWk<=8?'Wk '+absWk+' · Volume':'Wk '+absWk+' · Consolidation';
+    // Phase label
+    var phase = absWk<=0 ? 'Free week' :
+                absWk<=2 ? 'Wk '+absWk+' · Reactivation (light)' :
+                absWk<=4 ? 'Wk '+absWk+' · Progression' :
+                'Wk '+absWk+' · Full plan';
 
     weeks.push(weekDays);
     labels.push(label);
@@ -1177,6 +1213,7 @@ function addExtraActivity(dayIdx, actNome, actOrario){
 
 // ─── Render week ─────────────────────────────────────────────────────────────
 var todayDayIdxGlobal = -1; // exposed for HTML onclick
+var isTodayWeekGlobal = false; // exposed for vibe phrase logic
 
 var MY_SPORTS = [
   {name:'Weightlifting / HIIT', emoji:'🏋️', cat:'strength', freq:'3×/wk', note:'Home weights + bench. Upper/lower split — see session cards for muscle focus.'},
@@ -1223,22 +1260,48 @@ function renderWeekBalance(){
     todayBadgeEl.textContent = 'Today · '+DAY3[TODAY.getDay()]+' '+MON3[TODAY.getMonth()]+' '+TODAY.getDate();
   }
 
-  // ── Determine ONE suggested sport (single source of truth) ──────────
-  var suggestSport = null;
-  if(bal.cardio===0){
-    suggestSport = MY_SPORTS.find(function(sp){ return sp.cat==='cardio' && activeNames.indexOf(sp.name)<0; });
-  } else if(bal.mobility===0){
-    suggestSport = MY_SPORTS.find(function(sp){ return sp.cat==='mobility' && activeNames.indexOf(sp.name)<0; });
-  } else if(bal.strength===0){
-    suggestSport = MY_SPORTS.find(function(sp){ return sp.cat==='strength' && activeNames.indexOf(sp.name)<0; });
-  }
+  // ── Determine ALL suggested sports — one per missing category ───────
+  var catKeyMap = {Cardio:'cardio', Mobility:'mobility', Strength:'strength'};
+  var suggestions = missing.map(function(m){
+    var cat = catKeyMap[m];
+    var sp = MY_SPORTS.find(function(s){ return s.cat===cat && activeNames.indexOf(s.name)<0; });
+    return sp ? {label:m, sport:sp} : null;
+  }).filter(Boolean);
 
   if(missing.length===0){
     if(stateEl) stateEl.innerHTML='<span class="ok">Balanced ✓</span>';
     if(reasonEl) reasonEl.innerHTML='Strength, cardio and mobility are all covered this week. Flexa will keep them in sync.';
   } else {
     if(stateEl) stateEl.innerHTML = missing.map(function(m){return '<span class="warn">'+m+'</span>';}).join(' + ')+' uncovered';
-    if(reasonEl) reasonEl.innerHTML = missing.join(' and ')+' '+(missing.length===1?'is':'are')+' missing this week. Flexa found a window below.';
+    if(reasonEl) reasonEl.innerHTML = missing.join(' and ')+' '+(missing.length===1?'is':'are')+' missing this week. Flexa found '+(suggestions.length>1?'some windows':'a window')+' below.';
+  }
+
+  // ── Dynamic vibe phrase — short, changes with day/progress/mood ─────
+  var vibeEl = document.getElementById('psVibe');
+  if(vibeEl){
+    var doneCount = 0, totalSessions = 0;
+    piano.forEach(function(s,i){
+      if(s.tipo!=='riposo'){
+        totalSessions++;
+        if(completions[currentWeekIdx] && completions[currentWeekIdx][i]) doneCount++;
+      }
+    });
+    var dayOfWeekIdx = isTodayWeekGlobal ? todayDayIdxGlobal : -1;
+    var vibe = '';
+    if(totalSessions===0){
+      vibe = 'A lighter week — listen to your body.';
+    } else if(doneCount===0 && dayOfWeekIdx<=1 && dayOfWeekIdx>=0){
+      vibe = 'Fresh week ahead 🌱';
+    } else if(doneCount===totalSessions && totalSessions>0){
+      vibe = 'Nailed it this week ✓';
+    } else if(doneCount>0 && doneCount<totalSessions){
+      vibe = doneCount+'/'+totalSessions+' done — keep the momentum.';
+    } else if(dayOfWeekIdx>=5){
+      vibe = 'Weekend energy — recover well.';
+    } else {
+      vibe = 'Steady as you go.';
+    }
+    vibeEl.textContent = vibe;
   }
 
   // ── Horizontal balance bar ─────────────────────────────────────────
@@ -1263,49 +1326,51 @@ function renderWeekBalance(){
       '<div class="bl-item"><div class="bl-dot" style="background:rgba(255,255,255,0.15)"></div>Rest<span class="bl-val">'+bal.rest+'</span></div>';
   }
 
-  // ── Flexa suggestion (single sport, single CTA) ─────────────────────
-  var suggestBox = document.getElementById('flexaSuggest');
-  var suggestText = document.getElementById('flexaSuggestText');
-  window._flexaSuggestDay = null;
-  window._flexaSuggestSport = null;
+  // ── Flexa suggestions — one card per missing category, each with its own day+CTA
+  var stackEl = document.getElementById('flexaSuggestStack');
+  window._flexaSuggestions = []; // [{day, sport, type}]
 
-  if(suggestBox && suggestSport){
+  if(stackEl){
     var lastTrainIdx = -1;
     piano.forEach(function(s,i){ if(s.tipo!=='riposo') lastTrainIdx=i; });
-    var bestDay = -1;
-    piano.forEach(function(s,di){
-      if(bestDay===-1 && s.tipo==='riposo' && (lastTrainIdx===-1 || di>lastTrainIdx) && (lastTrainIdx===-1 || (di-lastTrainIdx)>=2)){
-        bestDay = di;
+    var usedDays = {}; // avoid suggesting the same rest day twice
+    var html = '';
+
+    suggestions.forEach(function(sg, idx){
+      var bestDay = -1;
+      piano.forEach(function(s,di){
+        if(bestDay===-1 && s.tipo==='riposo' && !usedDays[di] && (lastTrainIdx===-1 || di>lastTrainIdx) && (lastTrainIdx===-1 || (di-lastTrainIdx)>=2)){
+          bestDay = di;
+        }
+      });
+      if(bestDay===-1){
+        piano.forEach(function(s,di){ if(bestDay===-1 && s.tipo==='riposo' && !usedDays[di]) bestDay=di; });
       }
-    });
-    // Fallback: if no day found with the strict rule, just take the first rest day
-    if(bestDay===-1){
-      piano.forEach(function(s,di){ if(bestDay===-1 && s.tipo==='riposo') bestDay=di; });
-    }
-    if(bestDay>=0 && suggestText){
-      window._flexaSuggestDay = bestDay;
-      window._flexaSuggestSport = suggestSport;
+      if(bestDay<0) return;
+      usedDays[bestDay] = true;
       var hGap = lastTrainIdx>=0 ? (bestDay-lastTrainIdx)*24 : null;
       var d = piano[bestDay];
-      suggestText.innerHTML = 'Flexa suggests <strong>'+suggestSport.emoji+' '+suggestSport.name+' 30 min</strong> on '+d.giorno+' '+d.data+(hGap?' — '+hGap+'h after last session. Optimal recovery window.':'.');
-      suggestBox.style.display='flex';
-    } else {
-      suggestBox.style.display='none';
-    }
-  } else if(suggestBox){
-    suggestBox.style.display='none';
+      var sugIdx = window._flexaSuggestions.length;
+      window._flexaSuggestions.push({day:bestDay, sport:sg.sport});
+      html += '<div class="flexa-suggest" style="margin-bottom:8px">'+
+        '<div class="fs-icon">✦</div>'+
+        '<div>'+
+          '<div class="fs-text">Flexa suggests <strong>'+sg.sport.emoji+' '+sg.sport.name+' 30 min</strong> on '+d.giorno+' '+d.data+(hGap?' — '+hGap+'h after last session.':'.')+'</div>'+
+          '<button class="fs-cta" onclick="applyFlexaSuggestion('+sugIdx+')">Add to plan →</button>'+
+        '</div>'+
+      '</div>';
+    });
+    stackEl.innerHTML = html;
   }
 }
 
-function applyFlexaSuggestion(){
-  var di = window._flexaSuggestDay;
-  var sp = window._flexaSuggestSport;
-  if(di==null || !sp || !piano[di]) return;
+function applyFlexaSuggestion(sugIdx){
+  var sg = (window._flexaSuggestions||[])[sugIdx];
+  if(!sg || !piano[sg.day]) return;
   var CAT_TYPE={'strength':'forza','mobility':'yoga','cardio':'cardio'};
-  // Replace the rest day directly with the suggested sport (not just an "extra")
-  piano[di].nome = sp.name;
-  piano[di].tipo = CAT_TYPE[sp.cat] || 'cardio';
-  piano[di].orario = '07:00–07:30';
+  piano[sg.day].nome = sg.sport.name;
+  piano[sg.day].tipo = CAT_TYPE[sg.sport.cat] || 'cardio';
+  piano[sg.day].orario = '07:00–07:30';
   pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano));
   saveState();
   renderPiano();
@@ -1370,6 +1435,7 @@ function renderPiano(){
 
   // Week grid (new dp-v2 pills)
   todayDayIdxGlobal = todayDayIdx; // expose for HTML onclick
+  isTodayWeekGlobal = isTodayWeek;
   var grid = document.getElementById('weekGrid');
   if(grid) grid.className = 'week-strip-v2';
   if(grid) grid.innerHTML='';
@@ -1413,6 +1479,53 @@ function renderPiano(){
       '<div class="dpv2-icon" style="color:'+iconColor+'">'+iconStr+'</div>';
     if(grid) grid.appendChild(pill);
   });
+
+  // Today block — always answers "what do I do today"
+  var todayCard = document.getElementById('todayCard');
+  var todayRestMsg = document.getElementById('todayRestMsg');
+  var todayEyebrowEl = document.getElementById('todayEyebrow');
+  if(isTodayWeek && todayDayIdx>=0){
+    var todaySession = piano[todayDayIdx];
+    var DAY_LONG2=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    if(todayEyebrowEl) todayEyebrowEl.textContent = 'Today · '+DAY_LONG2[TODAY.getDay()];
+    if(todaySession.tipo!=='riposo'){
+      var isDoneToday = !!(completions[currentWeekIdx] && completions[currentWeekIdx][todayDayIdx]);
+      var tType = todaySession.tipo==='forza'?'Strength':todaySession.tipo==='yoga'?'Mobility':'Cardio';
+      var tBg   = todaySession.tipo==='forza'?'rgba(185,167,255,0.1)':todaySession.tipo==='yoga'?'rgba(255,179,155,0.1)':'rgba(143,228,207,0.1)';
+      var tBd   = todaySession.tipo==='forza'?'rgba(185,167,255,0.25)':todaySession.tipo==='yoga'?'rgba(255,179,155,0.25)':'rgba(143,228,207,0.25)';
+      var tTxt  = todaySession.tipo==='forza'?'var(--purple)':todaySession.tipo==='yoga'?'var(--peach)':'var(--teal)';
+      var te=function(id){return document.getElementById(id);};
+      if(te('tdEmoji')) te('tdEmoji').textContent = icona(todaySession.nome);
+      if(te('tdType')){ te('tdType').textContent=tType; te('tdType').style.cssText='background:'+tBg+';border-color:'+tBd+';color:'+tTxt; }
+      if(te('tdName')) te('tdName').textContent = todaySession.nome;
+      if(te('tdTime')) te('tdTime').textContent = todaySession.orario;
+      var tdDoneBtn = te('tdDoneBtn');
+      if(tdDoneBtn){
+        tdDoneBtn.textContent = isDoneToday ? '✓ Done' : '○ Done';
+        tdDoneBtn.style.background = isDoneToday ? 'rgba(143,228,207,0.15)' : 'var(--teal)';
+        tdDoneBtn.style.color = isDoneToday ? 'var(--teal)' : '#090910';
+        tdDoneBtn.onclick = function(){ toggleDone(todayDayIdx); };
+      }
+      var tdFlexBtn = te('tdFlexBtn');
+      if(tdFlexBtn) tdFlexBtn.onclick = function(){ openModal(todaySession.nome, todaySession.giorno+' '+todaySession.data, todaySession.orario, todayDayIdx, 'flex'); };
+      if(todayCard) todayCard.style.display='block';
+      if(todayRestMsg) todayRestMsg.style.display='none';
+    } else {
+      if(todayCard) todayCard.style.display='none';
+      if(todayRestMsg){
+        todayRestMsg.style.display='block';
+        var addLink = document.getElementById('todayAddLink');
+        if(addLink) addLink.onclick = function(){ openAggiungi(todayDayIdx, false); };
+      }
+    }
+  } else {
+    if(todayEyebrowEl) todayEyebrowEl.textContent = 'Today';
+    if(todayCard) todayCard.style.display='none';
+    if(todayRestMsg){
+      todayRestMsg.style.display='block';
+      todayRestMsg.innerHTML = "Navigate to the current week to see today's session.";
+    }
+  }
 
   // Next session card v2
   var todayData = isTodayWeek ? TODAY.getDate() : 0;
@@ -1988,33 +2101,167 @@ function selectScelta(tipo){
 
 // ─── Modal: Add sporadic sport ───────────────────────────────────────────────
 function renderAggiungiContent(idx){
-  var CAT_LOAD={'strength':'high','cardio':'medium','mobility':'light'};
-  var html='<div class="modal-section-title">Which sport do you want to add?</div><div class="modal-options" id="sportOptions">';
-  MY_SPORTS.forEach(function(sp){
-    var carico=CAT_LOAD[sp.cat]||'medium';
-    html+='<div class="modal-option" onclick="selectSportSporadico(this,&quot;'+sp.name+'&quot;,&quot;'+carico+'&quot;)">'+
-      '<div style="display:flex;align-items:center;gap:8px">'+
-        '<span style="font-size:16px">'+sp.emoji+'</span>'+
-        '<div>'+
-          '<div class="modal-option-label">'+sp.name+'</div>'+
-          '<div class="modal-option-meta" style="text-transform:capitalize">'+sp.cat+' · '+sp.note+'</div>'+
-        '</div>'+
+  var d = piano[idx];
+  var html =
+    '<div class="modal-section-title">Tell Flexa Coach what you want to add</div>'+
+    '<div id="flexChatLog" style="display:flex;flex-direction:column;gap:10px;max-height:280px;overflow-y:auto;margin-bottom:12px;padding-right:2px"></div>'+
+    '<div id="flexProposalBox" style="display:none;background:rgba(143,228,207,0.06);border:1px solid rgba(143,228,207,0.22);border-radius:12px;padding:14px;margin-bottom:12px">'+
+      '<div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">✦ Flexa proposes</div>'+
+      '<div id="flexProposalText" style="font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:12px"></div>'+
+      '<div style="display:flex;gap:8px">'+
+        '<button onclick="confirmAddProposal()" style="flex:1;background:var(--teal);color:#090910;font-weight:700;border:none;border-radius:10px;padding:11px;cursor:pointer;font-family:inherit">✓ Apply</button>'+
+        '<button onclick="dismissFlexProposal()" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:10px;padding:11px 16px;cursor:pointer;font-family:inherit">Not now</button>'+
       '</div>'+
-      '<span class="modal-check">✓</span>'+
-    '</div>';
-  });
-  html+=
     '</div>'+
-    '<div class="impatto-box" id="impattoBox">'+
-      '<div class="impatto-title">⚠ Impact on your plan</div>'+
-      '<div id="impattoText" style="font-size:13px;color:var(--text2);line-height:1.6"></div>'+
-      '<div class="modal-section-title" style="margin-top:12px">What do you want to do?</div>'+
-      '<div class="scelta-grid">'+
-        '<div class="scelta-btn" id="scelta1" onclick="selectScelta(&quot;mantieni&quot;)">Keep the plan<br><span style="font-size:10px;color:var(--text3);font-weight:400">I\'ll get an alert</span></div>'+
-        '<div class="scelta-btn" id="scelta2" onclick="selectScelta(&quot;ribilancia&quot;)">Rebalance<br><span style="font-size:10px;color:var(--text3);font-weight:400">Flexa adapts</span></div>'+
-      '</div>'+
+    '<div style="display:flex;gap:8px;align-items:flex-end">'+
+      '<div contenteditable="true" id="flexChatInput" data-placeholder="e.g. I want to add a 45 min cycling session..." style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:11px 14px;font-size:13px;color:var(--text);max-height:80px;overflow-y:auto;outline:none" onkeydown="flexChatKeydown(event)"></div>'+
+      '<button onclick="sendAddChat()" id="flexChatSend" style="background:var(--purple);color:#090910;border:none;border-radius:10px;width:40px;height:40px;flex-shrink:0;cursor:pointer;font-size:16px">↑</button>'+
+    '</div>'+
+    '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">'+
+      '<button class="quick-flex-btn" onclick="quickAddPrompt(&quot;Add Padel this evening&quot;)">🎾 Padel</button>'+
+      '<button class="quick-flex-btn" onclick="quickAddPrompt(&quot;Add a Run&quot;)">🏃 Run</button>'+
+      '<button class="quick-flex-btn" onclick="quickAddPrompt(&quot;Add Yoga&quot;)">🧘 Yoga</button>'+
+      '<button class="quick-flex-btn" onclick="quickAddPrompt(&quot;I want to add something else — let me describe it&quot;)">+ Other sport</button>'+
     '</div>';
   document.getElementById('modalFlexContent').innerHTML=html;
+
+  flexChatHistory = [];
+  flexPendingAction = null;
+  requestProactiveAddRecommendation(d);
+}
+
+function quickAddPrompt(text){
+  document.getElementById('flexChatInput').innerText = text;
+  sendAddChat();
+}
+
+function buildAddSystemPrompt(){
+  var d = piano[modalIdx];
+  var weekSummary = piano.map(function(s,i){
+    return s.giorno+' '+s.data+': '+s.nome+(s.orario!=='—'?' ('+s.orario+')':'')+(i===modalIdx?'  <- SHE WANTS TO ADD SOMETHING HERE':'');
+  }).join('\n');
+  var sportsKnown = MY_SPORTS.map(function(s){ return s.emoji+' '+s.name+' ('+s.cat+')'; }).join(', ');
+  var checkinSummary = (checkinData && checkinData.date===TODAY.toDateString())
+    ? 'Readiness '+checkinData.readiness+', Sleep '+checkinData.sleep+', Battery '+checkinData.battery+', Feel '+checkinData.feel+'/10'
+    : 'No check-in today';
+
+  var lines = [];
+  lines.push('You are Flexa Coach, helping Tatiana ADD a new activity to '+d.giorno+' '+d.data+' (currently: '+d.nome+').');
+  lines.push('');
+  lines.push('FULL WEEK PLAN:');
+  lines.push(weekSummary);
+  lines.push('');
+  lines.push('SPORTS SHE ALREADY DOES: '+sportsKnown);
+  lines.push('');
+  lines.push('TODAYS CHECK-IN: '+checkinSummary);
+  lines.push('');
+  lines.push('She is NOT restricted to the list above - she can mention ANY sport (e.g. cycling, climbing, surfing) and you should accept it, assigning a sensible type (forza/cardio/yoga) and load based on what that sport typically involves.');
+  lines.push('Reason like a real personal trainer about whether adding this activity here makes sense given the rest of her week (recovery, load balance), and flag it conversationally if it creates a problem, but do not block her, just advise.');
+  lines.push('');
+  lines.push('RESPONSE FORMAT - always respond with valid JSON only, no markdown, no extra text:');
+  lines.push('{');
+  lines.push('  "message": "<your conversational reply, 1-3 sentences, can include <strong> tags>",');
+  lines.push('  "proposal": null OR {');
+  lines.push('    "sport_name": "<name to display, Title Case>",');
+  lines.push('    "type": "forza" or "cardio" or "yoga",');
+  lines.push('    "time": "<HH:MM or HH:MM to HH:MM>",');
+  lines.push('    "summary": "<short human-readable description, e.g. Add Cycling at 18:00 on Wed 25>"');
+  lines.push('  }');
+  lines.push('}');
+  lines.push('');
+  lines.push('Set proposal to null only if you are still asking a clarifying question (e.g. what time, how long). Set a concrete proposal as soon as you know the sport and roughly when.');
+  return lines.join('\n');
+}
+
+async function requestProactiveAddRecommendation(d){
+  var typingEl = appendFlexTyping();
+  try {
+    var prompt = 'Tatiana wants to add an activity to '+d.giorno+' '+d.data+'. Briefly greet her and ask what she wants to add — keep it short, 1 sentence, friendly.';
+    flexChatHistory.push({role:'user', content: prompt});
+    var res = await fetch('/.netlify/functions/coach', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-6', max_tokens:200, system: buildAddSystemPrompt(), messages: flexChatHistory})
+    });
+    var data = await res.json();
+    var raw = (data.content && data.content[0] && data.content[0].text) || '{"message":"What would you like to add to '+d.giorno+' '+d.data+'?","proposal":null}';
+    if(typingEl) typingEl.remove();
+    var parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch(e){ parsed = {message: raw, proposal: null}; }
+    flexChatHistory.push({role:'assistant', content: raw});
+    appendFlexMsg('coach', parsed.message || ('What would you like to add to '+d.giorno+' '+d.data+'?'));
+  } catch(err){
+    if(typingEl) typingEl.remove();
+    appendFlexMsg('coach', 'What would you like to add to '+d.giorno+' '+d.data+'?');
+  }
+}
+
+async function sendAddChat(){
+  if(flexChatBusy) return;
+  var inputEl = document.getElementById('flexChatInput');
+  var text = inputEl.innerText.trim();
+  if(!text) return;
+  appendFlexMsg('user', text);
+  inputEl.innerText = '';
+  flexChatHistory.push({role:'user', content:text});
+
+  flexChatBusy = true;
+  var typingEl = appendFlexTyping();
+  var sendBtn = document.getElementById('flexChatSend');
+  if(sendBtn) sendBtn.disabled = true;
+
+  try {
+    var res = await fetch('/.netlify/functions/coach', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-6', max_tokens:400, system: buildAddSystemPrompt(), messages: flexChatHistory})
+    });
+    var data = await res.json();
+    var raw = (data.content && data.content[0] && data.content[0].text) || '{"message":"Something went wrong — try again.","proposal":null}';
+    if(typingEl) typingEl.remove();
+    var parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch(e){ parsed = {message: raw, proposal: null}; }
+    flexChatHistory.push({role:'assistant', content: raw});
+    appendFlexMsg('coach', parsed.message || 'Got it.');
+
+    var pbox = document.getElementById('flexProposalBox');
+    var ptext = document.getElementById('flexProposalText');
+    if(parsed.proposal && pbox && ptext){
+      flexPendingAction = parsed.proposal;
+      ptext.textContent = parsed.proposal.summary || 'Add this activity?';
+      pbox.style.display = 'block';
+    } else if(pbox){
+      pbox.style.display = 'none';
+      flexPendingAction = null;
+    }
+  } catch(err){
+    if(typingEl) typingEl.remove();
+    appendFlexMsg('coach', 'Connection issue — please try again.');
+  }
+  flexChatBusy = false;
+  if(sendBtn) sendBtn.disabled = false;
+}
+
+function confirmAddProposal(){
+  if(!flexPendingAction || modalIdx<0) return;
+  var a = flexPendingAction;
+  var isMainEmpty = piano[modalIdx].tipo === 'riposo';
+  if(isMainEmpty){
+    // No session yet today — make this the main session for the day
+    piano[modalIdx].nome = a.sport_name;
+    piano[modalIdx].tipo = a.type || 'cardio';
+    piano[modalIdx].orario = a.time || '07:00';
+    pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano));
+  } else {
+    // Already has a session — log as an extra alongside it
+    addExtraActivity(modalIdx, a.sport_name, a.time || 'Evening');
+  }
+  saveState();
+  renderPiano();
+  appendFlexMsg('coach', '✓ Added — your plan has been updated.');
+  document.getElementById('flexProposalBox').style.display='none';
+  flexPendingAction = null;
+  setTimeout(function(){ closeModal(); }, 1100);
 }
 function selectSportSporadico(el,nome,carico){
   document.querySelectorAll('#sportOptions .modal-option').forEach(function(o){o.classList.remove('selected');});
