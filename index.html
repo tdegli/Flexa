@@ -338,6 +338,10 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
 .coach-input:empty::before,.coach-input[data-empty="true"]::before{content:attr(data-placeholder);color:var(--text3);pointer-events:none}
 
 /* ── Check-in redesign ── */
+.quick-flex-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:6px 11px;border-radius:16px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
+.quick-flex-btn:hover{border-color:var(--purple);color:var(--purple)}
+#flexChatInput:empty::before{content:attr(data-placeholder);color:var(--text3)}
+
 .ci-header{padding:4px 0 20px}
 .ci-date{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text3);margin-bottom:8px}
 .ci-status-card{border-radius:var(--radius);padding:20px;margin-bottom:20px;display:flex;align-items:center;gap:16px;border:1px solid}
@@ -1455,6 +1459,9 @@ function openModal(session,day,orario,idx,mode){
   document.getElementById('modalIcon').textContent=icona(session);
   document.getElementById('modalIcon').style.color=colore(session);
   document.getElementById('flexModal').classList.add('open');
+  // Flex mode uses its own inline confirm/cancel inside the AI chat — hide the global confirm button
+  var confirmBtn = document.getElementById('modalConfirmBtn');
+  if(confirmBtn) confirmBtn.style.display = (mode==='aggiungi') ? '' : 'none';
   if(mode==='aggiungi'){ renderAggiungiContent(idx); }
   else { renderFlexContent(session,idx); }
 }
@@ -1471,30 +1478,216 @@ function openAggiungi(idx, onOccupiedDay){
 }
 
 function renderFlexContent(session,idx){
-  var html=
-    '<div class="modal-section-title">What do you want to change?</div>'+
-    '<div class="modal-options" id="actionOptions">'+
-      '<div class="modal-option selected" onclick="selectAction(this,\'orario\')">'+
-        '<div><div class="modal-option-label">○ Change time</div><div class="modal-option-meta">Same day, different slot</div></div>'+
-        '<span class="modal-check">✓</span></div>'+
-      '<div class="modal-option" onclick="selectAction(this,\'giorno\')">'+
-        '<div><div class="modal-option-label">— Move to another day</div><div class="modal-option-meta">Flexa recalculates recovery</div></div>'+
-        '<span class="modal-check">✓</span></div>'+
-      '<div class="modal-option" onclick="selectAction(this,\'sessione\')">'+
-        '<div><div class="modal-option-label">↻ Change session type</div><div class="modal-option-meta">Same day, different sport</div></div>'+
-        '<span class="modal-check">✓</span></div>'+
-      '<div class="modal-option" onclick="openScheda(\''+session+'\');closeModal()">'+
-        '<div><div class="modal-option-label">↗ View session details</div><div class="modal-option-meta">See exercises and timing</div></div>'+
-        '<span style="color:var(--text3);font-size:16px;margin-left:8px">→</span></div>'+
+  modalIdx = idx;
+  var s = piano[idx];
+  var html =
+    '<div class="modal-section-title">Talk to Flexa Coach about this session</div>'+
+    '<div id="flexChatLog" style="display:flex;flex-direction:column;gap:10px;max-height:280px;overflow-y:auto;margin-bottom:12px;padding-right:2px"></div>'+
+    '<div id="flexProposalBox" style="display:none;background:rgba(143,228,207,0.06);border:1px solid rgba(143,228,207,0.22);border-radius:12px;padding:14px;margin-bottom:12px">'+
+      '<div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">✦ Flexa proposes</div>'+
+      '<div id="flexProposalText" style="font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:12px"></div>'+
+      '<div style="display:flex;gap:8px">'+
+        '<button onclick="confirmFlexProposal()" style="flex:1;background:var(--teal);color:#090910;font-weight:700;border:none;border-radius:10px;padding:11px;cursor:pointer;font-family:inherit">✓ Apply</button>'+
+        '<button onclick="dismissFlexProposal()" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:10px;padding:11px 16px;cursor:pointer;font-family:inherit">Not now</button>'+
+      '</div>'+
     '</div>'+
-    '<div id="subSection"></div>'+
-    '<div class="proposta-box" id="propostaBox">'+
-      '<div class="proposta-title">✦ Flexa\'s proposal — confirm to apply</div>'+
-      '<div id="propostaItems"></div>'+
+    '<div style="display:flex;gap:8px;align-items:flex-end">'+
+      '<div contenteditable="true" id="flexChatInput" data-placeholder="e.g. move it to Thursday, or swap to Yoga..." style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:11px 14px;font-size:13px;color:var(--text);max-height:80px;overflow-y:auto;outline:none" onkeydown="flexChatKeydown(event)"></div>'+
+      '<button onclick="sendFlexChat()" id="flexChatSend" style="background:var(--purple);color:#090910;border:none;border-radius:10px;width:40px;height:40px;flex-shrink:0;cursor:pointer;font-size:16px">↑</button>'+
+    '</div>'+
+    '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">'+
+      '<button class="quick-flex-btn" onclick="quickFlexPrompt(&quot;Can you move this to a different day?&quot;)">Move day</button>'+
+      '<button class="quick-flex-btn" onclick="quickFlexPrompt(&quot;Can you change the time?&quot;)">Change time</button>'+
+      '<button class="quick-flex-btn" onclick="quickFlexPrompt(&quot;Can you swap this for a different sport?&quot;)">Change sport</button>'+
+      '<button class="quick-flex-btn" onclick="quickFlexPrompt(&quot;I want to skip this session entirely.&quot;)">Delete</button>'+
     '</div>';
   document.getElementById('modalFlexContent').innerHTML=html;
-  selAction='orario';
-  showSubSection('orario',session);
+
+  // Reset flex chat state for this session
+  flexChatHistory = [];
+  flexPendingAction = null;
+
+  // Opening message from Flexa, contextual to the session
+  var openingMsg = 'I see you want to flex <strong>'+s.nome+'</strong> — '+s.giorno+' '+s.data+' at '+s.orario+'. What would you like to change? You can tell me in your own words, or use the quick options below.';
+  appendFlexMsg('coach', openingMsg);
+}
+
+function appendFlexMsg(role, html){
+  var log = document.getElementById('flexChatLog');
+  if(!log) return;
+  var b = document.createElement('div');
+  b.style.cssText = role==='user'
+    ? 'align-self:flex-end;max-width:85%;background:var(--purple);color:#090910;border-radius:14px 14px 4px 14px;padding:10px 14px;font-size:13px;line-height:1.5'
+    : 'align-self:flex-start;max-width:90%;background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:13px;line-height:1.5';
+  b.innerHTML = html;
+  log.appendChild(b);
+  log.scrollTop = log.scrollHeight;
+}
+
+function appendFlexTyping(){
+  var log = document.getElementById('flexChatLog');
+  if(!log) return null;
+  var b = document.createElement('div');
+  b.id = 'flexTyping';
+  b.style.cssText = 'align-self:flex-start;background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:10px 14px;font-size:13px;color:var(--text3)';
+  b.textContent = 'Flexa is thinking...';
+  log.appendChild(b);
+  log.scrollTop = log.scrollHeight;
+  return b;
+}
+
+function quickFlexPrompt(text){
+  document.getElementById('flexChatInput').innerText = text;
+  sendFlexChat();
+}
+
+function flexChatKeydown(e){
+  if(e.key==='Enter' && !e.shiftKey){
+    e.preventDefault();
+    sendFlexChat();
+  }
+}
+
+var flexChatHistory = [];
+var flexPendingAction = null;
+var flexChatBusy = false;
+
+function buildFlexSystemPrompt(){
+  var s = piano[modalIdx];
+  var weekSummary = piano.map(function(d,i){
+    return d.giorno+' '+d.data+': '+d.nome+(d.orario!=='—'?' ('+d.orario+')':'')+(i===modalIdx?'  ← THIS SESSION':'');
+  }).join('\n');
+
+  var checkinSummary = (checkinData && checkinData.date===TODAY.toDateString())
+    ? 'Readiness '+checkinData.readiness+', Sleep '+checkinData.sleep+', Battery '+checkinData.battery+', Feel '+checkinData.feel+'/10'
+    : 'No check-in today';
+
+  return 'You are Flexa Coach, helping Tatiana flex ONE specific session in her weekly plan.\n\n'+
+    'SESSION BEING FLEXED: '+s.nome+' on '+s.giorno+' '+s.data+' at '+s.orario+' (day index '+modalIdx+')\n\n'+
+    'FULL WEEK PLAN:\n'+weekSummary+'\n\n'+
+    'TODAY\'S CHECK-IN: '+checkinSummary+'\n\n'+
+    'Tatiana will tell you what she wants to change about this session (move day, change time, change sport, or delete it). '+
+    'Reason like a real personal trainer — consider recovery windows (48h between strength sessions on the same muscle group, at least 24h before/after cardio), her goals (body recomposition + longevity), and her plan pattern (Weights Upper / Run / Weights Lower / Yoga).\n\n'+
+    'RESPONSE FORMAT — always respond with valid JSON only, no markdown, no extra text:\n'+
+    '{\n'+
+    '  "message": "<your conversational reply to show her, 1-3 sentences, can include <strong> tags>",\n'+
+    '  "proposal": null OR {\n'+
+    '    "action": "move_day" | "change_time" | "change_sport" | "delete",\n'+
+    '    "target_day_index": <0-6, only for move_day>,\n'+
+    '    "new_time": "<HH:MM–HH:MM, only for change_time>",\n'+
+    '    "new_sport": "<sport name from her list, only for change_sport>",\n'+
+    '    "new_type": "<forza|cardio|yoga|riposo, only for change_sport>",\n'+
+    '    "summary": "<short human-readable description of what will change, e.g. \'Move Weights Upper to Thursday, Run shifts to Friday\'>"\n'+
+    '  }\n'+
+    '}\n\n'+
+    'Set "proposal" to null if you are still asking a clarifying question. Only set a concrete proposal once you know exactly what to do. '+
+    'If her request would create a bad recovery pattern (e.g. two heavy strength days back to back), say so in the message and propose the better alternative instead — do not just comply blindly.';
+}
+
+async function sendFlexChat(){
+  if(flexChatBusy) return;
+  var inputEl = document.getElementById('flexChatInput');
+  var text = inputEl.innerText.trim();
+  if(!text) return;
+
+  appendFlexMsg('user', text);
+  inputEl.innerText = '';
+  flexChatHistory.push({role:'user', content:text});
+
+  flexChatBusy = true;
+  var typingEl = appendFlexTyping();
+  var sendBtn = document.getElementById('flexChatSend');
+  if(sendBtn) sendBtn.disabled = true;
+
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': ANTHROPIC_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:600,
+        system: buildFlexSystemPrompt(),
+        messages: flexChatHistory
+      })
+    });
+    var data = await res.json();
+    var raw = (data.content && data.content[0] && data.content[0].text) || '{"message":"Something went wrong — try again.","proposal":null}';
+
+    if(typingEl) typingEl.remove();
+
+    var parsed;
+    try {
+      var clean = raw.replace(/```json|```/g,'').trim();
+      parsed = JSON.parse(clean);
+    } catch(e){
+      parsed = {message: raw, proposal: null};
+    }
+
+    flexChatHistory.push({role:'assistant', content: raw});
+    appendFlexMsg('coach', parsed.message || 'Got it.');
+
+    var pbox = document.getElementById('flexProposalBox');
+    var ptext = document.getElementById('flexProposalText');
+    if(parsed.proposal && pbox && ptext){
+      flexPendingAction = parsed.proposal;
+      ptext.textContent = parsed.proposal.summary || 'Apply this change?';
+      pbox.style.display = 'block';
+    } else if(pbox){
+      pbox.style.display = 'none';
+      flexPendingAction = null;
+    }
+
+  } catch(err){
+    if(typingEl) typingEl.remove();
+    appendFlexMsg('coach', 'Connection issue — please try again.');
+  }
+
+  flexChatBusy = false;
+  if(sendBtn) sendBtn.disabled = false;
+}
+
+function confirmFlexProposal(){
+  if(!flexPendingAction || modalIdx<0) return;
+  var a = flexPendingAction;
+  var idx = modalIdx;
+
+  if(a.action === 'move_day' && a.target_day_index != null){
+    var tmp = {nome:piano[a.target_day_index].nome, tipo:piano[a.target_day_index].tipo, orario:piano[a.target_day_index].orario};
+    piano[a.target_day_index].nome = piano[idx].nome;
+    piano[a.target_day_index].tipo = piano[idx].tipo;
+    piano[a.target_day_index].orario = piano[idx].orario;
+    piano[idx].nome = tmp.nome; piano[idx].tipo = tmp.tipo; piano[idx].orario = tmp.orario;
+  } else if(a.action === 'change_time' && a.new_time){
+    piano[idx].orario = a.new_time;
+  } else if(a.action === 'change_sport' && a.new_sport){
+    piano[idx].nome = a.new_sport;
+    piano[idx].tipo = a.new_type || piano[idx].tipo;
+  } else if(a.action === 'delete'){
+    piano[idx].nome = 'Rest';
+    piano[idx].tipo = 'riposo';
+    piano[idx].orario = '—';
+  }
+
+  pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano));
+  saveState();
+  renderPiano();
+
+  appendFlexMsg('coach', '✓ Done — your plan has been updated.');
+  document.getElementById('flexProposalBox').style.display='none';
+  flexPendingAction = null;
+
+  setTimeout(function(){ closeModal(); }, 1100);
+}
+
+function dismissFlexProposal(){
+  document.getElementById('flexProposalBox').style.display='none';
+  flexPendingAction = null;
+  appendFlexMsg('coach', 'No problem — let me know if you want something else.');
 }
 
 function selectAction(el,action){
@@ -1916,16 +2109,54 @@ var SCHEDE = {
     '<div class="note"><strong>What Flexa does:</strong> logs as high cardio (same as Padel). Suggests lighter session or rest the day after if played 90+ min.<br><br><strong>Muscles:</strong> shoulders, forearms, obliques, legs — full-body agility pattern.</div>'
 };
 
-function openScheda(nome){
+function openScheda(nome, idxOverride){
   var content = SCHEDE[nome];
   if(!content){
     content='<div class="section-title">'+icona(nome)+' '+nome+'</div><div class="note">Session details coming soon.</div>';
   }
-  document.getElementById('schedaContent').innerHTML=content;
+  // Find this session's index in current piano if not provided
+  var idx = idxOverride;
+  if(idx==null){
+    idx = -1;
+    piano.forEach(function(s,i){ if(s.nome===nome) idx=i; });
+  }
+  schedaIdx = idx;
+
+  var actionsHTML = '';
+  if(idx>=0){
+    var isDoneS = !!(completions[currentWeekIdx] && completions[currentWeekIdx][idx]);
+    actionsHTML =
+      '<div style="display:flex;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">'+
+        '<button onclick="toggleDone('+idx+');closeScheda()" style="flex:1;background:'+(isDoneS?'rgba(143,228,207,0.15)':'var(--teal)')+';color:'+(isDoneS?'var(--teal)':'#090910')+';border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px">'+(isDoneS?'✓ Done':'○ Mark Done')+'</button>'+
+        '<button onclick="openFlexFromScheda('+idx+')" style="background:rgba(185,167,255,0.1);border:1px solid rgba(185,167,255,0.25);color:var(--purple);border-radius:10px;padding:12px 16px;font-weight:600;cursor:pointer;font-family:inherit;font-size:13px">✦ Flex it.</button>'+
+        '<button onclick="deleteSessionFromScheda('+idx+')" style="background:rgba(255,100,100,0.08);border:1px solid rgba(255,100,100,0.2);color:#ff7a7a;border-radius:10px;padding:12px 14px;font-weight:600;cursor:pointer;font-family:inherit;font-size:13px">✕</button>'+
+      '</div>';
+  }
+
+  document.getElementById('schedaContent').innerHTML=content+actionsHTML;
   document.getElementById('schedaModal').classList.add('open');
   document.getElementById('schedaModal').scrollTop=0;
 }
 function closeScheda(){ document.getElementById('schedaModal').classList.remove('open'); }
+
+var schedaIdx = -1;
+
+function openFlexFromScheda(idx){
+  closeScheda();
+  var s = piano[idx];
+  openModal(s.nome, s.giorno+' '+s.data, s.orario, idx, 'flex');
+}
+
+function deleteSessionFromScheda(idx){
+  if(!confirm('Remove this session? The day becomes Rest.')) return;
+  piano[idx].nome = 'Rest';
+  piano[idx].tipo = 'riposo';
+  piano[idx].orario = '—';
+  pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano));
+  saveState();
+  renderPiano();
+  closeScheda();
+}
 
 // ─── Init ────────────────────────────────────────────────────────────────────
 renderPiano();
@@ -2259,46 +2490,26 @@ function addSportFromCatalog(i){
 
 // ─── Month calendar day click ─────────────────────────────────────────────────
 function openMonthDay(day, session){
-  if(session){
-    // Has a training session — show scheda + option to flex or add
-    document.getElementById('modalTitle').textContent = 'Session · '+day;
-    document.getElementById('modalSession').textContent = session;
-    document.getElementById('modalDay').textContent = 'Day '+day;
-    document.getElementById('modalOrario').textContent = '07:00';
-    document.getElementById('modalIcon').textContent = icona(session);
-    document.getElementById('modalIcon').style.color = colore(session);
-    document.getElementById('modalFlexContent').innerHTML =
-      '<div class="modal-section-title">What do you want to do?</div>'+
-      '<div class="modal-options">'+
-        '<div class="modal-option" onclick="openScheda(&quot;'+session+'&quot;);closeModal()">'+
-          '<div><div class="modal-option-label">↗ View session details</div><div class="modal-option-meta">Exercises and timing</div></div>'+
-          '<span style="color:var(--text3);font-size:16px;margin-left:8px">→</span></div>'+
-        '<div class="modal-option" onclick="closeModal()">'+
-          '<div><div class="modal-option-label">✦ Flex it.</div><div class="modal-option-meta">Move or change this session</div></div>'+
-          '<span class="modal-check">✓</span></div>'+
-        '<div class="modal-option" onclick="closeModal()">'+
-          '<div><div class="modal-option-label">+ Add extra activity</div><div class="modal-option-meta">Log something alongside this session</div></div>'+
-          '<span class="modal-check">✓</span></div>'+
-      '</div>';
-    document.getElementById('flexModal').classList.add('open');
+  // Month view always reflects the CURRENT week (idx in piano array = day-of-week)
+  // Find the day index in the current piano that matches this calendar day number
+  var idx = -1;
+  piano.forEach(function(s,i){ if(s.data===day) idx=i; });
+
+  if(idx === -1){
+    // Day belongs to a different week/month than what's loaded — open a lightweight standalone view
+    if(session){
+      openModal(session, 'Day '+day, '07:00', -1, 'flex');
+    } else {
+      openModal('+ Add activity', 'Day '+day, '—', -1, 'aggiungi');
+    }
+    return;
+  }
+
+  // Day exists in current week's piano — route through the real flex/add system
+  if(session || piano[idx].tipo!=='riposo'){
+    openModal(piano[idx].nome, piano[idx].giorno+' '+piano[idx].data, piano[idx].orario, idx, 'flex');
   } else {
-    // Rest/empty day — tap to add
-    document.getElementById('modalTitle').textContent = '+ Add activity';
-    document.getElementById('modalSession').textContent = 'Day '+day;
-    document.getElementById('modalDay').textContent = 'Rest day';
-    document.getElementById('modalOrario').textContent = '—';
-    document.getElementById('modalIcon').textContent = '➕';
-    document.getElementById('modalIcon').style.color = 'var(--teal)';
-    document.getElementById('modalFlexContent').innerHTML =
-      '<div class="modal-section-title">Add a sport to this day</div>'+
-      '<div class="modal-options" id="monthAddOptions">'+
-        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">🎾 Padel</div><div class="modal-option-meta">High impact · Flexa adjusts recovery</div></div><span class="modal-check">✓</span></div>'+
-        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">🏃 Run</div><div class="modal-option-meta">Medium load · progressive cardio</div></div><span class="modal-check">✓</span></div>'+
-        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">🧘 Yoga</div><div class="modal-option-meta">Low load · recovery and mobility</div></div><span class="modal-check">✓</span></div>'+
-        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">💃 Dance</div><div class="modal-option-meta">Light cardio · counts in balance</div></div><span class="modal-check">✓</span></div>'+
-        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">🏋️ Weightlifting</div><div class="modal-option-meta">Strength · Flexa rebalances load</div></div><span class="modal-check">✓</span></div>'+
-      '</div>';
-    document.getElementById('flexModal').classList.add('open');
+    openAggiungi(idx, false);
   }
 }
 
