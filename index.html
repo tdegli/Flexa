@@ -323,6 +323,9 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
 .coach-intro-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:15px;font-weight:600;margin-bottom:2px}
 .coach-intro-sub{font-size:12px;color:var(--text3);line-height:1.5}
 .coach-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding-bottom:8px;scrollbar-width:none}
+.coach-proposal-card{background:rgba(143,228,207,0.06);border:1px solid rgba(143,228,207,0.22);border-radius:12px;padding:14px;align-self:stretch}
+.cp-apply{flex:1;background:var(--teal);color:#090910;font-weight:700;border:none;border-radius:10px;padding:11px;cursor:pointer;font-family:inherit;font-size:13px}
+.cp-dismiss{background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:10px;padding:11px 16px;cursor:pointer;font-family:inherit;font-size:13px}
 .coach-messages::-webkit-scrollbar{display:none}
 .msg{max-width:86%;display:flex;flex-direction:column;gap:3px}
 .msg.user{align-self:flex-end;align-items:flex-end}
@@ -2764,7 +2767,30 @@ Sporadic sports (paddle, beach volley, padel, hiking) added on free days — Fle
 - Suggest when to add sporadic sports based on recovery.
 - Interpret daily readiness data and adapt the day's session.
 - Remind her of injury precautions without being annoying about it.
-- Track progress toward her goal over time based on what she tells you.`;
+- Track progress toward her goal over time based on what she tells you.
+
+## IMPORTANT — How to actually change her plan
+You CAN modify her real plan. When she asks you to move, change, add, or remove a session (or when your advice implies a concrete change she agrees to), you must emit a structured proposal so the app can apply it. She will always see an "Apply" button and confirm before anything changes.
+
+To do this, end your message with a special block on its own line, in EXACTLY this format:
+
+[[FLEXA_PROPOSAL]]{"action":"...","day_index":N,...}[[/FLEXA_PROPOSAL]]
+
+The day_index is 0=Monday, 1=Tuesday, 2=Wednesday, 3=Thursday, 4=Friday, 5=Saturday, 6=Sunday.
+
+Valid actions:
+- Move a session:     {"action":"move_day","day_index":<from>,"target_day_index":<to>,"new_time":"HH:MM–HH:MM","summary":"Move Weights Upper from Tue to Thu 07:00–07:45"}
+- Change time:        {"action":"change_time","day_index":N,"new_time":"HH:MM–HH:MM","summary":"Move Sunday run to 11:00–11:30"}
+- Change/swap sport:  {"action":"change_sport","day_index":N,"new_sport":"Yoga","new_type":"yoga","new_time":"HH:MM–HH:MM","summary":"Swap Friday weights for Yoga"}
+- Add a session:      {"action":"add","day_index":N,"new_sport":"Padel","new_type":"cardio","new_time":"HH:MM–HH:MM","summary":"Add Padel on Saturday evening"}
+- Delete a session:   {"action":"delete","day_index":N,"summary":"Remove Thursday run"}
+
+Rules for proposals:
+- ALWAYS include a time. If she gives only a start time, calculate the end based on the session's natural duration (Weights=45min, Run=30min, Yoga=45min, Padel/Beach sports=60-90min, Swimming/Hiking=60min). If she keeps an existing session's duration, preserve it.
+- Only emit ONE proposal block per message.
+- Put your normal conversational reply FIRST, then the proposal block at the very end. The proposal block text will be hidden from her — she only sees your words plus an Apply button.
+- If you're only advising or answering a question (no concrete change yet), do NOT emit a block.
+- If a change would break recovery (two heavy days back-to-back, <24h after a hard session), say so in your reply and propose the safer alternative instead.`;
 
 function getPlanContext(){
   var days = piano.map(function(s){
@@ -2808,17 +2834,26 @@ async function sendCoachMessage(){
     var data = await res.json();
     var reply = (data.content && data.content[0] && data.content[0].text) || 'Something went wrong — try again.';
 
-    // Add to history
+    // Add to history (full reply, including any proposal block, so context is preserved)
     coachHistory.push({role:'assistant', content: reply});
+
+    // Extract a structured proposal block if present
+    var proposal = null;
+    var displayText = reply;
+    var match = reply.match(/\[\[FLEXA_PROPOSAL\]\]([\s\S]*?)\[\[\/FLEXA_PROPOSAL\]\]/);
+    if(match){
+      try { proposal = JSON.parse(match[1].trim()); } catch(e){ proposal = null; }
+      // Hide the raw block from what she sees
+      displayText = reply.replace(/\[\[FLEXA_PROPOSAL\]\][\s\S]*?\[\[\/FLEXA_PROPOSAL\]\]/, '').trim();
+    }
 
     // Remove typing, show reply
     removeTyping(typingId);
-    appendMsg('coach', reply);
+    appendMsg('coach', displayText);
 
-    // Check if reply contains a plan update (coach says it's updating)
-    if(/i('ve| have) (updated|moved|shifted|swapped|changed|added|removed|converted)/i.test(reply) ||
-       /your (plan|week|tuesday|wednesday|thursday|friday|saturday|sunday|monday)/i.test(reply)){
-      appendPlanBanner();
+    // If there's a proposal, show an Apply card right under the message
+    if(proposal && proposal.action){
+      appendCoachProposal(proposal);
     }
 
   } catch(e){
@@ -2828,6 +2863,89 @@ async function sendCoachMessage(){
 
   coachIsTyping = false;
   document.getElementById('coachSend').disabled = false;
+}
+
+// Holds the proposal currently awaiting Apply in the Coach tab
+var _coachPendingProposal = null;
+
+function appendCoachProposal(proposal){
+  _coachPendingProposal = proposal;
+  var wrap = document.getElementById('coachMessages');
+  var card = document.createElement('div');
+  card.className = 'coach-proposal-card';
+  card.innerHTML =
+    '<div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">✦ Flexa proposes</div>'+
+    '<div style="font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:12px">'+(proposal.summary||'Update your plan?')+'</div>'+
+    '<div style="display:flex;gap:8px">'+
+      '<button class="cp-apply" onclick="applyCoachProposal(this)">✓ Apply</button>'+
+      '<button class="cp-dismiss" onclick="dismissCoachProposal(this)">Not now</button>'+
+    '</div>';
+  wrap.appendChild(card);
+  wrap.scrollTop = wrap.scrollHeight;
+}
+
+function dismissCoachProposal(btn){
+  _coachPendingProposal = null;
+  var card = btn.closest('.coach-proposal-card');
+  if(card){ card.style.opacity='0.5'; card.innerHTML = '<div style="font-size:12px;color:var(--text3)">Dismissed — no changes made.</div>'; }
+}
+
+function applyCoachProposal(btn){
+  var a = _coachPendingProposal;
+  if(!a){ return; }
+
+  // Make sure we're applying to THIS week's plan (Coach always targets the current week)
+  if(currentWeekIdx !== (-WEEK_OFFSET_START)){
+    // Jump back to the current week so the change lands on the week the coach is talking about
+    currentWeekIdx = -WEEK_OFFSET_START;
+    piano = pianos[currentWeekIdx]
+      ? JSON.parse(JSON.stringify(pianos[currentWeekIdx]))
+      : JSON.parse(JSON.stringify(WEEKS[currentWeekIdx]));
+    pianoOrig = JSON.parse(JSON.stringify(WEEKS[currentWeekIdx]));
+  }
+
+  var di = (a.day_index != null) ? a.day_index : -1;
+  var CAT_TYPE = {'strength':'forza','mobility':'yoga','cardio':'cardio'};
+
+  if(a.action==='move_day' && di>=0 && a.target_day_index!=null){
+    var movedOrario = normalizeOrario(a.new_time, piano[di].orario);
+    var tmp = {nome:piano[a.target_day_index].nome, tipo:piano[a.target_day_index].tipo, orario:piano[a.target_day_index].orario};
+    piano[a.target_day_index].nome = piano[di].nome;
+    piano[a.target_day_index].tipo = piano[di].tipo;
+    piano[a.target_day_index].orario = movedOrario;
+    piano[di].nome = tmp.nome; piano[di].tipo = tmp.tipo; piano[di].orario = tmp.orario;
+  } else if(a.action==='change_time' && di>=0 && a.new_time){
+    piano[di].orario = normalizeOrario(a.new_time, piano[di].orario);
+  } else if(a.action==='change_sport' && di>=0 && a.new_sport){
+    piano[di].nome = a.new_sport;
+    piano[di].tipo = a.new_type || piano[di].tipo;
+    if(a.new_time) piano[di].orario = normalizeOrario(a.new_time, piano[di].orario);
+  } else if(a.action==='add' && di>=0 && a.new_sport){
+    var tipo = a.new_type || 'cardio';
+    var orario = a.new_time ? normalizeOrario(a.new_time, '07:00–07:45') : '07:00–07:45';
+    if(piano[di].tipo==='riposo'){
+      piano[di].nome = a.new_sport;
+      piano[di].tipo = tipo;
+      piano[di].orario = orario;
+    } else {
+      addExtraActivity(di, a.new_sport, orario);
+    }
+  } else if(a.action==='delete' && di>=0){
+    piano[di].nome = 'Rest';
+    piano[di].tipo = 'riposo';
+    piano[di].orario = '—';
+  }
+
+  pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano));
+  saveState();
+  renderPiano();
+
+  _coachPendingProposal = null;
+  var card = btn.closest('.coach-proposal-card');
+  if(card){
+    card.style.borderColor = 'rgba(143,228,207,0.4)';
+    card.innerHTML = '<div style="font-size:13px;color:var(--teal);font-weight:600">✓ Applied — your Week plan is updated.</div>';
+  }
 }
 
 function appendMsg(role, text){
