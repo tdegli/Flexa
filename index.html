@@ -35,10 +35,10 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 /* ── NEW: Plan status hero ── */
 .plan-status-hero{padding:4px 0 24px}
 .ps-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text3);margin-bottom:8px}
-.ps-state{font-size:34px;font-weight:700;letter-spacing:-1.2px;line-height:1.05;margin-bottom:10px;font-family:'Plus Jakarta Sans',sans-serif}
+.ps-state{font-size:27px;font-weight:700;letter-spacing:-1px;line-height:1.05;margin-bottom:7px;font-family:'Plus Jakarta Sans',sans-serif}
 .ps-state .ok{color:var(--teal)}
 .ps-state .warn{color:var(--peach)}
-.ps-reason{font-size:14px;color:var(--text2);line-height:1.6;margin-bottom:16px}
+.ps-reason{font-size:13px;color:var(--text2);line-height:1.5;margin-bottom:11px}
 .ps-reason strong{color:var(--text);font-weight:600}
 
 /* Sport chips */
@@ -51,24 +51,24 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 /* Balance bar (horizontal) */
 .bal-bar-h{display:flex;height:5px;border-radius:4px;overflow:hidden;gap:2px;margin-bottom:10px}
 .bal-seg{height:100%;border-radius:2px;transition:width .4s}
-.bal-legend{display:flex;gap:14px;margin-bottom:16px}
+.bal-legend{display:flex;gap:14px;margin-bottom:11px}
 .bl-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--text3);font-weight:500}
 .bl-dot{width:5px;height:5px;border-radius:50%}
 .bl-val{color:var(--text2);font-weight:600;margin-left:1px}
 
 /* Flexa suggestion box */
-.flexa-suggest{background:rgba(143,228,207,0.05);border:1px solid rgba(143,228,207,0.18);border-radius:var(--radius-sm);padding:14px 16px;display:flex;align-items:flex-start;gap:10px;margin-bottom:24px}
+.flexa-suggest{background:rgba(143,228,207,0.05);border:1px solid rgba(143,228,207,0.18);border-radius:var(--radius-sm);padding:11px 14px;display:flex;align-items:flex-start;gap:10px;margin-bottom:14px}
 .fs-icon{font-size:15px;flex-shrink:0;margin-top:2px}
 .fs-text{font-size:13px;color:var(--text2);line-height:1.55}
 .fs-text strong{color:var(--teal);font-weight:600}
 .fs-cta{display:inline-flex;align-items:center;gap:4px;margin-top:10px;font-size:12px;font-weight:700;color:var(--teal);background:rgba(143,228,207,0.1);border:1px solid rgba(143,228,207,0.25);border-radius:8px;padding:6px 12px;cursor:pointer;border:none}
 
 /* Section divider */
-.s-divider{height:1px;background:var(--border);margin:0 0 24px}
-.s-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text3);margin-bottom:12px}
+.s-divider{height:1px;background:var(--border);margin:0 0 14px}
+.s-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text3);margin-bottom:8px}
 
 /* Next session card — redesigned */
-.next-card-v2{background:var(--bg3);border:1px solid rgba(185,167,255,0.15);border-radius:var(--radius);padding:18px 20px;margin-bottom:24px}
+.next-card-v2{background:var(--bg3);border:1px solid rgba(185,167,255,0.15);border-radius:var(--radius);padding:14px 18px;margin-bottom:14px}
 .nc2-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:4px}
 .nc2-emoji{font-size:28px;line-height:1}
 .nc2-type{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--purple);background:rgba(185,167,255,0.1);border:1px solid rgba(185,167,255,0.2);border-radius:20px;padding:4px 10px}
@@ -86,11 +86,13 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 /* Week strip redesigned */
 .week-strip-v2{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:0}
 .dp-v2{display:flex;flex-direction:column;align-items:center;padding:9px 2px;border-radius:10px;background:var(--bg3);border:1px solid var(--border);gap:4px;cursor:pointer}
-.dp-v2.dp-today{border-color:rgba(185,167,255,0.3);background:rgba(185,167,255,0.04)}
+.dp-v2.dp-today{border-color:var(--purple) !important;border-width:2px;background:rgba(185,167,255,0.16) !important;box-shadow:0 0 0 2px rgba(185,167,255,0.25)}
 .dp-v2.dp-next{border-color:rgba(185,167,255,0.18)}
 .dp-v2.dp-suggest{border-color:rgba(143,228,207,0.3);background:rgba(143,228,207,0.04);border-style:dashed}
-.dp-v2.dp-rest{opacity:0.3}
-.dp-v2.dp-done{border-color:rgba(143,228,207,0.3);background:rgba(143,228,207,0.04)}
+.dp-v2.dp-rest-past{opacity:0.35}
+.dp-v2.dp-rest-future{background:rgba(143,228,207,0.03);border-color:rgba(143,228,207,0.15)}
+.dp-v2.dp-past-day{opacity:0.45}
+.dp-v2.dp-done{border-color:rgba(143,228,207,0.3);background:rgba(143,228,207,0.04);opacity:0.6}
 .dp-v2.dp-modified{border-color:rgba(255,179,155,0.3)}
 .dpv2-d{font-size:8px;color:var(--text3);text-transform:uppercase;letter-spacing:0.06em;font-weight:700}
 .dpv2-n{font-size:12px;font-weight:700}
@@ -137,7 +139,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 /* Week list */
 .week-list{display:flex;flex-direction:column;gap:8px;margin-bottom:20px}
 .week-row{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--bg3);cursor:pointer;transition:border-color .15s}
-.week-row.highlight{border-color:rgba(185,167,255,0.2);background:rgba(185,167,255,0.05)}
+.week-row.highlight{border-color:var(--purple) !important;border-width:2px;background:rgba(185,167,255,0.12) !important;box-shadow:0 0 0 2px rgba(185,167,255,0.25)}
 .week-row.modified-row{border-color:rgba(255,179,155,0.3);background:rgba(255,179,155,0.04)}
 .week-row.add-row{border-style:dashed;border-color:var(--border2);background:transparent}
 .week-row.add-row:hover{border-color:var(--teal);background:rgba(143,228,207,0.04)}
@@ -165,6 +167,7 @@ body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-
 .done-btn.completed{background:rgba(143,228,207,0.12);border-color:var(--teal);color:var(--teal)}
 .week-row.done-row{opacity:.55}
 .week-row.done-row .wr-name{text-decoration:line-through;color:var(--text3)}
+.week-row.past-day-row{opacity:.45}
 
 /* Add-to-day button inside week-row */
 .add-extra-btn{font-size:11px;color:var(--teal);background:none;border:1px solid rgba(143,228,207,0.25);border-radius:6px;padding:3px 8px;cursor:pointer;white-space:nowrap;font-family:'Inter',sans-serif}
@@ -223,6 +226,11 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
 
 /* Month view */
 .month-section{margin-bottom:28px}
+.month-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;gap:12px}
+.month-nav-arrow{width:38px;height:38px;flex-shrink:0;border-radius:50%;border:1px solid var(--border2);background:var(--bg3);color:var(--text);font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;transition:all 0.15s}
+.month-nav-arrow:hover{border-color:var(--purple);color:var(--purple)}
+.month-nav-arrow:disabled{opacity:0.25;cursor:default}
+.month-nav-arrow:disabled:hover{border-color:var(--border2);color:var(--text)}
 .month-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
 .month-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:600}
 .month-focus{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em}
@@ -338,6 +346,10 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
 .coach-input:empty::before,.coach-input[data-empty="true"]::before{content:attr(data-placeholder);color:var(--text3);pointer-events:none}
 
 /* ── Check-in redesign ── */
+.quick-flex-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);font-size:11px;padding:6px 11px;border-radius:16px;cursor:pointer;font-family:'Inter',sans-serif;white-space:nowrap}
+.quick-flex-btn:hover{border-color:var(--purple);color:var(--purple)}
+#flexChatInput:empty::before{content:attr(data-placeholder);color:var(--text3)}
+
 .ci-header{padding:4px 0 20px}
 .ci-date{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:var(--text3);margin-bottom:8px}
 .ci-status-card{border-radius:var(--radius);padding:20px;margin-bottom:20px;display:flex;align-items:center;gap:16px;border:1px solid}
@@ -378,7 +390,7 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
 /* Adjust content padding so it doesn't hide behind nav */
 .app{padding-bottom:100px}
 /* Header redesign */
-.header{display:flex;align-items:center;justify-content:space-between;padding:52px 22px 16px}
+.header{display:flex;align-items:center;justify-content:space-between;padding:36px 22px 10px}
 .header-left{}
 .header-sub{font-size:11px;color:var(--text3);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:2px}
 .logo{font-family:'Plus Jakarta Sans',sans-serif;font-size:24px;font-weight:700;letter-spacing:-0.5px}
@@ -388,6 +400,8 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
 </head>
 <body>
 <div class="app">
+  <button id="backToTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})" style="position:fixed;top:16px;right:16px;z-index:60;background:rgba(20,20,30,0.92);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:50%;width:38px;height:38px;color:var(--text2);font-size:16px;cursor:pointer;display:none;align-items:center;justify-content:center">↑</button>
+
   <div class="header">
     <div class="header-left">
       <div class="header-sub">Personal plan · Tatiana</div>
@@ -396,7 +410,7 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
     <div class="header-avatar"></div>
   </div>
   <div class="nav" style="display:none">
-    <button class="nav-tab active" onclick="showSection('piano')">This week</button>
+    <button class="nav-tab active" onclick="showSection('piano')">Week</button>
     <button class="nav-tab" onclick="showSection('mesi')">Months</button>
     <button class="nav-tab" onclick="showSection('coach')">Coach ✦</button>
     <button class="nav-tab" onclick="showSection('profilo')">Profile</button>
@@ -409,24 +423,45 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
 
       <!-- ① PLAN STATUS HERO — primary information -->
       <div class="plan-status-hero" id="planStatusHero" style="margin-top:4px">
-        <div class="ps-eyebrow" id="psEyebrow">Your plan · —</div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px">
+          <div class="ps-eyebrow" id="psEyebrow" style="margin-bottom:0">Your plan · —</div>
+          <div id="todayBadge" style="font-size:11px;font-weight:600;color:var(--teal);background:rgba(143,228,207,0.08);border:1px solid rgba(143,228,207,0.2);border-radius:20px;padding:3px 10px;white-space:nowrap">Today —</div>
+        </div>
         <div class="ps-state" id="psState">—</div>
         <div class="ps-reason" id="psReason"></div>
-        <div class="sport-chips" id="sportChips"></div>
+        <div id="psVibe" style="font-size:12px;color:var(--text3);margin-top:-4px;margin-bottom:11px;font-style:italic"></div>
         <div class="bal-bar-h" id="balBarH"></div>
         <div class="bal-legend" id="balLegend"></div>
-        <div class="flexa-suggest" id="flexaSuggest" style="display:none">
-          <div class="fs-icon">✦</div>
-          <div>
-            <div class="fs-text" id="flexaSuggestText"></div>
-            <button class="fs-cta" id="flexaSuggestBtn" onclick="applyFlexaSuggestion()">Add to plan →</button>
-          </div>
-        </div>
+        <div id="flexaSuggestStack"></div>
       </div>
 
       <div class="s-divider"></div>
 
-      <!-- ② NEXT SESSION -->
+      <!-- ② TODAY — always answers "what do I do today" -->
+      <div id="todayWrap" style="margin-bottom:14px">
+        <div class="s-eyebrow" id="todayEyebrow">Today</div>
+        <div class="next-card-v2" id="todayCard" style="display:none">
+          <div class="nc2-top">
+            <div class="nc2-emoji" id="tdEmoji">🏋️</div>
+            <div class="nc2-type" id="tdType">Strength</div>
+          </div>
+          <div class="nc2-name" id="tdName">—</div>
+          <div class="nc2-meta">
+            <div class="nc2-time" id="tdTime">—</div>
+            <div class="nc2-sep">·</div>
+            <div class="nc2-dur" id="tdDur">45 min</div>
+          </div>
+          <div class="nc2-actions">
+            <button class="nc2-done" id="tdDoneBtn">✓ Done</button>
+            <button class="nc2-flex" id="tdFlexBtn">✦ Flex it.</button>
+          </div>
+        </div>
+        <div id="todayRestMsg" style="display:none;font-size:13px;color:var(--text2);line-height:1.6;background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px">
+          Rest day — good time to recover. <span style="color:var(--teal);cursor:pointer;font-weight:600" id="todayAddLink">+ Add an activity</span>
+        </div>
+      </div>
+
+      <!-- ③ NEXT SESSION -->
       <div id="nextSessionWrap">
         <div class="s-eyebrow" id="nextSessionEyebrow">Next session</div>
         <div class="next-card-v2" id="nextCardV2" style="display:none">
@@ -467,12 +502,7 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
         </div>
         <div class="week-strip-v2" id="weekGrid"></div>
 
-        <!-- Collapsible week detail -->
-        <div class="week-detail-toggle" onclick="toggleWeekDetail()">
-          <div class="wdt-label">Week detail</div>
-          <div class="wdt-arrow" id="wdtArrow">▾</div>
-        </div>
-        <div class="week-detail-body" id="weekDetailBody" style="display:none">
+        <div class="week-detail-body" id="weekDetailBody" style="display:block;margin-top:16px">
           <div class="week-list" id="weekList"></div>
           <button class="reset-btn" onclick="resetPiano()">↺ Restore original plan</button>
         </div>
@@ -492,181 +522,37 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
 
     <!-- 3 MONTHS -->
     <div id="mesi" class="section">
-      <div style="margin-top:4px;margin-bottom:20px">
-        <div class="section-title">June – August</div>
-        <div style="font-size:13px;color:var(--text3);margin-bottom:16px">Goal: body recomposition + longevity</div>
+      <div style="margin-top:4px;margin-bottom:18px">
+        <div class="section-title">Your plan</div>
+        <div style="font-size:13px;color:var(--text3);margin-bottom:14px">Goal: body recomposition + longevity</div>
         <div class="legend">
           <span class="legend-item"><span class="l-dot" style="background:var(--purple)"></span>Strength</span>
           <span class="legend-item"><span class="l-dot" style="background:var(--peach)"></span>Mobility</span>
           <span class="legend-item"><span class="l-dot" style="background:var(--teal)"></span>Cardio</span>
         </div>
       </div>
-      <!-- JUNE -->
-      <div class="month-section">
-        <div class="month-header">
-          <div><div class="month-name">June</div><div class="month-focus">Reactivation → Progression</div></div>
-          <span class="fase-pill fp-riattivazione">Reactivation</span>
+
+      <!-- Month navigator (single month, arrow/swipe navigation) -->
+      <div class="month-nav">
+        <button class="month-nav-arrow" id="monthPrevBtn" onclick="changeMonth(-1)" aria-label="Previous month">‹</button>
+        <div style="text-align:center">
+          <div class="month-name" id="monthNavName">—</div>
+          <div class="month-focus" id="monthNavFocus">—</div>
         </div>
+        <button class="month-nav-arrow" id="monthNextBtn" onclick="changeMonth(1)" aria-label="Next month">›</button>
+      </div>
+
+      <div id="monthBody" style="touch-action:pan-y">
         <div class="cal-grid">
           <div class="cal-header">M</div><div class="cal-header">T</div><div class="cal-header">W</div><div class="cal-header">T</div><div class="cal-header">F</div><div class="cal-header">S</div><div class="cal-header">S</div>
-          <div class="cal-day rest-day past">1</div>
-          <div class="cal-day forza past" onclick="openMonthDay(2, 'Weights: Upper body')">2<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day past">3</div>
-          <div class="cal-day yoga past" onclick="openMonthDay(4, 'Yoga')">4<div class="cal-icon">🧘</div></div>
-          <div class="cal-day forza past" onclick="openMonthDay(5, 'Weights: Lower body')">5<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day past">6</div>
-          <div class="cal-day rest-day past">7</div>
-          <div class="cal-day rest-day past">8</div>
-          <div class="cal-day forza past" onclick="openMonthDay(9, 'Weights: Upper body')">9<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day cardio past" onclick="openMonthDay(10, 'Run')">10<div class="cal-icon">🏃</div></div>
-          <div class="cal-day rest-day past">11</div>
-          <div class="cal-day forza past" onclick="openMonthDay(12, 'Weights: Lower body')">12<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day past">13</div>
-          <div class="cal-day rest-day past">14</div>
-          <div class="cal-day rest-day today-mark" style="font-weight:600;color:var(--purple)" onclick="openMonthDay(15, null)">15</div>
-          <div class="cal-day forza" onclick="openMonthDay(16, 'Weights: Upper body')">16<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(17, null)">17</div>
-          <div class="cal-day yoga" onclick="openMonthDay(18, 'Yoga')">18<div class="cal-icon">🧘</div></div>
-          <div class="cal-day forza" onclick="openMonthDay(19, 'Weights: Lower body')">19<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(20, null)">20</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(21, null)">21</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(22, null)">22</div>
-          <div class="cal-day forza" onclick="openMonthDay(23, 'Weights: Upper body')">23<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day cardio" onclick="openMonthDay(24, 'Run')">24<div class="cal-icon">🏃</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(25, null)">25</div>
-          <div class="cal-day forza" onclick="openMonthDay(26, 'Weights: Lower body')">26<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(27, null)">27</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(28, null)">28</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(29, null)">29</div>
-          <div class="cal-day forza" onclick="openMonthDay(30, 'Weights: Upper body')">30<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day empty"></div>
-          <div class="cal-day empty"></div>
-          <div class="cal-day empty"></div>
-          <div class="cal-day empty"></div>
-          <div class="cal-day empty"></div>
+          <div id="monthCalCells" style="display:contents"></div>
         </div>
-        <div class="month-stats">
-          <div class="mstat"><div class="mstat-num" style="color:var(--purple)">50%</div><div class="mstat-lbl">Strength</div></div>
-          <div class="mstat"><div class="mstat-num" style="color:var(--teal)">17%</div><div class="mstat-lbl">Cardio</div></div>
-          <div class="mstat"><div class="mstat-num" style="color:var(--peach)">33%</div><div class="mstat-lbl">Mobility</div></div>
-          <div class="mstat"><div class="mstat-num" style="color:var(--text2)">3–4</div><div class="mstat-lbl">Days/wk</div></div>
-        </div>
-        <button class="blocca-btn" onclick="openBlockModal('June')">+ Block days you can't train</button>
-        <div class="fase-card"><div class="fase-card-title"><span class="fase-pill fp-riattivazione">Reactivation</span> 3–4 sessions/wk</div><div class="fase-card-body">Strength at home, recovery yoga. From wk 3, run/walk intervals enter on Wednesday.</div></div>
-        <div class="suggestion-card"><div style="font-size:16px;flex-shrink:0;margin-top:1px">✦</div><div><div style="font-size:13px;font-weight:500;margin-bottom:3px">Flexa suggests</div><div style="font-size:12px;color:var(--text2);line-height:1.5">Keep strength at 50–60% of previous load while the right side heals. Flexa will signal when to progress.</div></div></div>
+        <div class="month-stats" id="monthStats"></div>
+        <button class="blocca-btn" id="monthBlockBtn">+ Block days you can't train</button>
+        <div class="fase-card" id="monthPhaseCard"></div>
       </div>
-      <hr>
-      <!-- JULY -->
-      <div class="month-section">
-        <div class="month-header">
-          <div><div class="month-name">July</div><div class="month-focus">Progression + Composition</div></div>
-          <span class="fase-pill fp-progressione">Progression</span>
-        </div>
-        <div class="cal-grid">
-          <div class="cal-header">M</div><div class="cal-header">T</div><div class="cal-header">W</div><div class="cal-header">T</div><div class="cal-header">F</div><div class="cal-header">S</div><div class="cal-header">S</div>
-          <div class="cal-day empty"></div>
-          <div class="cal-day empty"></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(1, null)">1</div>
-          <div class="cal-day yoga" onclick="openMonthDay(2, 'Yoga')">2<div class="cal-icon">🧘</div></div>
-          <div class="cal-day forza" onclick="openMonthDay(3, 'Weights: Lower body')">3<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(4, null)">4</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(5, null)">5</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(6, null)">6</div>
-          <div class="cal-day forza" onclick="openMonthDay(7, 'Weights: Upper body')">7<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day cardio" onclick="openMonthDay(8, 'Run')">8<div class="cal-icon">🏃</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(9, null)">9</div>
-          <div class="cal-day forza" onclick="openMonthDay(10, 'Weights: Lower body')">10<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(11, null)">11</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(12, null)">12</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(13, null)">13</div>
-          <div class="cal-day forza" onclick="openMonthDay(14, 'Weights: Upper body')">14<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(15, null)">15</div>
-          <div class="cal-day yoga" onclick="openMonthDay(16, 'Yoga')">16<div class="cal-icon">🧘</div></div>
-          <div class="cal-day forza" onclick="openMonthDay(17, 'Weights: Lower body')">17<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(18, null)">18</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(19, null)">19</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(20, null)">20</div>
-          <div class="cal-day forza" onclick="openMonthDay(21, 'Weights: Upper body')">21<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day cardio" onclick="openMonthDay(22, 'Run')">22<div class="cal-icon">🏃</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(23, null)">23</div>
-          <div class="cal-day forza" onclick="openMonthDay(24, 'Weights: Lower body')">24<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(25, null)">25</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(26, null)">26</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(27, null)">27</div>
-          <div class="cal-day forza" onclick="openMonthDay(28, 'Weights: Upper body')">28<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(29, null)">29</div>
-          <div class="cal-day yoga" onclick="openMonthDay(30, 'Yoga')">30<div class="cal-icon">🧘</div></div>
-          <div class="cal-day forza" onclick="openMonthDay(31, 'Weights: Lower body')">31<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day empty"></div>
-          <div class="cal-day empty"></div>
-        </div>
-        <div class="month-stats">
-          <div class="mstat"><div class="mstat-num" style="color:var(--purple)">50%</div><div class="mstat-lbl">Strength</div></div>
-          <div class="mstat"><div class="mstat-num" style="color:var(--teal)">17%</div><div class="mstat-lbl">Cardio</div></div>
-          <div class="mstat"><div class="mstat-num" style="color:var(--peach)">33%</div><div class="mstat-lbl">Mobility</div></div>
-          <div class="mstat"><div class="mstat-num" style="color:var(--text2)">3–4</div><div class="mstat-lbl">Days/wk</div></div>
-        </div>
-        <button class="blocca-btn" onclick="openBlockModal('July')">+ Block days you can't train</button>
-        <div class="fase-card"><div class="fase-card-title"><span class="fase-pill fp-progressione">Progression</span> 3–4 sessions/wk</div><div class="fase-card-body">Running builds toward 25–30 continuous minutes. Strength load increases every 2 weeks.</div></div>
-        <div class="suggestion-card"><div style="font-size:16px;flex-shrink:0;margin-top:1px">✦</div><div><div style="font-size:13px;font-weight:500;margin-bottom:3px">Flexa suggests</div><div style="font-size:12px;color:var(--text2);line-height:1.5">15 min of post-run stretching improves body recomposition and reduces re-injury risk.</div></div></div>
-      </div>
-      <hr>
-      <!-- AUGUST -->
-      <div class="month-section">
-        <div class="month-header">
-          <div><div class="month-name">August</div><div class="month-focus">Consolidation + Shape</div></div>
-          <span class="fase-pill fp-consolidamento">Consolidation</span>
-        </div>
-        <div class="cal-grid">
-          <div class="cal-header">M</div><div class="cal-header">T</div><div class="cal-header">W</div><div class="cal-header">T</div><div class="cal-header">F</div><div class="cal-header">S</div><div class="cal-header">S</div>
-          <div class="cal-day empty"></div>
-          <div class="cal-day empty"></div>
-          <div class="cal-day empty"></div>
-          <div class="cal-day empty"></div>
-          <div class="cal-day empty"></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(1, null)">1</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(2, null)">2</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(3, null)">3</div>
-          <div class="cal-day forza" onclick="openMonthDay(4, 'Weights: Upper body')">4<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day cardio" onclick="openMonthDay(5, 'Run')">5<div class="cal-icon">🏃</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(6, null)">6</div>
-          <div class="cal-day forza" onclick="openMonthDay(7, 'Weights: Lower body')">7<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(8, null)">8</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(9, null)">9</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(10, null)">10</div>
-          <div class="cal-day forza" onclick="openMonthDay(11, 'Weights: Upper body')">11<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(12, null)">12</div>
-          <div class="cal-day yoga" onclick="openMonthDay(13, 'Yoga')">13<div class="cal-icon">🧘</div></div>
-          <div class="cal-day forza" onclick="openMonthDay(14, 'Weights: Lower body')">14<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(15, null)">15</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(16, null)">16</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(17, null)">17</div>
-          <div class="cal-day forza" onclick="openMonthDay(18, 'Weights: Upper body')">18<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day cardio" onclick="openMonthDay(19, 'Run')">19<div class="cal-icon">🏃</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(20, null)">20</div>
-          <div class="cal-day forza" onclick="openMonthDay(21, 'Weights: Lower body')">21<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(22, null)">22</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(23, null)">23</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(24, null)">24</div>
-          <div class="cal-day forza" onclick="openMonthDay(25, 'Weights: Upper body')">25<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(26, null)">26</div>
-          <div class="cal-day yoga" onclick="openMonthDay(27, 'Yoga')">27<div class="cal-icon">🧘</div></div>
-          <div class="cal-day forza" onclick="openMonthDay(28, 'Weights: Lower body')">28<div class="cal-icon">🏋️</div></div>
-          <div class="cal-day rest-day" onclick="openMonthDay(29, null)">29</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(30, null)">30</div>
-          <div class="cal-day rest-day" onclick="openMonthDay(31, null)">31</div>
-        </div>
-        <div class="month-stats">
-          <div class="mstat"><div class="mstat-num" style="color:var(--purple)">50%</div><div class="mstat-lbl">Strength</div></div>
-          <div class="mstat"><div class="mstat-num" style="color:var(--teal)">17%</div><div class="mstat-lbl">Cardio</div></div>
-          <div class="mstat"><div class="mstat-num" style="color:var(--peach)">33%</div><div class="mstat-lbl">Mobility</div></div>
-          <div class="mstat"><div class="mstat-num" style="color:var(--text2)">3–4</div><div class="mstat-lbl">Days/wk</div></div>
-        </div>
-        <button class="blocca-btn" onclick="openBlockModal('August')">+ Block days you can't train</button>
-        <div class="fase-card"><div class="fase-card-title"><span class="fase-pill fp-consolidamento">Consolidation</span> 3–4 sessions/wk</div><div class="fase-card-body">Continuous runs 30–40 min. Strength at higher loads. End of August: fully reactivated.</div></div>
-        <div class="suggestion-card"><div style="font-size:16px;flex-shrink:0;margin-top:1px">✦</div><div><div style="font-size:13px;font-weight:500;margin-bottom:3px">Flexa suggests</div><div style="font-size:12px;color:var(--text2);line-height:1.5">In September consider padel as a complementary sport — agility that strength and linear cardio don't touch.</div></div></div>
-      </div>
-            <div class="flexit-bottom">Flex it.</div>
+
+      <div class="flexit-bottom">Flex it.</div>
     </div>
 
     <!-- PROFILE (includes My Sports) -->
@@ -843,6 +729,7 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
 <!-- MODAL FLEX IT / ADD SESSION -->
 <div class="modal-overlay" id="flexModal" onclick="if(event.target===this)closeModal()">
   <div class="modal">
+    <button class="scheda-back" onclick="closeModal()" style="margin-bottom:12px">← Back to plan</button>
     <div class="modal-handle"></div>
     <div class="modal-title" id="modalTitle">Flex it. ✦</div>
     <div class="modal-session-card">
@@ -883,43 +770,69 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
 </div>
 
 <script>
+// ─── API config ─────────────────────────────────────────────────────────────
+// API calls go through a secure Netlify Function — no key needed in this file.
+
 // ─── Sport config ───────────────────────────────────────────────────────────
 var ICONS = {
-  'Weights: Upper body':'🏋️','Weights: Lower body':'🏋️','Yoga':'🧘','Run':'🏃',
+  'Weights: Upper body':'🏋️','Weights: Lower body':'🏋️','Yoga':'🧘','Run':'🏃','Running':'🏃',
   'Walk':'🚶','Rest':'—','Dance':'💃','Swimming':'🏊',
   'Padel':'🎾','Hiking':'🥾','Pole dance':'🩰',
-  'Stand-up Paddle':'🏄','Beach Volley':'🏐','Beach Tennis':'🎾'
+  'Stand-up Paddle':'🏄','Beach Volley':'🏐','Beach Tennis':'🎾','Weightlifting / HIIT':'🏋️','Skiing':'⛷️'
 };
 var COLORS = {
   'Weights: Upper body':'var(--purple)','Weights: Lower body':'var(--purple)',
-  'Yoga':'var(--peach)','Run':'var(--teal)',
+  'Yoga':'var(--peach)','Run':'var(--teal)','Running':'var(--teal)',
   'Walk':'var(--border2)','Rest':'var(--border2)',
   'Dance':'var(--teal)','Swimming':'var(--teal)',
   'Padel':'var(--teal)','Hiking':'var(--teal)','Pole dance':'var(--purple)',
-  'Stand-up Paddle':'var(--teal)','Beach Volley':'var(--teal)','Beach Tennis':'var(--teal)'
+  'Stand-up Paddle':'var(--teal)','Beach Volley':'var(--teal)','Beach Tennis':'var(--teal)','Weightlifting / HIIT':'var(--purple)','Skiing':'var(--teal)',
+  'Weights: Upper body (light)':'var(--purple)','Weights: Lower body (light)':'var(--purple)','Run (easy)':'var(--teal)'
 };
 var TIPI = {
-  'Weights: Upper body':'forza','Weights: Lower body':'forza','Yoga':'yoga','Run':'cardio',
+  'Weights: Upper body':'forza','Weights: Lower body':'forza','Yoga':'yoga','Run':'cardio','Running':'cardio',
   'Walk':'riposo','Rest':'riposo','Dance':'cardio','Swimming':'cardio',
   'Padel':'cardio','Hiking':'cardio','Pole dance':'forza',
-  'Stand-up Paddle':'cardio','Beach Volley':'cardio','Beach Tennis':'cardio'
+  'Stand-up Paddle':'cardio','Beach Volley':'cardio','Beach Tennis':'cardio','Weightlifting / HIIT':'forza','Skiing':'cardio',
+  'Weights: Upper body (light)':'forza','Weights: Lower body (light)':'forza','Run (easy)':'cardio'
 };
 var CARICHI = {
-  'Weights: Upper body':'high','Weights: Lower body':'high','Yoga':'low','Run':'medium',
+  'Weights: Upper body':'high','Weights: Lower body':'high','Yoga':'low','Run':'medium','Running':'medium',
   'Walk':'minimal','Rest':'zero','Dance':'medium','Swimming':'medium',
   'Padel':'high','Hiking':'medium','Pole dance':'medium',
-  'Stand-up Paddle':'medium','Beach Volley':'medium','Beach Tennis':'medium'
+  'Stand-up Paddle':'medium','Beach Volley':'medium','Beach Tennis':'medium','Weightlifting / HIIT':'high','Skiing':'medium',
+  'Weights: Upper body (light)':'low','Weights: Lower body (light)':'low','Run (easy)':'low'
 };
 
 // ─── Dynamic calendar generation from real date ───────────────────────────────
 var MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 var DAY_NAMES   = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
-// Training pattern: alternates A/B each week
-// Week A: Tue=StrengthA, Thu=Yoga, Fri=StrengthB  (3 sessions)
-// Week B: Tue=StrengthA, Wed=Run,  Fri=StrengthB  (3 sessions)
-var PLAN_A = {1:{n:'Weights: Upper body',t:'forza',o:'07:00–07:45'}, 3:{n:'Yoga',t:'yoga',o:'07:00–07:45'}, 4:{n:'Weights: Lower body',t:'forza',o:'07:00–07:45'}};
-var PLAN_B = {1:{n:'Weights: Upper body',t:'forza',o:'07:00–07:45'}, 2:{n:'Run',  t:'cardio',o:'07:00–07:30'}, 4:{n:'Weights: Lower body',t:'forza',o:'07:00–07:45'}};
+// ── Recovery progression plan (after 6 weeks off, restarting Jun 25 2026) ──
+// Phase 1 (wk 1-2): 2 light sessions/wk — light weights only, body reactivating
+// Phase 2 (wk 3-4): 3 sessions/wk — weights + run reintroduced, medium load
+// Phase 3 (wk 5+):  3-4 sessions/wk — full pattern, alternating A/B at full load
+
+var PHASE1 = { // 2x/week, light load — shorter sessions during reactivation
+  1:{n:'Weights: Upper body (light)',t:'forza', o:'07:00–07:30'}, // Tue, 30 min
+  4:{n:'Weights: Lower body (light)',t:'forza', o:'07:00–07:30'}  // Fri, 30 min
+};
+var PHASE2 = { // 3x/week, medium load
+  1:{n:'Weights: Upper body',t:'forza',  o:'07:00–07:40'}, // Tue, 40 min
+  3:{n:'Run (easy)',         t:'cardio', o:'07:00–07:25'}, // Thu, 25 min
+  4:{n:'Weights: Lower body',t:'forza',  o:'07:00–07:40'}  // Fri, 40 min
+};
+var PLAN_A = { // Phase 3, 3 sessions — full sessions
+  1:{n:'Weights: Upper body',t:'forza',  o:'07:00–07:45'},  // Tue, 45 min
+  3:{n:'Run',                t:'cardio', o:'07:00–07:30'},  // Thu, 30 min
+  4:{n:'Weights: Lower body',t:'forza',  o:'07:00–07:45'}   // Fri, 45 min
+};
+var PLAN_B = { // Phase 3, 4 sessions
+  1:{n:'Weights: Upper body',t:'forza',  o:'07:00–07:45'},  // Tue, 45 min
+  3:{n:'Run',                t:'cardio', o:'07:00–07:30'},  // Thu, 30 min
+  4:{n:'Weights: Lower body',t:'forza',  o:'07:00–07:45'},  // Fri, 45 min
+  6:{n:'Yoga',               t:'yoga',   o:'07:00–07:45'}   // Sun, 45 min
+};
 
 // Today
 var TODAY = new Date();
@@ -939,18 +852,29 @@ function getMondayOf(d){
 function buildWeeks(numWeeks, startOffset){
   var weeks=[], labels=[], phases=[];
   var currentMonday = getMondayOf(TODAY);
-  // Week number from a fixed reference (Jun 15 2026 = week 0 of plan)
-  var planStart = new Date(2026,5,15); // Jun 15 2026
+  // Plan restart reference: Monday Jun 22 2026 is week 0 (the week containing the Jun 25 restart)
+  var planStart = new Date(2026,5,22); // Jun 22 2026 (Monday)
   planStart.setHours(0,0,0,0);
 
   for(var w=startOffset; w<startOffset+numWeeks; w++){
     var monday = new Date(currentMonday);
     monday.setDate(currentMonday.getDate() + w*7);
     var weekDays=[];
-    // Absolute week number from plan start (for alternating pattern)
     var msPerWeek = 7*24*60*60*1000;
-    var weekNum = Math.round((monday - planStart)/msPerWeek);
-    var plan = (weekNum%2===0) ? PLAN_A : PLAN_B;
+    var weekNum = Math.round((monday - planStart)/msPerWeek); // 0-indexed from restart week
+    var absWk = weekNum+1; // 1-indexed week number of the recovery plan
+
+    // Choose plan based on recovery phase
+    var plan;
+    if(absWk<=0){
+      plan = {}; // weeks before restart: no plan, free/flex (handled by Tatiana manually)
+    } else if(absWk<=2){
+      plan = PHASE1;
+    } else if(absWk<=4){
+      plan = PHASE2;
+    } else {
+      plan = (weekNum%2===0) ? PLAN_A : PLAN_B;
+    }
 
     for(var d=0; d<7; d++){
       var date = new Date(monday);
@@ -973,14 +897,13 @@ function buildWeeks(numWeeks, startOffset){
     // Label: "Jun 15 – 21" style
     var sun = weekDays[6];
     var mon = weekDays[0];
-    var label = mon.month+(mon.month!==sun.month?' '+mon.data:'')+(mon.month!==sun.month?' – ':' – ')+
-                (mon.month!==sun.month?sun.month+' ':'')+sun.data;
-    // Simplified label
-    label = mon.month+' '+mon.data+' – '+(mon.month!==sun.month?sun.month+' ':'')+sun.data;
+    var label = mon.month+' '+mon.data+' – '+(mon.month!==sun.month?sun.month+' ':'')+sun.data;
 
-    // Phase: weeks 1-2 reactivation, 3-4 progression, 5-6 volume, etc.
-    var absWk = weekNum+1;
-    var phase = absWk<=0?'Pre-start': absWk<=2?'Wk '+absWk+' · Reactivation': absWk<=4?'Wk '+absWk+' · Progression': absWk<=8?'Wk '+absWk+' · Volume':'Wk '+absWk+' · Consolidation';
+    // Phase label
+    var phase = absWk<=0 ? 'Free week' :
+                absWk<=2 ? 'Wk '+absWk+' · Reactivation (light)' :
+                absWk<=4 ? 'Wk '+absWk+' · Progression' :
+                'Wk '+absWk+' · Full plan';
 
     weeks.push(weekDays);
     labels.push(label);
@@ -1000,37 +923,76 @@ var WEEK_PHASE  = generated.phases;
 // currentWeekIdx = index of this week in WEEKS array
 var currentWeekIdx = -WEEK_OFFSET_START; // offset 1 past week → current is index 1
 
-// Per-week extras: {weekIdx: {dayIdx: [{nome, orario}]}}
-var extras = {};
-// Per-week completions: {weekIdx: {dayIdx: true}}
-var completions = {};
-
 // ─── Persistence helpers ──────────────────────────────────────────────────────
 var LS_KEY = 'flexa_state_v1';
+// We persist pianos/extras/completions keyed by the Monday DATE STRING of each week
+// (e.g. "2026-06-22"), not by array index — array indices shift every time the
+// page reloads (because WEEKS is rebuilt centered on "today"), but the Monday
+// date of a given week never changes. This is what keeps the data attached to
+// the correct calendar week across reloads and across changeWeek() navigation.
+
+function mondayKeyForIndex(idx){
+  if(!WEEKS[idx] || !WEEKS[idx][0] || !WEEKS[idx][0].fullDate) return null;
+  var d = WEEKS[idx][0].fullDate instanceof Date ? WEEKS[idx][0].fullDate : new Date(WEEKS[idx][0].fullDate);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+
 function saveState(){
   try {
+    // Convert index-keyed in-memory maps to date-keyed maps for storage
+    var pianosByDate = {}, extrasByDate = {}, completionsByDate = {};
+    Object.keys(pianos).forEach(function(idx){
+      var key = mondayKeyForIndex(parseInt(idx,10));
+      if(key) pianosByDate[key] = pianos[idx];
+    });
+    Object.keys(extras).forEach(function(idx){
+      var key = mondayKeyForIndex(parseInt(idx,10));
+      if(key) extrasByDate[key] = extras[idx];
+    });
+    Object.keys(completions).forEach(function(idx){
+      var key = mondayKeyForIndex(parseInt(idx,10));
+      if(key) completionsByDate[key] = completions[idx];
+    });
     localStorage.setItem(LS_KEY, JSON.stringify({
-      pianos: pianos, extras: extras, completions: completions, currentWeekIdx: currentWeekIdx
+      pianosByDate: pianosByDate, extrasByDate: extrasByDate, completionsByDate: completionsByDate
     }));
   } catch(e){}
 }
+
+var _pendingLoadedState = null;
+
 function loadState(){
   try {
     var raw = localStorage.getItem(LS_KEY);
     if(!raw) return false;
-    var s = JSON.parse(raw);
-    if(s.pianos)      pianos      = s.pianos;
-    if(s.extras)      extras      = s.extras;
-    if(s.completions) completions = s.completions;
-    if(s.currentWeekIdx != null) currentWeekIdx = s.currentWeekIdx;
+    _pendingLoadedState = JSON.parse(raw);
     return true;
   } catch(e){ return false; }
+}
+
+function applyLoadedStateToCurrentWeeks(){
+  // Called AFTER WEEKS has been built, to map date-keyed saved data back onto
+  // whatever array indices the freshly-built WEEKS array currently has.
+  if(!_pendingLoadedState) return;
+  var s = _pendingLoadedState;
+  pianos = {}; extras = {}; completions = {};
+  for(var idx=0; idx<WEEKS.length; idx++){
+    var key = mondayKeyForIndex(idx);
+    if(!key) continue;
+    if(s.pianosByDate && s.pianosByDate[key]) pianos[idx] = s.pianosByDate[key];
+    if(s.extrasByDate && s.extrasByDate[key]) extras[idx] = s.extrasByDate[key];
+    if(s.completionsByDate && s.completionsByDate[key]) completions[idx] = s.completionsByDate[key];
+  }
+  _pendingLoadedState = null;
 }
 
 // ─── Weekly plan state ────────────────────────────────────────────────────────
 // pianos[weekIdx] = modified copy of that week's plan (null = unmodified)
 var pianos = {};
+var extras = {};
+var completions = {};
 var loaded = loadState();
+applyLoadedStateToCurrentWeeks();
 var piano = pianos[currentWeekIdx]
   ? JSON.parse(JSON.stringify(pianos[currentWeekIdx]))
   : JSON.parse(JSON.stringify(WEEKS[currentWeekIdx]));
@@ -1052,11 +1014,60 @@ var SPORT_SPORADICI = [
 ];
 
 function icona(n){ return ICONS[n] || '🏋️'; }
+
+function durationFromOrario(orario){
+  // Parses "07:00–07:45" and returns "45 min". Falls back to "45 min" if unparseable.
+  if(!orario || orario==='—') return '45 min';
+  var parts = orario.split(/[–-]/);
+  if(parts.length!==2) return '45 min';
+  var toMin = function(t){
+    var m = t.trim().match(/(\d{1,2}):(\d{2})/);
+    if(!m) return null;
+    return parseInt(m[1],10)*60 + parseInt(m[2],10);
+  };
+  var start = toMin(parts[0]), end = toMin(parts[1]);
+  if(start==null || end==null) return '45 min';
+  var diff = end - start;
+  if(diff < 0) diff += 24*60; // crosses midnight, unlikely but safe
+  return diff+' min';
+}
 function colore(n){ return COLORS[n] || 'var(--text3)'; }
 
 // ─── Week navigation ──────────────────────────────────────────────────────────
+function shiftIndexedObject(obj, delta){
+  // Re-key an object like {0:{...}, 1:{...}} by adding delta to every numeric key
+  var out = {};
+  Object.keys(obj).forEach(function(k){
+    out[(parseInt(k,10) + delta)] = obj[k];
+  });
+  return out;
+}
+
 function changeWeek(dir){
   var next = currentWeekIdx + dir;
+  // Infinite scroll: generate more weeks on the fly when reaching the edge
+  if(next < 0){
+    // Prepend one week — shift ALL index-keyed state by +1 so saved data stays attached to the right week
+    var extra = buildWeeks(1, WEEK_OFFSET_START - 1);
+    WEEKS.unshift(extra.weeks[0]);
+    WEEK_LABELS.unshift(extra.labels[0]);
+    WEEK_PHASE.unshift(extra.phases[0]);
+    WEEK_OFFSET_START -= 1;
+    pianos      = shiftIndexedObject(pianos, 1);
+    extras      = shiftIndexedObject(extras, 1);
+    completions = shiftIndexedObject(completions, 1);
+    currentWeekIdx += 1; // shift index since we added at front
+    next = currentWeekIdx + dir;
+    saveState();
+  }
+  if(next >= WEEKS.length){
+    // Append one week — no re-keying needed, indices below stay valid
+    var lastOffset = WEEK_OFFSET_START + WEEKS.length;
+    var extra2 = buildWeeks(1, lastOffset);
+    WEEKS.push(extra2.weeks[0]);
+    WEEK_LABELS.push(extra2.labels[0]);
+    WEEK_PHASE.push(extra2.phases[0]);
+  }
   if(next < 0 || next >= WEEKS.length) return;
   // Save current week state before switching
   pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano));
@@ -1082,6 +1093,7 @@ function addExtraActivity(dayIdx, actNome, actOrario){
 
 // ─── Render week ─────────────────────────────────────────────────────────────
 var todayDayIdxGlobal = -1; // exposed for HTML onclick
+var isTodayWeekGlobal = false; // exposed for vibe phrase logic
 
 var MY_SPORTS = [
   {name:'Weightlifting / HIIT', emoji:'🏋️', cat:'strength', freq:'3×/wk', note:'Home weights + bench. Upper/lower split — see session cards for muscle focus.'},
@@ -1111,44 +1123,65 @@ function renderWeekBalance(){
 
   // ── Plan state headline ────────────────────────────────────────────
   var missing = [];
-  if(bal.cardio===0) missing.push({label:'Cardio', color:'var(--peach)'});
-  if(bal.mobility===0) missing.push({label:'Mobility', color:'var(--peach)'});
-  if(bal.strength===0) missing.push({label:'Strength', color:'var(--peach)'});
+  if(bal.cardio===0) missing.push('Cardio');
+  if(bal.mobility===0) missing.push('Mobility');
+  if(bal.strength===0) missing.push('Strength');
 
   var stateEl = document.getElementById('psState');
   var reasonEl = document.getElementById('psReason');
   var eyebrowEl = document.getElementById('psEyebrow');
   if(eyebrowEl) eyebrowEl.textContent = 'Your plan · '+WEEK_LABELS[currentWeekIdx];
 
+  // ── Today badge ──────────────────────────────────────────────────────
+  var todayBadgeEl = document.getElementById('todayBadge');
+  if(todayBadgeEl){
+    var DAY3=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    var MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    todayBadgeEl.textContent = 'Today · '+DAY3[TODAY.getDay()]+' '+MON3[TODAY.getMonth()]+' '+TODAY.getDate();
+  }
+
+  // ── Determine ALL suggested sports — one per missing category ───────
+  var catKeyMap = {Cardio:'cardio', Mobility:'mobility', Strength:'strength'};
+  var suggestions = missing.map(function(m){
+    var cat = catKeyMap[m];
+    var sp = MY_SPORTS.find(function(s){ return s.cat===cat && activeNames.indexOf(s.name)<0; });
+    return sp ? {label:m, sport:sp} : null;
+  }).filter(Boolean);
+
   if(missing.length===0){
     if(stateEl) stateEl.innerHTML='<span class="ok">Balanced ✓</span>';
     if(reasonEl) reasonEl.innerHTML='Strength, cardio and mobility are all covered this week. Flexa will keep them in sync.';
   } else {
-    var missingLabel = missing.map(function(m){ return '<span class="warn">'+m.label+'</span>'; }).join(' + ');
-    if(stateEl) stateEl.innerHTML = missingLabel+' uncovered';
-    // Build reason from active sports
-    var activeStr = activeNames.map(function(n){ return icona(n)+' <strong>'+n+'</strong>'; }).join(' and ');
-    if(reasonEl) reasonEl.innerHTML = 'This week you have '+(activeStr||'no sessions planned')+'. '+missing.map(function(m){return m.label+' is missing.';}).join(' ')+' Flexa found a window.';
+    if(stateEl) stateEl.innerHTML = missing.map(function(m){return '<span class="warn">'+m+'</span>';}).join(' + ')+' uncovered';
+    if(reasonEl) reasonEl.innerHTML = missing.join(' and ')+' '+(missing.length===1?'is':'are')+' missing this week. Flexa found '+(suggestions.length>1?'some windows':'a window')+' below.';
   }
 
-  // ── Sport chips ────────────────────────────────────────────────────
-  var chipsEl = document.getElementById('sportChips');
-  if(chipsEl){
-    var chips = '';
-    // Active sports this week
-    activeNames.forEach(function(n){
-      chips += '<div class="sport-chip active">'+icona(n)+' '+n+'</div>';
+  // ── Dynamic vibe phrase — short, changes with day/progress/mood ─────
+  var vibeEl = document.getElementById('psVibe');
+  if(vibeEl){
+    var doneCount = 0, totalSessions = 0;
+    piano.forEach(function(s,i){
+      if(s.tipo!=='riposo'){
+        totalSessions++;
+        if(completions[currentWeekIdx] && completions[currentWeekIdx][i]) doneCount++;
+      }
     });
-    // Suggested sport (first missing cat)
-    var suggestSport = null;
-    if(bal.cardio===0){
-      // Find a cardio sport in MY_SPORTS not already active
-      var cSport = MY_SPORTS.find(function(sp){ return sp.cat==='cardio' && activeNames.indexOf(sp.name)<0; });
-      if(cSport) suggestSport = cSport;
+    var dayOfWeekIdx = isTodayWeekGlobal ? todayDayIdxGlobal : -1;
+    var vibe = '';
+    if(totalSessions===0){
+      vibe = 'A lighter week — listen to your body.';
+    } else if(doneCount===0 && dayOfWeekIdx<=1 && dayOfWeekIdx>=0){
+      vibe = 'Fresh week ahead 🌱';
+    } else if(doneCount===totalSessions && totalSessions>0){
+      vibe = 'Nailed it this week ✓';
+    } else if(doneCount>0 && doneCount<totalSessions){
+      vibe = doneCount+'/'+totalSessions+' done — keep the momentum.';
+    } else if(dayOfWeekIdx>=5){
+      vibe = 'Weekend energy — recover well.';
+    } else {
+      vibe = 'Steady as you go.';
     }
-    if(suggestSport) chips += '<div class="sport-chip suggested">'+suggestSport.emoji+' '+suggestSport.name+' — suggested</div>';
-    // Don't show all missing sports — too noisy. Just active + 1 suggested.
-    chipsEl.innerHTML = chips;
+    vibeEl.textContent = vibe;
   }
 
   // ── Horizontal balance bar ─────────────────────────────────────────
@@ -1173,41 +1206,55 @@ function renderWeekBalance(){
       '<div class="bl-item"><div class="bl-dot" style="background:rgba(255,255,255,0.15)"></div>Rest<span class="bl-val">'+bal.rest+'</span></div>';
   }
 
-  // ── Flexa suggestion ───────────────────────────────────────────────
-  var suggestBox = document.getElementById('flexaSuggest');
-  var suggestText = document.getElementById('flexaSuggestText');
-  if(suggestBox && suggestSport){
-    // Find best day (first rest day with >=48h from last training)
+  // ── Flexa suggestions — one card per missing category, each with its own day+CTA
+  var stackEl = document.getElementById('flexaSuggestStack');
+  window._flexaSuggestions = []; // [{day, sport, type}]
+
+  if(stackEl){
     var lastTrainIdx = -1;
     piano.forEach(function(s,i){ if(s.tipo!=='riposo') lastTrainIdx=i; });
-    var bestDay = null;
-    piano.forEach(function(s,di){
-      if(!bestDay && s.tipo==='riposo' && di>lastTrainIdx && (di-lastTrainIdx)>=2){
-        bestDay=s;
-        window._flexaSuggestDay=di;
-        window._flexaSuggestSport=suggestSport;
+    var usedDays = {}; // avoid suggesting the same rest day twice
+    // Never suggest a day that's already in the past
+    var minSuggestableIdx = isTodayWeekGlobal ? todayDayIdxGlobal : 0;
+    var html = '';
+
+    suggestions.forEach(function(sg, idx){
+      var bestDay = -1;
+      piano.forEach(function(s,di){
+        if(bestDay===-1 && s.tipo==='riposo' && !usedDays[di] && di>=minSuggestableIdx && (lastTrainIdx===-1 || di>lastTrainIdx) && (lastTrainIdx===-1 || (di-lastTrainIdx)>=2)){
+          bestDay = di;
+        }
+      });
+      if(bestDay===-1){
+        piano.forEach(function(s,di){ if(bestDay===-1 && s.tipo==='riposo' && !usedDays[di] && di>=minSuggestableIdx) bestDay=di; });
       }
+      if(bestDay<0) return;
+      usedDays[bestDay] = true;
+      var hGap = lastTrainIdx>=0 ? (bestDay-lastTrainIdx)*24 : null;
+      var d = piano[bestDay];
+      var sugIdx = window._flexaSuggestions.length;
+      window._flexaSuggestions.push({day:bestDay, sport:sg.sport});
+      html += '<div class="flexa-suggest" style="margin-bottom:8px">'+
+        '<div class="fs-icon">✦</div>'+
+        '<div>'+
+          '<div class="fs-text">Flexa suggests <strong>'+sg.sport.emoji+' '+sg.sport.name+' 45 min</strong> on '+d.giorno+' '+d.data+(hGap?' — '+hGap+'h after last session.':'.')+'</div>'+
+          '<button class="fs-cta" onclick="applyFlexaSuggestion('+sugIdx+')">Add to plan →</button>'+
+        '</div>'+
+      '</div>';
     });
-    if(bestDay && suggestText){
-      var hGap = (window._flexaSuggestDay - lastTrainIdx)*24;
-      suggestText.innerHTML = 'Flexa suggests <strong>'+suggestSport.emoji+' '+suggestSport.name+' 30 min</strong> on '+bestDay.giorno+' '+bestDay.data+' — '+hGap+'h after last session. Optimal recovery window.';
-      suggestBox.style.display='flex';
-    } else {
-      suggestBox.style.display='none';
-    }
-  } else if(suggestBox && missing.length===0){
-    suggestBox.style.display='none';
+    stackEl.innerHTML = html;
   }
 }
 
-function applyFlexaSuggestion(){
-  var di = window._flexaSuggestDay;
-  var sp = window._flexaSuggestSport;
-  if(di==null||!sp) return;
+function applyFlexaSuggestion(sugIdx){
+  var sg = (window._flexaSuggestions||[])[sugIdx];
+  if(!sg || !piano[sg.day]) return;
   var CAT_TYPE={'strength':'forza','mobility':'yoga','cardio':'cardio'};
-  if(!extras[currentWeekIdx]) extras[currentWeekIdx]={};
-  if(!extras[currentWeekIdx][di]) extras[currentWeekIdx][di]=[];
-  extras[currentWeekIdx][di].push({nome:sp.name,orario:'07:00'});
+  // Default start 07:00, end based on the suggested 30 min (suggestions are always "30 min")
+  piano[sg.day].nome = sg.sport.name;
+  piano[sg.day].tipo = CAT_TYPE[sg.sport.cat] || 'cardio';
+  piano[sg.day].orario = '07:00–07:45';
+  pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano));
   saveState();
   renderPiano();
 }
@@ -1271,6 +1318,7 @@ function renderPiano(){
 
   // Week grid (new dp-v2 pills)
   todayDayIdxGlobal = todayDayIdx; // expose for HTML onclick
+  isTodayWeekGlobal = isTodayWeek;
   var grid = document.getElementById('weekGrid');
   if(grid) grid.className = 'week-strip-v2';
   if(grid) grid.innerHTML='';
@@ -1279,32 +1327,92 @@ function renderPiano(){
   piano.forEach(function(s,i){
     if(s.tipo!=='riposo' && nextTrainIdx===-1 && (!isTodayWeek || i>todayDayIdx)) nextTrainIdx=i;
   });
+  // Is this whole week strictly in the past (i.e. we've navigated backwards from the current week)?
+  var weekIsPast = !isTodayWeek && currentWeekIdx < (-WEEK_OFFSET_START);
   piano.forEach(function(s,i){
-    var isVuoto = s.tipo==='riposo' && !isTodayWeek;
+    var isRest = s.tipo==='riposo';
     var isModified = s.nome!==pianoOrig[i].nome || s.orario!==pianoOrig[i].orario;
     var dayExtras = getWeekExtras(i);
     var hasExtra = dayExtras.length > 0;
     var isPillDone = !!(completions[currentWeekIdx] && completions[currentWeekIdx][i]);
+    var isToday = isTodayWeek && i===todayDayIdx;
+    var isPastDayThisWeek = isTodayWeek && i<todayDayIdx;
+    // ANY past day (rest or with a session) gets greyed out — not just empty ones
+    var isPastDayAny = !isToday && (weekIsPast || isPastDayThisWeek);
+    var isPastEmpty = isRest && !hasExtra && isPastDayAny;
+    var isFutureEmpty = isRest && !hasExtra && !isPastDayAny && !isToday;
+
     var pill = document.createElement('div');
     var cls = 'dp-v2';
-    if(isTodayWeek && i===todayDayIdx) cls += ' dp-today';
+    if(isToday) cls += ' dp-today';
     else if(i===nextTrainIdx) cls += ' dp-next';
     if(isModified) cls += ' dp-modified';
     if(isPillDone) cls += ' dp-done';
-    if(s.tipo==='riposo' && !hasExtra) cls += ' dp-rest';
+    if(isPastEmpty) cls += ' dp-rest-past';
+    if(isFutureEmpty) cls += ' dp-rest-future';
+    if(isPastDayAny && !isPastEmpty) cls += ' dp-past-day'; // past day WITH a session — still greyed
     pill.className = cls;
-    if(s.tipo!=='riposo'){
-      pill.onclick = (function(ss,ii){ return function(){ openScheda(ss.nome); }; })(s,i);
+    if(!isRest){
+      pill.onclick = (function(ss,ii){ return function(){ openScheda(ss.nome,ii); }; })(s,i);
     } else {
       pill.onclick = (function(ii){ return function(){ openAggiungi(ii, false); }; })(i);
     }
-    var iconStr = isPillDone ? '✓' : (s.tipo!=='riposo' ? icona(s.nome) : (hasExtra?'+':''));
+    var iconStr = isPillDone ? '✓' : (!isRest ? icona(s.nome) : (hasExtra ? '+' : '+'));
+    var iconColor = isPillDone ? 'var(--teal)' : (!isRest ? colore(s.nome) : (isFutureEmpty ? 'var(--teal)' : 'var(--text3)'));
     pill.innerHTML =
-      '<div class="dpv2-d">'+s.giorno.substring(0,1)+'</div>'+
+      '<div class="dpv2-d">'+s.giorno.substring(0,1)+(isToday?' <span style=\'color:var(--purple)\'>•</span>':'')+'</div>'+
       '<div class="dpv2-n">'+s.data+'</div>'+
-      '<div class="dpv2-icon" style="color:'+(isPillDone?'var(--teal)':colore(s.nome))+'">'+iconStr+'</div>';
+      '<div class="dpv2-icon" style="color:'+iconColor+'">'+iconStr+'</div>';
     if(grid) grid.appendChild(pill);
   });
+
+  // Today block — always answers "what do I do today"
+  var todayCard = document.getElementById('todayCard');
+  var todayRestMsg = document.getElementById('todayRestMsg');
+  var todayEyebrowEl = document.getElementById('todayEyebrow');
+  if(isTodayWeek && todayDayIdx>=0){
+    var todaySession = piano[todayDayIdx];
+    var DAY_LONG2=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    if(todayEyebrowEl) todayEyebrowEl.textContent = 'Today · '+DAY_LONG2[TODAY.getDay()];
+    if(todaySession.tipo!=='riposo'){
+      var isDoneToday = !!(completions[currentWeekIdx] && completions[currentWeekIdx][todayDayIdx]);
+      var tType = todaySession.tipo==='forza'?'Strength':todaySession.tipo==='yoga'?'Mobility':'Cardio';
+      var tBg   = todaySession.tipo==='forza'?'rgba(185,167,255,0.1)':todaySession.tipo==='yoga'?'rgba(255,179,155,0.1)':'rgba(143,228,207,0.1)';
+      var tBd   = todaySession.tipo==='forza'?'rgba(185,167,255,0.25)':todaySession.tipo==='yoga'?'rgba(255,179,155,0.25)':'rgba(143,228,207,0.25)';
+      var tTxt  = todaySession.tipo==='forza'?'var(--purple)':todaySession.tipo==='yoga'?'var(--peach)':'var(--teal)';
+      var te=function(id){return document.getElementById(id);};
+      if(te('tdEmoji')) te('tdEmoji').textContent = icona(todaySession.nome);
+      if(te('tdType')){ te('tdType').textContent=tType; te('tdType').style.cssText='background:'+tBg+';border-color:'+tBd+';color:'+tTxt; }
+      if(te('tdName')) te('tdName').textContent = todaySession.nome;
+      if(te('tdTime')) te('tdTime').textContent = todaySession.orario;
+      if(te('tdDur')) te('tdDur').textContent = durationFromOrario(todaySession.orario);
+      var tdDoneBtn = te('tdDoneBtn');
+      if(tdDoneBtn){
+        tdDoneBtn.textContent = isDoneToday ? '✓ Done' : '○ Done';
+        tdDoneBtn.style.background = isDoneToday ? 'rgba(143,228,207,0.15)' : 'var(--teal)';
+        tdDoneBtn.style.color = isDoneToday ? 'var(--teal)' : '#090910';
+        tdDoneBtn.onclick = function(){ toggleDone(todayDayIdx); };
+      }
+      var tdFlexBtn = te('tdFlexBtn');
+      if(tdFlexBtn) tdFlexBtn.onclick = function(){ openModal(todaySession.nome, todaySession.giorno+' '+todaySession.data, todaySession.orario, todayDayIdx, 'flex'); };
+      if(todayCard) todayCard.style.display='block';
+      if(todayRestMsg) todayRestMsg.style.display='none';
+    } else {
+      if(todayCard) todayCard.style.display='none';
+      if(todayRestMsg){
+        todayRestMsg.style.display='block';
+        var addLink = document.getElementById('todayAddLink');
+        if(addLink) addLink.onclick = function(){ openAggiungi(todayDayIdx, false); };
+      }
+    }
+  } else {
+    if(todayEyebrowEl) todayEyebrowEl.textContent = 'Today';
+    if(todayCard) todayCard.style.display='none';
+    if(todayRestMsg){
+      todayRestMsg.style.display='block';
+      todayRestMsg.innerHTML = "Navigate to the current week to see today's session.";
+    }
+  }
 
   // Next session card v2
   var todayData = isTodayWeek ? TODAY.getDate() : 0;
@@ -1335,6 +1443,7 @@ function renderPiano(){
     if(e('nc2Name')) e('nc2Name').textContent = prossima.nome;
     if(e('nc2Why'))  e('nc2Why').innerHTML    = whyText;
     if(e('nc2Time')) e('nc2Time').textContent = prossima.orario;
+    if(e('nc2Dur'))  e('nc2Dur').textContent  = durationFromOrario(prossima.orario);
     var doneBtn = e('nc2DoneBtn');
     if(doneBtn){
       doneBtn.textContent = isDoneNext ? '✓ Done' : '○ Done';
@@ -1355,31 +1464,40 @@ function renderPiano(){
   var wl = document.getElementById('weekList');
   wl.innerHTML='';
   piano.forEach(function(s,i){
-    var isVuoto = s.tipo==='riposo' && !isTodayWeek;
+    var isVuoto = s.tipo==='riposo';
     var isModified = s.nome!==pianoOrig[i].nome || s.orario!==pianoOrig[i].orario;
+    var isDone = !!(completions[currentWeekIdx] && completions[currentWeekIdx][i]);
     var dayExtras = getWeekExtras(i);
+    var isToday = isTodayWeek && i===todayDayIdx;
+    var isPastDay = isTodayWeek && i<todayDayIdx; // earlier this week
+    var isFutureDay = !isTodayWeek ? true : (i>todayDayIdx); // future week entirely, or later this week
+    // ANY past day (rest or with a session, done or not) — used to grey out the whole row
+    var isPastDayAnyList = !isToday && (isPastDay || (!isTodayWeek && currentWeekIdx < (-WEEK_OFFSET_START)));
+    // "Past empty" = a rest day that already happened and nothing was logged — fades out
+    var isPastEmpty = isVuoto && dayExtras.length===0 && isPastDayAnyList;
     var row = document.createElement('div');
 
     if(isVuoto && dayExtras.length===0){
-      // Pure free day — tap to add
-      row.className='week-row add-row';
+      // Free day — tap to add. Future/today = active teal "+". Past = faded, still tappable.
+      row.className = 'week-row add-row' + (isPastEmpty ? ' past-empty' : '') + (isToday ? ' highlight' : '');
       row.onclick=(function(ii){return function(){openAggiungi(ii,false);};})(i);
+      var plusColor = isPastEmpty ? 'var(--text3)' : 'var(--teal)';
+      var labelColor = isPastEmpty ? 'var(--text3)' : 'var(--text3)';
+      row.style.opacity = isPastEmpty ? '0.45' : '1';
       row.innerHTML=
         '<div class="wr-left">'+
-          '<div class="wr-date" style="color:var(--text3)">'+s.giorno+' '+s.data+'</div>'+
-          '<div style="font-size:18px;color:var(--teal);line-height:1">+</div>'+
-          '<div><div class="wr-name" style="color:var(--text3);font-weight:400">Add activity</div>'+
-          '<div class="wr-orario">Tap to log a sport</div></div>'+
+          '<div class="wr-date" style="color:var(--text3)">'+s.giorno+' '+s.data+(isToday?' <span style=\'color:var(--purple);font-weight:700\'>· today</span>':'')+'</div>'+
+          '<div style="font-size:18px;color:'+plusColor+';line-height:1">+</div>'+
+          '<div><div class="wr-name" style="color:'+labelColor+';font-weight:400">'+(isPastEmpty?'No activity logged':'Add activity')+'</div>'+
+          '<div class="wr-orario">'+(isPastEmpty?'Tap to log retroactively':'Tap to log a sport')+'</div></div>'+
         '</div>';
     } else {
-      var isDone = !!(completions[currentWeekIdx] && completions[currentWeekIdx][i]);
-      row.className='week-row'+(isTodayWeek&&i===todayDayIdx?' highlight':'')+(isModified?' modified-row':'')+(isDone?' done-row':'');
+      row.className='week-row'+(isToday?' highlight':'')+(isModified?' modified-row':'')+(isDone?' done-row':'')+(isPastDayAnyList && !isDone?' past-day-row':'');
       if(s.tipo!=='riposo'){
-        row.onclick=(function(ss){return function(){openScheda(ss.nome);};})(s);
+        row.onclick=(function(ss,ii){return function(){openScheda(ss.nome,ii);};})(s,i);
       }
-      var actionLabel = s.tipo!=='riposo' ? 'tap to see details' : (isTodayWeek&&i===todayDayIdx?'Today · rest':'Active recovery');
+      var actionLabel = s.tipo!=='riposo' ? 'tap to see details' : (isToday?'Today · rest':'Active recovery');
 
-      // Build extras sub-rows
       var extrasHTML = '';
       dayExtras.forEach(function(ex){
         extrasHTML +=
@@ -1393,20 +1511,20 @@ function renderPiano(){
       var mainContent =
         '<div style="flex:1;min-width:0">'+
           '<div class="wr-name">'+s.nome+(isModified?' <span style="color:var(--peach);font-size:11px">✦</span>':'')+'</div>'+
-          '<div class="wr-orario">'+(s.orario!=='—'?s.orario+' · 45 min':actionLabel)+'</div>'+
+          '<div class="wr-orario">'+(s.orario!=='—'?s.orario+' · '+durationFromOrario(s.orario):actionLabel)+'</div>'+
           extrasHTML+
         '</div>';
 
       row.innerHTML=
         '<div class="wr-left" style="align-items:flex-start;flex:1;min-width:0">'+
-          '<div class="wr-date" style="padding-top:2px">'+s.giorno+' '+s.data+'</div>'+
-          '<div style="font-size:16px;padding-top:2px">'+icona(s.nome)+'</div>'+
+          '<div class="wr-date" style="padding-top:2px">'+s.giorno+' '+s.data+(isToday?' <span style=\'color:var(--purple);font-weight:700\'>· today</span>':'')+'</div>'+
+          '<div style="font-size:16px;padding-top:2px">'+(isDone?'✓':icona(s.nome))+'</div>'+
           mainContent+
         '</div>'+
         '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;margin-left:8px">'+
           (s.tipo!=='riposo'?'<button class="add-extra-btn" style="color:var(--purple);border-color:rgba(185,167,255,0.3)" onclick="event.stopPropagation();openModal(\''+s.nome+'\',\''+s.giorno+' '+s.data+'\',\''+s.orario+'\','+i+',\'flex\')">✦ Flex</button>':'')+
           '<button class="add-extra-btn" onclick="event.stopPropagation();openAggiungi('+i+','+( s.tipo!=='riposo')+')">+ Add</button>'+
-          '<div class="sport-dot" style="background:'+colore(s.nome)+'"></div>'+
+          '<div class="sport-dot" style="background:'+(isDone?'var(--teal)':colore(s.nome))+'"></div>'+
         '</div>';
     }
     wl.appendChild(row);
@@ -1441,6 +1559,12 @@ function openModal(session,day,orario,idx,mode){
   document.getElementById('modalIcon').textContent=icona(session);
   document.getElementById('modalIcon').style.color=colore(session);
   document.getElementById('flexModal').classList.add('open');
+  document.getElementById('flexModal').scrollTop = 0;
+  var modalElScroll = document.querySelector('#flexModal .modal');
+  if(modalElScroll) modalElScroll.scrollTop = 0;
+  // Flex mode uses its own inline confirm/cancel inside the AI chat — hide the global confirm button
+  var confirmBtn = document.getElementById('modalConfirmBtn');
+  if(confirmBtn) confirmBtn.style.display = (mode==='aggiungi') ? '' : 'none';
   if(mode==='aggiungi'){ renderAggiungiContent(idx); }
   else { renderFlexContent(session,idx); }
 }
@@ -1457,30 +1581,291 @@ function openAggiungi(idx, onOccupiedDay){
 }
 
 function renderFlexContent(session,idx){
-  var html=
-    '<div class="modal-section-title">What do you want to change?</div>'+
-    '<div class="modal-options" id="actionOptions">'+
-      '<div class="modal-option selected" onclick="selectAction(this,\'orario\')">'+
-        '<div><div class="modal-option-label">○ Change time</div><div class="modal-option-meta">Same day, different slot</div></div>'+
-        '<span class="modal-check">✓</span></div>'+
-      '<div class="modal-option" onclick="selectAction(this,\'giorno\')">'+
-        '<div><div class="modal-option-label">— Move to another day</div><div class="modal-option-meta">Flexa recalculates recovery</div></div>'+
-        '<span class="modal-check">✓</span></div>'+
-      '<div class="modal-option" onclick="selectAction(this,\'sessione\')">'+
-        '<div><div class="modal-option-label">↻ Change session type</div><div class="modal-option-meta">Same day, different sport</div></div>'+
-        '<span class="modal-check">✓</span></div>'+
-      '<div class="modal-option" onclick="openScheda(\''+session+'\');closeModal()">'+
-        '<div><div class="modal-option-label">↗ View session details</div><div class="modal-option-meta">See exercises and timing</div></div>'+
-        '<span style="color:var(--text3);font-size:16px;margin-left:8px">→</span></div>'+
+  modalIdx = idx;
+  var s = piano[idx];
+  var html =
+    '<div class="modal-section-title">Talk to Flexa Coach about this session</div>'+
+    '<div id="flexChatLog" style="display:flex;flex-direction:column;gap:10px;max-height:280px;overflow-y:auto;margin-bottom:12px;padding-right:2px"></div>'+
+    '<div id="flexProposalBox" style="display:none;background:rgba(143,228,207,0.06);border:1px solid rgba(143,228,207,0.22);border-radius:12px;padding:14px;margin-bottom:12px">'+
+      '<div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">✦ Flexa proposes</div>'+
+      '<div id="flexProposalText" style="font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:12px"></div>'+
+      '<div style="display:flex;gap:8px">'+
+        '<button onclick="confirmFlexProposal()" style="flex:1;background:var(--teal);color:#090910;font-weight:700;border:none;border-radius:10px;padding:11px;cursor:pointer;font-family:inherit">✓ Apply</button>'+
+        '<button onclick="dismissFlexProposal()" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:10px;padding:11px 16px;cursor:pointer;font-family:inherit">Not now</button>'+
+      '</div>'+
     '</div>'+
-    '<div id="subSection"></div>'+
-    '<div class="proposta-box" id="propostaBox">'+
-      '<div class="proposta-title">✦ Flexa\'s proposal — confirm to apply</div>'+
-      '<div id="propostaItems"></div>'+
+    '<div style="display:flex;gap:8px;align-items:flex-end">'+
+      '<div contenteditable="true" id="flexChatInput" data-placeholder="e.g. move it to Thursday, or swap to Yoga..." style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:11px 14px;font-size:13px;color:var(--text);max-height:80px;overflow-y:auto;outline:none" onkeydown="flexChatKeydown(event)"></div>'+
+      '<button onclick="sendFlexChat()" id="flexChatSend" style="background:var(--purple);color:#090910;border:none;border-radius:10px;width:40px;height:40px;flex-shrink:0;cursor:pointer;font-size:16px">↑</button>'+
+    '</div>'+
+    '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">'+
+      '<button class="quick-flex-btn" onclick="quickFlexPrompt(&quot;Can you move this to a different day?&quot;)">Move day</button>'+
+      '<button class="quick-flex-btn" onclick="quickFlexPrompt(&quot;Can you change the time?&quot;)">Change time</button>'+
+      '<button class="quick-flex-btn" onclick="quickFlexPrompt(&quot;Can you swap this for a different sport?&quot;)">Change sport</button>'+
+      '<button class="quick-flex-btn" onclick="quickFlexPrompt(&quot;I want to skip this session entirely.&quot;)">Delete</button>'+
     '</div>';
   document.getElementById('modalFlexContent').innerHTML=html;
-  selAction='orario';
-  showSubSection('orario',session);
+
+  // Reset flex chat state for this session
+  flexChatHistory = [];
+  flexPendingAction = null;
+
+  // Get a proactive recommendation from Flexa Coach before the user types anything
+  requestProactiveFlexRecommendation(s);
+}
+
+async function requestProactiveFlexRecommendation(s){
+  var typingEl = appendFlexTyping();
+  try {
+    var prompt = 'Look at this session in context of the full week and give Tatiana a short proactive recommendation '+
+      '(1-2 sentences) about whether this session is well-placed, or if you would suggest changing something '+
+      '(day, time, or sport) BEFORE she tells you what she wants. If everything looks fine, say so briefly and ask what she would like to change. '+
+      'Do not propose a concrete action yet unless something is clearly suboptimal — this is just your opening read of the situation.';
+    flexChatHistory.push({role:'user', content: prompt});
+
+    var res = await fetch('/.netlify/functions/coach', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:400,
+        system: buildFlexSystemPrompt(),
+        messages: flexChatHistory
+      })
+    });
+    var data = await res.json();
+    var raw = (data.content && data.content[0] && data.content[0].text) || '{"message":"I see you want to flex <strong>'+s.nome+'</strong> — what would you like to change?","proposal":null}';
+
+    if(typingEl) typingEl.remove();
+
+    var parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch(e){ parsed = {message: raw, proposal: null}; }
+
+    flexChatHistory.push({role:'assistant', content: raw});
+    appendFlexMsg('coach', parsed.message || ('I see you want to flex <strong>'+s.nome+'</strong> — what would you like to change?'));
+
+    var pbox = document.getElementById('flexProposalBox');
+    var ptext = document.getElementById('flexProposalText');
+    if(parsed.proposal && pbox && ptext){
+      flexPendingAction = parsed.proposal;
+      ptext.textContent = parsed.proposal.summary || 'Apply this change?';
+      pbox.style.display = 'block';
+    }
+  } catch(err){
+    if(typingEl) typingEl.remove();
+    appendFlexMsg('coach', 'I see you want to flex <strong>'+s.nome+'</strong> — '+s.giorno+' '+s.data+' at '+s.orario+'. What would you like to change?');
+  }
+}
+
+function appendFlexMsg(role, html){
+  var log = document.getElementById('flexChatLog');
+  if(!log) return;
+  var b = document.createElement('div');
+  b.style.cssText = role==='user'
+    ? 'align-self:flex-end;max-width:85%;background:var(--purple);color:#090910;border-radius:14px 14px 4px 14px;padding:10px 14px;font-size:13px;line-height:1.5'
+    : 'align-self:flex-start;max-width:90%;background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:14px 14px 14px 4px;padding:10px 14px;font-size:13px;line-height:1.5';
+  b.innerHTML = html;
+  log.appendChild(b);
+  log.scrollTop = log.scrollHeight;
+}
+
+function appendFlexTyping(){
+  var log = document.getElementById('flexChatLog');
+  if(!log) return null;
+  var b = document.createElement('div');
+  b.id = 'flexTyping';
+  b.style.cssText = 'align-self:flex-start;background:var(--bg3);border:1px solid var(--border);border-radius:14px;padding:10px 14px;font-size:13px;color:var(--text3)';
+  b.textContent = 'Flexa is thinking...';
+  log.appendChild(b);
+  log.scrollTop = log.scrollHeight;
+  return b;
+}
+
+function quickFlexPrompt(text){
+  document.getElementById('flexChatInput').innerText = text;
+  sendFlexChat();
+}
+
+function flexChatKeydown(e){
+  if(e.key==='Enter' && !e.shiftKey){
+    e.preventDefault();
+    sendFlexChat();
+  }
+}
+
+var flexChatHistory = [];
+var flexPendingAction = null;
+var flexChatBusy = false;
+
+function buildFlexSystemPrompt(){
+  var s = piano[modalIdx];
+  var weekSummary = piano.map(function(d,i){
+    return d.giorno+' '+d.data+': '+d.nome+(d.orario!=='—'?' ('+d.orario+')':'')+(i===modalIdx?'  ← THIS SESSION':'');
+  }).join('\n');
+
+  var checkinSummary = (checkinData && checkinData.date===TODAY.toDateString())
+    ? 'Readiness '+checkinData.readiness+', Sleep '+checkinData.sleep+', Battery '+checkinData.battery+', Feel '+checkinData.feel+'/10'
+    : 'No check-in today';
+
+  return 'You are Flexa Coach, helping Tatiana flex ONE specific session in her weekly plan.\n\n'+
+    'SESSION BEING FLEXED: '+s.nome+' on '+s.giorno+' '+s.data+' at '+s.orario+' (day index '+modalIdx+')\n\n'+
+    'FULL WEEK PLAN:\n'+weekSummary+'\n\n'+
+    'TODAY\'S CHECK-IN: '+checkinSummary+'\n\n'+
+    'Tatiana will tell you what she wants to change about this session (move day, change time, change sport, or delete it). '+
+    'IMPORTANT: whenever she moves this session to a different day OR changes what sport it is, you MUST also ask or confirm what TIME she wants to train that day '+
+    '(default to the same time slot 07:00-07:45 unless she says otherwise) — never finalize a move/change without knowing the time, because the time determines whether there is enough recovery before/after neighbouring sessions. '+
+    'If the new day+time creates a recovery conflict with the session before or after it (e.g. less than 24h between a heavy session and the next, or back-to-back strength on the same muscle group), say so explicitly and propose adjusting the time or suggest also shifting the neighbouring session — do not silently ignore it. '+
+    'Reason like a real personal trainer — consider recovery windows (48h between strength sessions on the same muscle group, at least 24h before/after cardio), her goals (body recomposition + longevity), and her plan pattern (Weights Upper / Run / Weights Lower / Yoga).\n\n'+
+    'RESPONSE FORMAT — always respond with valid JSON only, no markdown, no extra text:\n'+
+    '{\n'+
+    '  "message": "<your conversational reply to show her, 1-3 sentences, can include <strong> tags>",\n'+
+    '  "proposal": null OR {\n'+
+    '    "action": "move_day" | "change_time" | "change_sport" | "delete",\n'+
+    '    "target_day_index": <0-6, only for move_day — REQUIRED together with new_time>,\n'+
+    '    "new_time": "<HH:MM–HH:MM — REQUIRED for move_day AND change_time AND change_sport. If she only gives a start time, calculate the end time yourself based on typical duration for that sport: Weights sessions = 45 min, Run = 30 min (or 20 min if labelled \'easy\'), Yoga = 45 min, Padel/Beach Volley/Beach Tennis = 60-90 min, Stand-up Paddle/Swimming/Hiking = 60 min, Dance = 60 min. Defaults to current time if she did not specify a new one at all.>",\n'+
+    '    "new_sport": "<sport name from her list, only for change_sport>",\n'+
+    '    "new_type": "<forza|cardio|yoga|riposo, only for change_sport>",\n'+
+    '    "summary": "<short human-readable description of what will change, including the time, e.g. \'Move Weights Upper to Thursday 18:00, Run shifts to Friday\'>"\n'+
+    '  }\n'+
+    '}\n\n'+
+    'Set "proposal" to null if you are still asking a clarifying question. Only set a concrete proposal once you know exactly what to do. '+
+    'If her request would create a bad recovery pattern (e.g. two heavy strength days back to back), say so in the message and propose the better alternative instead — do not just comply blindly.';
+}
+
+async function sendFlexChat(){
+  if(flexChatBusy) return;
+  var inputEl = document.getElementById('flexChatInput');
+  var text = inputEl.innerText.trim();
+  if(!text) return;
+
+  appendFlexMsg('user', text);
+  inputEl.innerText = '';
+  flexChatHistory.push({role:'user', content:text});
+
+  flexChatBusy = true;
+  var typingEl = appendFlexTyping();
+  var sendBtn = document.getElementById('flexChatSend');
+  if(sendBtn) sendBtn.disabled = true;
+
+  try {
+    var res = await fetch('/.netlify/functions/coach', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:600,
+        system: buildFlexSystemPrompt(),
+        messages: flexChatHistory
+      })
+    });
+    var data = await res.json();
+    var raw = (data.content && data.content[0] && data.content[0].text) || '{"message":"Something went wrong — try again.","proposal":null}';
+
+    if(typingEl) typingEl.remove();
+
+    var parsed;
+    try {
+      var clean = raw.replace(/```json|```/g,'').trim();
+      parsed = JSON.parse(clean);
+    } catch(e){
+      parsed = {message: raw, proposal: null};
+    }
+
+    flexChatHistory.push({role:'assistant', content: raw});
+    appendFlexMsg('coach', parsed.message || 'Got it.');
+
+    var pbox = document.getElementById('flexProposalBox');
+    var ptext = document.getElementById('flexProposalText');
+    if(parsed.proposal && pbox && ptext){
+      flexPendingAction = parsed.proposal;
+      ptext.textContent = parsed.proposal.summary || 'Apply this change?';
+      pbox.style.display = 'block';
+    } else if(pbox){
+      pbox.style.display = 'none';
+      flexPendingAction = null;
+    }
+
+  } catch(err){
+    if(typingEl) typingEl.remove();
+    appendFlexMsg('coach', 'Connection issue — please try again.');
+  }
+
+  flexChatBusy = false;
+  if(sendBtn) sendBtn.disabled = false;
+}
+
+function durationMinutes(orario){
+  // Returns the session length in minutes from an "HH:MM–HH:MM" string. Default 45.
+  if(!orario || orario==='—') return 45;
+  var parts = orario.split(/[–-]/);
+  if(parts.length!==2) return 45;
+  var toMin = function(t){ var m=t.trim().match(/(\d{1,2}):(\d{2})/); return m?parseInt(m[1],10)*60+parseInt(m[2],10):null; };
+  var s=toMin(parts[0]), e=toMin(parts[1]);
+  if(s==null||e==null) return 45;
+  var d=e-s; if(d<0)d+=1440; return d;
+}
+
+function buildOrario(startStr, durMin){
+  // Given a start "HH:MM" (or full range) and a duration in minutes, returns "HH:MM–HH:MM"
+  var m = startStr.trim().match(/(\d{1,2}):(\d{2})/);
+  if(!m) return startStr;
+  var startMin = parseInt(m[1],10)*60 + parseInt(m[2],10);
+  var endMin = startMin + durMin;
+  var pad = function(n){ return String(n).padStart(2,'0'); };
+  var sH=Math.floor(startMin/60)%24, sM=startMin%60;
+  var eH=Math.floor(endMin/60)%24, eM=endMin%60;
+  return pad(sH)+':'+pad(sM)+'–'+pad(eH)+':'+pad(eM);
+}
+
+function normalizeOrario(newTime, currentOrario){
+  // If the AI gave a full range (contains a dash), keep it. If it gave only a start
+  // time, calculate the end by preserving the current session's duration.
+  if(!newTime) return currentOrario;
+  if(/[–-]/.test(newTime)) return newTime; // already a full range
+  var dur = durationMinutes(currentOrario);
+  return buildOrario(newTime, dur);
+}
+
+function confirmFlexProposal(){
+  if(!flexPendingAction || modalIdx<0) return;
+  var a = flexPendingAction;
+  var idx = modalIdx;
+
+  if(a.action === 'move_day' && a.target_day_index != null){
+    var movedOrario = normalizeOrario(a.new_time, piano[idx].orario);
+    var tmp = {nome:piano[a.target_day_index].nome, tipo:piano[a.target_day_index].tipo, orario:piano[a.target_day_index].orario};
+    piano[a.target_day_index].nome = piano[idx].nome;
+    piano[a.target_day_index].tipo = piano[idx].tipo;
+    piano[a.target_day_index].orario = movedOrario;
+    piano[idx].nome = tmp.nome; piano[idx].tipo = tmp.tipo; piano[idx].orario = tmp.orario;
+  } else if(a.action === 'change_time' && a.new_time){
+    piano[idx].orario = normalizeOrario(a.new_time, piano[idx].orario);
+  } else if(a.action === 'change_sport' && a.new_sport){
+    piano[idx].nome = a.new_sport;
+    piano[idx].tipo = a.new_type || piano[idx].tipo;
+    if(a.new_time) piano[idx].orario = normalizeOrario(a.new_time, piano[idx].orario);
+  } else if(a.action === 'delete'){
+    piano[idx].nome = 'Rest';
+    piano[idx].tipo = 'riposo';
+    piano[idx].orario = '—';
+  }
+
+  pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano));
+  saveState();
+  renderPiano();
+
+  appendFlexMsg('coach', '✓ Done — your plan has been updated.');
+  document.getElementById('flexProposalBox').style.display='none';
+  flexPendingAction = null;
+
+  setTimeout(function(){ closeModal(); }, 1100);
+}
+
+function dismissFlexProposal(){
+  document.getElementById('flexProposalBox').style.display='none';
+  flexPendingAction = null;
+  appendFlexMsg('coach', 'No problem — let me know if you want something else.');
 }
 
 function selectAction(el,action){
@@ -1643,33 +2028,185 @@ function selectScelta(tipo){
 
 // ─── Modal: Add sporadic sport ───────────────────────────────────────────────
 function renderAggiungiContent(idx){
-  var CAT_LOAD={'strength':'high','cardio':'medium','mobility':'light'};
-  var html='<div class="modal-section-title">Which sport do you want to add?</div><div class="modal-options" id="sportOptions">';
-  MY_SPORTS.forEach(function(sp){
-    var carico=CAT_LOAD[sp.cat]||'medium';
-    html+='<div class="modal-option" onclick="selectSportSporadico(this,&quot;'+sp.name+'&quot;,&quot;'+carico+'&quot;)">'+
-      '<div style="display:flex;align-items:center;gap:8px">'+
-        '<span style="font-size:16px">'+sp.emoji+'</span>'+
-        '<div>'+
-          '<div class="modal-option-label">'+sp.name+'</div>'+
-          '<div class="modal-option-meta" style="text-transform:capitalize">'+sp.cat+' · '+sp.note+'</div>'+
-        '</div>'+
+  var d = piano[idx];
+  var html =
+    '<div class="modal-section-title">Tell Flexa Coach what you want to add</div>'+
+    '<div id="flexChatLog" style="display:flex;flex-direction:column;gap:10px;max-height:280px;overflow-y:auto;margin-bottom:12px;padding-right:2px"></div>'+
+    '<div id="flexProposalBox" style="display:none;background:rgba(143,228,207,0.06);border:1px solid rgba(143,228,207,0.22);border-radius:12px;padding:14px;margin-bottom:12px">'+
+      '<div style="font-size:11px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:8px">✦ Flexa proposes</div>'+
+      '<div id="flexProposalText" style="font-size:13px;color:var(--text2);line-height:1.55;margin-bottom:12px"></div>'+
+      '<div style="display:flex;gap:8px">'+
+        '<button onclick="confirmAddProposal()" style="flex:1;background:var(--teal);color:#090910;font-weight:700;border:none;border-radius:10px;padding:11px;cursor:pointer;font-family:inherit">✓ Apply</button>'+
+        '<button onclick="dismissFlexProposal()" style="background:var(--bg4);color:var(--text2);border:1px solid var(--border);border-radius:10px;padding:11px 16px;cursor:pointer;font-family:inherit">Not now</button>'+
       '</div>'+
-      '<span class="modal-check">✓</span>'+
-    '</div>';
-  });
-  html+=
     '</div>'+
-    '<div class="impatto-box" id="impattoBox">'+
-      '<div class="impatto-title">⚠ Impact on your plan</div>'+
-      '<div id="impattoText" style="font-size:13px;color:var(--text2);line-height:1.6"></div>'+
-      '<div class="modal-section-title" style="margin-top:12px">What do you want to do?</div>'+
-      '<div class="scelta-grid">'+
-        '<div class="scelta-btn" id="scelta1" onclick="selectScelta(&quot;mantieni&quot;)">Keep the plan<br><span style="font-size:10px;color:var(--text3);font-weight:400">I\'ll get an alert</span></div>'+
-        '<div class="scelta-btn" id="scelta2" onclick="selectScelta(&quot;ribilancia&quot;)">Rebalance<br><span style="font-size:10px;color:var(--text3);font-weight:400">Flexa adapts</span></div>'+
-      '</div>'+
+    '<div style="display:flex;gap:8px;align-items:flex-end">'+
+      '<div contenteditable="true" id="flexChatInput" data-placeholder="e.g. I want to add a 45 min cycling session..." style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:11px 14px;font-size:13px;color:var(--text);max-height:80px;overflow-y:auto;outline:none" onkeydown="flexChatKeydown(event)"></div>'+
+      '<button onclick="sendAddChat()" id="flexChatSend" style="background:var(--purple);color:#090910;border:none;border-radius:10px;width:40px;height:40px;flex-shrink:0;cursor:pointer;font-size:16px">↑</button>'+
+    '</div>'+
+    '<div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">'+
+      '<button class="quick-flex-btn" onclick="quickAddPrompt(&quot;Add Padel this evening&quot;)">🎾 Padel</button>'+
+      '<button class="quick-flex-btn" onclick="quickAddPrompt(&quot;Add a Run&quot;)">🏃 Run</button>'+
+      '<button class="quick-flex-btn" onclick="quickAddPrompt(&quot;Add Yoga&quot;)">🧘 Yoga</button>'+
+      '<button class="quick-flex-btn" onclick="quickAddPrompt(&quot;I want to add something else — let me describe it&quot;)">+ Other sport</button>'+
     '</div>';
   document.getElementById('modalFlexContent').innerHTML=html;
+
+  flexChatHistory = [];
+  flexPendingAction = null;
+  requestProactiveAddRecommendation(d);
+}
+
+function quickAddPrompt(text){
+  document.getElementById('flexChatInput').innerText = text;
+  sendAddChat();
+}
+
+function buildAddSystemPrompt(){
+  var d = piano[modalIdx];
+  var weekSummary = piano.map(function(s,i){
+    return s.giorno+' '+s.data+': '+s.nome+(s.orario!=='—'?' ('+s.orario+')':'')+(i===modalIdx?'  <- SHE WANTS TO ADD SOMETHING HERE':'');
+  }).join('\n');
+  var sportsKnown = MY_SPORTS.map(function(s){ return s.emoji+' '+s.name+' ('+s.cat+')'; }).join(', ');
+  var checkinSummary = (checkinData && checkinData.date===TODAY.toDateString())
+    ? 'Readiness '+checkinData.readiness+', Sleep '+checkinData.sleep+', Battery '+checkinData.battery+', Feel '+checkinData.feel+'/10'
+    : 'No check-in today';
+
+  var lines = [];
+  lines.push('You are Flexa Coach, helping Tatiana ADD a new activity to '+d.giorno+' '+d.data+' (currently: '+d.nome+').');
+  lines.push('');
+  lines.push('FULL WEEK PLAN:');
+  lines.push(weekSummary);
+  lines.push('');
+  lines.push('SPORTS SHE ALREADY DOES: '+sportsKnown);
+  lines.push('');
+  lines.push('TODAYS CHECK-IN: '+checkinSummary);
+  lines.push('');
+  lines.push('She is NOT restricted to the list above - she can mention ANY sport (e.g. cycling, climbing, surfing) and you should accept it, assigning a sensible type (forza/cardio/yoga) and load based on what that sport typically involves.');
+  lines.push('Reason like a real personal trainer about whether adding this activity here makes sense given the rest of her week (recovery, load balance), and flag it conversationally if it creates a problem, but do not block her, just advise.');
+  lines.push('');
+  lines.push('RESPONSE FORMAT - always respond with valid JSON only, no markdown, no extra text:');
+  lines.push('{');
+  lines.push('  "message": "<your conversational reply, 1-3 sentences, can include <strong> tags>",');
+  lines.push('  "proposal": null OR {');
+  lines.push('    "sport_name": "<name to display, Title Case>",');
+  lines.push('    "type": "forza" or "cardio" or "yoga",');
+  lines.push('    "time": "<HH:MM-HH:MM. If she only gives a start time, calculate the end time based on typical duration: Weights=45min, Run=30min, Yoga=45min, Padel/Beach Volley/Beach Tennis=60-90min, Stand-up Paddle/Swimming/Hiking=60min, Dance=60min>",');
+  lines.push('    "summary": "<short human-readable description, e.g. Add Cycling at 18:00 on Wed 25>"');
+  lines.push('  }');
+  lines.push('}');
+  lines.push('');
+  lines.push('Set proposal to null only if you are still asking a clarifying question (e.g. what time, how long). Set a concrete proposal as soon as you know the sport and roughly when.');
+  return lines.join('\n');
+}
+
+async function requestProactiveAddRecommendation(d){
+  var typingEl = appendFlexTyping();
+  try {
+    var prompt = 'Tatiana wants to add an activity to '+d.giorno+' '+d.data+'. Briefly greet her and ask what she wants to add — keep it short, 1 sentence, friendly.';
+    flexChatHistory.push({role:'user', content: prompt});
+    var res = await fetch('/.netlify/functions/coach', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-6', max_tokens:200, system: buildAddSystemPrompt(), messages: flexChatHistory})
+    });
+    var data = await res.json();
+    var raw = (data.content && data.content[0] && data.content[0].text) || '{"message":"What would you like to add to '+d.giorno+' '+d.data+'?","proposal":null}';
+    if(typingEl) typingEl.remove();
+    var parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch(e){ parsed = {message: raw, proposal: null}; }
+    flexChatHistory.push({role:'assistant', content: raw});
+    appendFlexMsg('coach', parsed.message || ('What would you like to add to '+d.giorno+' '+d.data+'?'));
+  } catch(err){
+    if(typingEl) typingEl.remove();
+    appendFlexMsg('coach', 'What would you like to add to '+d.giorno+' '+d.data+'?');
+  }
+}
+
+async function sendAddChat(){
+  if(flexChatBusy) return;
+  var inputEl = document.getElementById('flexChatInput');
+  var text = inputEl.innerText.trim();
+  if(!text) return;
+  appendFlexMsg('user', text);
+  inputEl.innerText = '';
+  flexChatHistory.push({role:'user', content:text});
+
+  flexChatBusy = true;
+  var typingEl = appendFlexTyping();
+  var sendBtn = document.getElementById('flexChatSend');
+  if(sendBtn) sendBtn.disabled = true;
+
+  try {
+    var res = await fetch('/.netlify/functions/coach', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-6', max_tokens:400, system: buildAddSystemPrompt(), messages: flexChatHistory})
+    });
+    var data = await res.json();
+    var raw = (data.content && data.content[0] && data.content[0].text) || '{"message":"Something went wrong — try again.","proposal":null}';
+    if(typingEl) typingEl.remove();
+    var parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch(e){ parsed = {message: raw, proposal: null}; }
+    flexChatHistory.push({role:'assistant', content: raw});
+    appendFlexMsg('coach', parsed.message || 'Got it.');
+
+    var pbox = document.getElementById('flexProposalBox');
+    var ptext = document.getElementById('flexProposalText');
+    if(parsed.proposal && pbox && ptext){
+      flexPendingAction = parsed.proposal;
+      ptext.textContent = parsed.proposal.summary || 'Add this activity?';
+      pbox.style.display = 'block';
+    } else if(pbox){
+      pbox.style.display = 'none';
+      flexPendingAction = null;
+    }
+  } catch(err){
+    if(typingEl) typingEl.remove();
+    appendFlexMsg('coach', 'Connection issue — please try again.');
+  }
+  flexChatBusy = false;
+  if(sendBtn) sendBtn.disabled = false;
+}
+
+function defaultDurationForType(tipo){
+  // Sensible default session length in minutes by activity type
+  if(tipo==='forza') return 45;
+  if(tipo==='yoga') return 45;
+  if(tipo==='cardio') return 30;
+  return 45;
+}
+
+function confirmAddProposal(){
+  if(!flexPendingAction || modalIdx<0) return;
+  var a = flexPendingAction;
+  var tipo = a.type || 'cardio';
+  // Make sure we always store a full HH:MM–HH:MM range so duration stays consistent
+  var fullTime;
+  if(a.time && /[–-]/.test(a.time)){
+    fullTime = a.time; // already a range
+  } else if(a.time && /\d{1,2}:\d{2}/.test(a.time)){
+    fullTime = buildOrario(a.time, defaultDurationForType(tipo)); // start only → add duration
+  } else {
+    fullTime = a.time || 'Evening'; // vague time like "Evening" — leave as-is for extras
+  }
+  var isMainEmpty = piano[modalIdx].tipo === 'riposo';
+  if(isMainEmpty){
+    // No session yet today — make this the main session for the day
+    piano[modalIdx].nome = a.sport_name;
+    piano[modalIdx].tipo = tipo;
+    piano[modalIdx].orario = /\d{1,2}:\d{2}/.test(fullTime) ? fullTime : '07:00–07:45';
+    pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano));
+  } else {
+    // Already has a session — log as an extra alongside it
+    addExtraActivity(modalIdx, a.sport_name, fullTime);
+  }
+  saveState();
+  renderPiano();
+  appendFlexMsg('coach', '✓ Added — your plan has been updated.');
+  document.getElementById('flexProposalBox').style.display='none';
+  flexPendingAction = null;
+  setTimeout(function(){ closeModal(); }, 1100);
 }
 function selectSportSporadico(el,nome,carico){
   document.querySelectorAll('#sportOptions .modal-option').forEach(function(o){o.classList.remove('selected');});
@@ -1774,6 +2311,8 @@ function showSection(id){
     if(btn) btn.classList.toggle('active',t===id);
   });
   window.scrollTo(0,0);
+  // Refresh month view when entering Months tab
+  if(id==='mesi' && typeof renderMonth==='function'){ renderMonth(); }
   // Scroll coach to bottom when opening
   if(id==='coach'){
     setTimeout(function(){
@@ -1785,6 +2324,64 @@ function showSection(id){
 
 // ─── Session detail sheets ────────────────────────────────────────────────────
 var SCHEDE = {
+  'Weights: Upper body (light)':
+    '<div class="fase-banner f1"><span>Recovery · Wk 1–2</span></div>'+
+    '<div class="section-title">🏋️ Weights: Upper body (light)</div>'+
+    '<div class="section-meta" style="color:var(--purple);font-size:12px;margin-bottom:8px">Chest · Shoulders · Back · Core (gentle)</div>'+
+    '<div class="section-meta"><span class="orario-badge">○ 07:00 – 07:30</span><span>30 min · Home</span></div>'+
+    '<div class="alert-box alert-info"><span>✦</span><span>First sessions back after 6 weeks off — load is intentionally light. Stop any exercise that feels off.</span></div>'+
+    '<div class="block-title">Warm-up — 6 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Exercise</th><th style="width:26%">Duration</th><th>Notes</th></tr>'+
+    '<tr><td>Walk in place + arm circles</td><td>2 min</td><td>Easy pace</td></tr>'+
+    '<tr><td>Cat-cow</td><td>8 reps</td><td>Slow, no forcing</td></tr>'+
+    '<tr><td>Bodyweight squat</td><td>8 reps</td><td>Comfortable depth</td></tr></table>'+
+    '<div class="block-title">Main block — 18 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Exercise</th><th style="width:26%">Sets × Reps</th><th>Rest</th></tr>'+
+    '<tr><td>Goblet squat (light)</td><td>2 × 10</td><td>60 s</td></tr>'+
+    '<tr><td>Dumbbell row (light)</td><td>2 × 10/side</td><td>60 s</td></tr>'+
+    '<tr><td>Wall push-up</td><td>2 × 10</td><td>45 s</td></tr>'+
+    '<tr><td>Glute bridge</td><td>2 × 12</td><td>45 s</td></tr></table>'+
+    '<div class="block-title">Cool-down — 6 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Stretch</th><th style="width:26%">Duration</th><th>Notes</th></tr>'+
+    '<tr><td>Chest opener</td><td>30 s</td><td></td></tr>'+
+    '<tr><td>Seated forward fold</td><td>40 s</td><td>Gentle</td></tr></table>'+
+    '<div class="note"><strong>Load:</strong> very light, focus on movement quality and re-learning the patterns. Will progress over the next 2 weeks.</div>',
+
+  'Weights: Lower body (light)':
+    '<div class="fase-banner f1"><span>Recovery · Wk 1–2</span></div>'+
+    '<div class="section-title">🏋️ Weights: Lower body (light)</div>'+
+    '<div class="section-meta" style="color:var(--purple);font-size:12px;margin-bottom:8px">Glutes · Quads · Hamstrings (gentle)</div>'+
+    '<div class="section-meta"><span class="orario-badge">○ 07:00 – 07:30</span><span>30 min · Home</span></div>'+
+    '<div class="alert-box alert-info"><span>✦</span><span>First sessions back — bodyweight and light load only. Build base before adding weight.</span></div>'+
+    '<div class="block-title">Warm-up — 6 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Exercise</th><th style="width:26%">Duration</th><th>Notes</th></tr>'+
+    '<tr><td>March on the spot</td><td>2 min</td><td>Easy pace</td></tr>'+
+    '<tr><td>Standing hip circles</td><td>8/direction</td><td>Small circles</td></tr></table>'+
+    '<div class="block-title">Main block — 18 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Exercise</th><th style="width:26%">Sets × Reps</th><th>Rest</th></tr>'+
+    '<tr><td>Bodyweight squat</td><td>2 × 12</td><td>60 s</td></tr>'+
+    '<tr><td>Step-up (low step)</td><td>2 × 8/leg</td><td>60 s</td></tr>'+
+    '<tr><td>Glute bridge</td><td>2 × 12</td><td>45 s</td></tr>'+
+    '<tr><td>Wall sit</td><td>2 × 20 s</td><td>45 s</td></tr></table>'+
+    '<div class="block-title">Cool-down — 6 min</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Stretch</th><th style="width:26%">Duration</th><th>Notes</th></tr>'+
+    '<tr><td>Quad stretch</td><td>30 s/side</td><td></td></tr>'+
+    '<tr><td>Seated forward fold</td><td>40 s</td><td>Gentle</td></tr></table>'+
+    '<div class="note"><strong>Load:</strong> bodyweight or very light. This is about reactivating the pattern, not building strength yet.</div>',
+
+  'Run (easy)':
+    '<div class="fase-banner f2"><span>Recovery · Wk 3–4</span></div>'+
+    '<div class="section-title">🏃 Run (easy)</div>'+
+    '<div class="section-meta" style="color:var(--teal);font-size:12px;margin-bottom:8px">Zone 2 cardio · Conversational pace</div>'+
+    '<div class="section-meta"><span class="orario-badge">○ 07:00 – 07:25</span><span>25 min · Outdoor</span></div>'+
+    '<div class="alert-box alert-info"><span>✦</span><span>Reintroducing cardio after the break — easy pace, you should be able to hold a conversation throughout.</span></div>'+
+    '<div class="block-title">Structure</div>'+
+    '<table class="ex-table"><tr><th style="width:48%">Block</th><th style="width:26%">Duration</th><th>Notes</th></tr>'+
+    '<tr><td>Walk warm-up</td><td>3 min</td><td>Easy pace</td></tr>'+
+    '<tr><td>Run/walk intervals</td><td>14 min</td><td>2 min run / 1 min walk</td></tr>'+
+    '<tr><td>Walk cool-down</td><td>3 min</td><td>Bring heart rate down</td></tr></table>'+
+    '<div class="note"><strong>Load:</strong> low. Goal is aerobic base, not pace. Progresses to continuous running in Phase 3.</div>',
+
   'Weights: Upper body':
     '<div class="fase-banner f1"><span>Wk 1–2 · Reactivation</span></div>'+
     '<div class="section-title">🏋️ Weights: Upper body</div>'+
@@ -1902,19 +2499,218 @@ var SCHEDE = {
     '<div class="note"><strong>What Flexa does:</strong> logs as high cardio (same as Padel). Suggests lighter session or rest the day after if played 90+ min.<br><br><strong>Muscles:</strong> shoulders, forearms, obliques, legs — full-body agility pattern.</div>'
 };
 
-function openScheda(nome){
+function openScheda(nome, idxOverride){
   var content = SCHEDE[nome];
   if(!content){
     content='<div class="section-title">'+icona(nome)+' '+nome+'</div><div class="note">Session details coming soon.</div>';
   }
-  document.getElementById('schedaContent').innerHTML=content;
+  // Find this session's index in current piano if not provided
+  var idx = idxOverride;
+  if(idx==null){
+    idx = -1;
+    piano.forEach(function(s,i){ if(s.nome===nome) idx=i; });
+  }
+  schedaIdx = idx;
+
+  var actionsHTML = '';
+  if(idx>=0){
+    var isDoneS = !!(completions[currentWeekIdx] && completions[currentWeekIdx][idx]);
+    actionsHTML =
+      '<div style="display:flex;gap:8px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">'+
+        '<button onclick="toggleDone('+idx+');closeScheda()" style="flex:1;background:'+(isDoneS?'rgba(143,228,207,0.15)':'var(--teal)')+';color:'+(isDoneS?'var(--teal)':'#090910')+';border:none;border-radius:10px;padding:12px;font-weight:700;cursor:pointer;font-family:inherit;font-size:13px">'+(isDoneS?'✓ Done':'○ Mark Done')+'</button>'+
+        '<button onclick="openFlexFromScheda('+idx+')" style="background:rgba(185,167,255,0.1);border:1px solid rgba(185,167,255,0.25);color:var(--purple);border-radius:10px;padding:12px 16px;font-weight:600;cursor:pointer;font-family:inherit;font-size:13px">✦ Flex it.</button>'+
+        '<button onclick="deleteSessionFromScheda('+idx+')" style="background:rgba(255,100,100,0.08);border:1px solid rgba(255,100,100,0.2);color:#ff7a7a;border-radius:10px;padding:12px 14px;font-weight:600;cursor:pointer;font-family:inherit;font-size:13px">✕</button>'+
+      '</div>';
+  }
+
+  document.getElementById('schedaContent').innerHTML=content+actionsHTML;
   document.getElementById('schedaModal').classList.add('open');
   document.getElementById('schedaModal').scrollTop=0;
 }
 function closeScheda(){ document.getElementById('schedaModal').classList.remove('open'); }
 
+var schedaIdx = -1;
+
+function openFlexFromScheda(idx){
+  closeScheda();
+  var s = piano[idx];
+  openModal(s.nome, s.giorno+' '+s.data, s.orario, idx, 'flex');
+}
+
+function deleteSessionFromScheda(idx){
+  if(!confirm('Remove this session? The day becomes Rest.')) return;
+  piano[idx].nome = 'Rest';
+  piano[idx].tipo = 'riposo';
+  piano[idx].orario = '—';
+  pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano));
+  saveState();
+  renderPiano();
+  closeScheda();
+}
+
+// ─── Back to top button ────────────────────────────────────────────────────
+window.addEventListener('scroll', function(){
+  var btn = document.getElementById('backToTopBtn');
+  if(!btn) return;
+  btn.style.display = window.scrollY > 200 ? 'flex' : 'none';
+});
+
 // ─── Init ────────────────────────────────────────────────────────────────────
+// Set bottom nav "Week" icon: 7 dots representing the week, today highlighted in purple
+(function setWeekNavIcon(){
+  var icon = document.getElementById('bnPianoIcon');
+  if(!icon) return;
+  // Monday=0 ... Sunday=6 (JS getDay: Sun=0, so remap)
+  var jsDay = TODAY.getDay();
+  var todayIdx = (jsDay===0) ? 6 : jsDay-1;
+  var dots = '';
+  for(var i=0;i<7;i++){
+    if(i===todayIdx){
+      dots += '<span style="width:5px;height:5px;border-radius:50%;background:var(--purple);flex-shrink:0"></span>';
+    } else {
+      dots += '<span style="width:3px;height:3px;border-radius:50%;background:var(--text3);flex-shrink:0"></span>';
+    }
+  }
+  icon.innerHTML = dots;
+})();
+
 renderPiano();
+
+// ─── Months view (dynamic, single-month with arrow/swipe navigation) ──────────
+// monthOffset: 0 = current month, +1 = next, -1 = previous
+var monthOffset = 0;
+var MONTH_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function phaseForMonday(monday){
+  // Mirror buildWeeks phase logic: planStart = Mon Jun 22 2026 is week 0
+  var planStart = new Date(2026,5,22); planStart.setHours(0,0,0,0);
+  var msPerWeek = 7*24*60*60*1000;
+  var weekNum = Math.round((monday - planStart)/msPerWeek);
+  var absWk = weekNum+1;
+  if(absWk<=0) return {plan:{}, label:'Free week'};
+  if(absWk<=2) return {plan:PHASE1, label:'Reactivation (light)'};
+  if(absWk<=4) return {plan:PHASE2, label:'Progression'};
+  return {plan:(weekNum%2===0?PLAN_A:PLAN_B), label:'Full plan'};
+}
+
+function sessionForDate(date){
+  // Returns the planned session object for a given calendar date, or null
+  var monday = getMondayOf(date);
+  var ph = phaseForMonday(monday);
+  var dayIdx = (date.getDay()===0) ? 6 : date.getDay()-1; // Mon=0..Sun=6
+  return ph.plan[dayIdx] || null;
+}
+
+function renderMonth(){
+  var base = new Date(TODAY.getFullYear(), TODAY.getMonth()+monthOffset, 1);
+  var year = base.getFullYear(), month = base.getMonth();
+
+  // Header
+  var nameEl = document.getElementById('monthNavName');
+  var focusEl = document.getElementById('monthNavFocus');
+  if(nameEl) nameEl.textContent = MONTH_FULL[month]+(year!==TODAY.getFullYear()?' '+year:'');
+
+  // Determine dominant phase label for this month (sample mid-month)
+  var midPoint = new Date(year, month, 15);
+  var midPhase = phaseForMonday(getMondayOf(midPoint));
+  if(focusEl) focusEl.textContent = midPhase.label;
+
+  // Build calendar cells
+  var cellsEl = document.getElementById('monthCalCells');
+  if(!cellsEl) return;
+  var firstDay = new Date(year, month, 1);
+  var firstWeekday = (firstDay.getDay()===0) ? 6 : firstDay.getDay()-1; // Mon=0
+  var daysInMonth = new Date(year, month+1, 0).getDate();
+
+  var TYPE_CLASS = {'forza':'forza','yoga':'yoga','cardio':'cardio'};
+  var counts = {forza:0, cardio:0, yoga:0, total:0};
+  var html = '';
+  for(var i=0;i<firstWeekday;i++) html += '<div class="cal-day empty"></div>';
+  for(var d=1; d<=daysInMonth; d++){
+    var date = new Date(year, month, d);
+    date.setHours(0,0,0,0);
+    var sess = sessionForDate(date);
+    var isPast = date < TODAY;
+    var isToday = date.getTime()===TODAY.getTime();
+    var cls = 'cal-day';
+    var icon = '';
+    if(sess){
+      var tcls = TYPE_CLASS[sess.t] || 'cardio';
+      cls += ' '+tcls;
+      icon = '<div class="cal-icon">'+icona(sess.n)+'</div>';
+      counts.total++;
+      if(sess.t==='forza') counts.forza++;
+      else if(sess.t==='cardio') counts.cardio++;
+      else if(sess.t==='yoga') counts.yoga++;
+    } else {
+      cls += ' rest-day';
+    }
+    if(isPast) cls += ' past';
+    if(isToday) cls += ' today-mark';
+    var onclick = sess ? ' onclick="openMonthDay('+d+', \''+sess.n.replace(/'/g,"\\'")+'\')"' : '';
+    html += '<div class="'+cls+'"'+onclick+'>'+d+icon+'</div>';
+  }
+  cellsEl.innerHTML = html;
+
+  // Stats
+  var statsEl = document.getElementById('monthStats');
+  if(statsEl){
+    var pct = function(n){ return counts.total>0 ? Math.round(n/counts.total*100)+'%' : '0%'; };
+    statsEl.innerHTML =
+      '<div class="mstat"><div class="mstat-num" style="color:var(--purple)">'+pct(counts.forza)+'</div><div class="mstat-lbl">Strength</div></div>'+
+      '<div class="mstat"><div class="mstat-num" style="color:var(--teal)">'+pct(counts.cardio)+'</div><div class="mstat-lbl">Cardio</div></div>'+
+      '<div class="mstat"><div class="mstat-num" style="color:var(--peach)">'+pct(counts.yoga)+'</div><div class="mstat-lbl">Mobility</div></div>'+
+      '<div class="mstat"><div class="mstat-num" style="color:var(--text2)">'+counts.total+'</div><div class="mstat-lbl">Sessions</div></div>';
+  }
+
+  // Phase card
+  var phaseCard = document.getElementById('monthPhaseCard');
+  if(phaseCard){
+    var bodyText = midPhase.label==='Reactivation (light)' ? 'Light strength at home to rebuild the base after the break. Keep loads at 50–60% while the body readjusts.' :
+                   midPhase.label==='Progression' ? 'Loads increase and cardio is reintroduced. 3 sessions per week, building consistency.' :
+                   midPhase.label==='Full plan' ? 'Full pattern: Weights Upper, Run, Weights Lower, with Yoga on alternating weeks. 3–4 sessions/wk.' :
+                   'No structured plan this month — fill it freely.';
+    phaseCard.innerHTML = '<div class="fase-card-title"><span class="fase-pill fp-riattivazione">'+midPhase.label+'</span></div><div class="fase-card-body">'+bodyText+'</div>';
+  }
+
+  // Block button
+  var blockBtn = document.getElementById('monthBlockBtn');
+  if(blockBtn) blockBtn.onclick = function(){ openBlockModal(MONTH_FULL[month]); };
+
+  // Disable prev arrow if we'd go before the plan's first month (June 2026)
+  var prevBtn = document.getElementById('monthPrevBtn');
+  if(prevBtn){
+    var planFirstMonth = new Date(2026,5,1); // June 2026
+    var prevMonth = new Date(year, month-1, 1);
+    prevBtn.disabled = (prevMonth < planFirstMonth);
+  }
+}
+
+function changeMonth(dir){
+  monthOffset += dir;
+  renderMonth();
+}
+
+// Swipe navigation on the month body
+(function setupMonthSwipe(){
+  var body = document.getElementById('monthBody');
+  if(!body) return;
+  var startX = 0, startY = 0;
+  body.addEventListener('touchstart', function(e){
+    startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+  }, {passive:true});
+  body.addEventListener('touchend', function(e){
+    var dx = e.changedTouches[0].clientX - startX;
+    var dy = e.changedTouches[0].clientY - startY;
+    if(Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)){
+      // Swipe left = next month, swipe right = previous month
+      if(dx < 0) changeMonth(1);
+      else { var pb=document.getElementById('monthPrevBtn'); if(!pb || !pb.disabled) changeMonth(-1); }
+    }
+  }, {passive:true});
+})();
+
+renderMonth();
 
 // ─── Coach AI ────────────────────────────────────────────────────────────────
 var coachHistory = [];
@@ -1929,14 +2725,21 @@ Equipment: home weights + bench, outdoor running, access to a pool (no gym).
 Sports she does: weightlifting/HIIT, yoga, running, swimming, hiking, dance, pole dance, padel, stand-up paddle, beach volley, beach tennis (all sporadic/seasonal).
 Injury: right sub-costal strain (intercostal/oblique area), currently recovering. Status unclear — she says she "thinks she's free" but is taking it slow. Treat this as: no loaded core, no deep right-side twists, no deadlifts, no heavy hip hinges until she confirms physio clearance. Progress conservatively.
 
-## Her current week plan (Jun 15–21)
-Mon 15: Rest (today — intentional, evening plans)
-Tue 16: Strength A — 07:00–07:45, home
-Wed 17: Yoga — 07:00–07:45, mat
-Thu 18: Active walk — recovery
-Fri 19: Strength B — 07:00–07:45, home
-Sat 20: Free slot
-Sun 21: Rest
+## Training plan (from Jun 23 onwards)
+Pattern alternates Week A (3 sessions) and Week B (4 sessions):
+- Tuesday: Weights Upper body — 07:00–07:45 (chest, shoulders, back, triceps)
+- Thursday: Run — 07:00–07:30 (zone 2 cardio, progressive)
+- Friday: Weights Lower body + glutes — 07:00–07:45
+- Sunday (Week B only): Yoga — 07:00–07:45 (recovery + mobility)
+
+Week Jun 15–21: free/flex week — Tatiana is adding sporadic activities herself.
+Week Jun 23–29: first full week of new plan (Week A).
+
+## Why this plan
+Body recomp + longevity: Upper/lower split maximises muscle stimulus with adequate recovery.
+Zone 2 running on Thu (48h after upper body) oxidises fat without muscle catabolism.
+Yoga on Sunday (Week B) reduces cortisol, improves hip and right shoulder mobility.
+Sporadic sports (paddle, beach volley, padel, hiking) added on free days — Flexa adjusts surrounding sessions.
 
 ## Training philosophy you follow
 - Balance is non-negotiable: strength + cardio + mobility every week, proportions shift with phase.
@@ -2064,7 +2867,7 @@ function appendPlanBanner(){
   if(!last) return;
   var b = document.createElement('div');
   b.className = 'plan-update-banner';
-  b.innerHTML = '<span>✦</span><span>Plan updated — check <strong>This week</strong> to see changes.</span>';
+  b.innerHTML = '<span>✦</span><span>Plan updated — check <strong>Week</strong> to see changes.</span>';
   last.appendChild(b);
 }
 
@@ -2201,55 +3004,142 @@ function addSportFromCatalog(i){
 
 // ─── Month calendar day click ─────────────────────────────────────────────────
 function openMonthDay(day, session){
-  if(session){
-    // Has a training session — show scheda + option to flex or add
-    document.getElementById('modalTitle').textContent = 'Session · '+day;
-    document.getElementById('modalSession').textContent = session;
-    document.getElementById('modalDay').textContent = 'Day '+day;
-    document.getElementById('modalOrario').textContent = '07:00';
-    document.getElementById('modalIcon').textContent = icona(session);
-    document.getElementById('modalIcon').style.color = colore(session);
-    document.getElementById('modalFlexContent').innerHTML =
-      '<div class="modal-section-title">What do you want to do?</div>'+
-      '<div class="modal-options">'+
-        '<div class="modal-option" onclick="openScheda(&quot;'+session+'&quot;);closeModal()">'+
-          '<div><div class="modal-option-label">↗ View session details</div><div class="modal-option-meta">Exercises and timing</div></div>'+
-          '<span style="color:var(--text3);font-size:16px;margin-left:8px">→</span></div>'+
-        '<div class="modal-option" onclick="closeModal()">'+
-          '<div><div class="modal-option-label">✦ Flex it.</div><div class="modal-option-meta">Move or change this session</div></div>'+
-          '<span class="modal-check">✓</span></div>'+
-        '<div class="modal-option" onclick="closeModal()">'+
-          '<div><div class="modal-option-label">+ Add extra activity</div><div class="modal-option-meta">Log something alongside this session</div></div>'+
-          '<span class="modal-check">✓</span></div>'+
-      '</div>';
-    document.getElementById('flexModal').classList.add('open');
+  // Month view always reflects the CURRENT week (idx in piano array = day-of-week)
+  // Find the day index in the current piano that matches this calendar day number
+  var idx = -1;
+  piano.forEach(function(s,i){ if(s.data===day) idx=i; });
+
+  if(idx === -1){
+    // Day belongs to a different week/month than what's loaded — open a lightweight standalone view
+    if(session){
+      openModal(session, 'Day '+day, '07:00', -1, 'flex');
+    } else {
+      openModal('+ Add activity', 'Day '+day, '—', -1, 'aggiungi');
+    }
+    return;
+  }
+
+  // Day exists in current week's piano — route through the real flex/add system
+  if(session || piano[idx].tipo!=='riposo'){
+    openModal(piano[idx].nome, piano[idx].giorno+' '+piano[idx].data, piano[idx].orario, idx, 'flex');
   } else {
-    // Rest/empty day — tap to add
-    document.getElementById('modalTitle').textContent = '+ Add activity';
-    document.getElementById('modalSession').textContent = 'Day '+day;
-    document.getElementById('modalDay').textContent = 'Rest day';
-    document.getElementById('modalOrario').textContent = '—';
-    document.getElementById('modalIcon').textContent = '➕';
-    document.getElementById('modalIcon').style.color = 'var(--teal)';
-    document.getElementById('modalFlexContent').innerHTML =
-      '<div class="modal-section-title">Add a sport to this day</div>'+
-      '<div class="modal-options" id="monthAddOptions">'+
-        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">🎾 Padel</div><div class="modal-option-meta">High impact · Flexa adjusts recovery</div></div><span class="modal-check">✓</span></div>'+
-        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">🏃 Run</div><div class="modal-option-meta">Medium load · progressive cardio</div></div><span class="modal-check">✓</span></div>'+
-        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">🧘 Yoga</div><div class="modal-option-meta">Low load · recovery and mobility</div></div><span class="modal-check">✓</span></div>'+
-        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">💃 Dance</div><div class="modal-option-meta">Light cardio · counts in balance</div></div><span class="modal-check">✓</span></div>'+
-        '<div class="modal-option" onclick="closeModal()"><div><div class="modal-option-label">🏋️ Weightlifting</div><div class="modal-option-meta">Strength · Flexa rebalances load</div></div><span class="modal-check">✓</span></div>'+
-      '</div>';
-    document.getElementById('flexModal').classList.add('open');
+    openAggiungi(idx, false);
   }
 }
+
+// ─── Check-in ────────────────────────────────────────────────────────────────
+var checkinData = {readiness:86, sleep:84, battery:72, feel:5};
+
+function loadCheckin(){
+  try { var raw=localStorage.getItem('flexa_checkin_v1'); if(raw) checkinData=JSON.parse(raw); } catch(e){}
+}
+function saveCheckin(){
+  try { localStorage.setItem('flexa_checkin_v1', JSON.stringify(checkinData)); } catch(e){}
+}
+loadCheckin();
+
+function onCheckinChange(){
+  var r=parseInt(document.getElementById('slReadiness').value);
+  var s=parseInt(document.getElementById('slSleep').value);
+  var b=parseInt(document.getElementById('slBattery').value);
+  document.getElementById('numReadiness').textContent=r;
+  document.getElementById('numSleep').textContent=s;
+  document.getElementById('numBattery').textContent=b;
+  updateCheckinStatus(r,s,b,checkinData.feel);
+}
+
+function selectFeel(val){
+  checkinData.feel=val;
+  document.querySelectorAll('.ci-feel-btn').forEach(function(b){b.classList.remove('selected');});
+  var vals=[1,3,5,7,10];
+  var btns=document.querySelectorAll('.ci-feel-btn');
+  vals.forEach(function(v,i){if(v===val&&btns[i])btns[i].classList.add('selected');});
+  var r=parseInt(document.getElementById('slReadiness').value);
+  var s=parseInt(document.getElementById('slSleep').value);
+  var b=parseInt(document.getElementById('slBattery').value);
+  updateCheckinStatus(r,s,b,val);
+}
+
+function updateCheckinStatus(r,s,b,feel){
+  var card=document.getElementById('ciStatusCard');
+  var icon=document.getElementById('ciStatusIcon');
+  var title=document.getElementById('ciStatusTitle');
+  var sub=document.getElementById('ciStatusSub');
+  var submit=document.getElementById('ciSubmit');
+  if(!card) return;
+  var state=(r>=70&&b>=30&&feel>=5)?'green':(r>=50)?'yellow':'red';
+  card.className='ci-status-card '+state;
+  if(state==='green'){
+    icon.textContent='OK'; title.textContent='Ready to train';
+    sub.textContent='Readiness '+r+' · Sleep '+s+' · Battery '+b+' — green light.';
+    if(submit){submit.style.background='var(--teal)';submit.style.color='#090910';submit.style.border='none';}
+  } else if(state==='yellow'){
+    icon.textContent='!'; title.textContent='Reduce load today';
+    sub.textContent='Readiness '+r+(b<30?' · Battery low ('+b+')':'')+' — lighter session suggested.';
+    if(submit){submit.style.background='var(--peach)';submit.style.color='#090910';submit.style.border='none';}
+  } else {
+    icon.textContent='X'; title.textContent='Recovery day';
+    sub.textContent='Readiness '+r+' — body needs rest.';
+    if(submit){submit.style.background='rgba(255,100,100,0.15)';submit.style.color='#ff7a7a';submit.style.border='1px solid rgba(255,100,100,0.3)';}
+  }
+}
+
+function submitCheckin(){
+  var r=parseInt(document.getElementById('slReadiness').value);
+  var s=parseInt(document.getElementById('slSleep').value);
+  var b=parseInt(document.getElementById('slBattery').value);
+  checkinData={readiness:r,sleep:s,battery:b,feel:checkinData.feel,date:TODAY.toDateString()};
+  saveCheckin();
+  renderPlanStatusFromCheckin();
+  var btn=document.getElementById('ciSubmit');
+  btn.textContent='Saved — plan updated';
+  setTimeout(function(){btn.textContent='Save · update plan';},2000);
+  setTimeout(function(){showSection('piano');},800);
+}
+
+function renderPlanStatusFromCheckin(){
+  var r=checkinData.readiness||86;
+  var b=checkinData.battery||72;
+  var feel=checkinData.feel||5;
+  var stateEl=document.getElementById('psState');
+  var reasonEl=document.getElementById('psReason');
+  if(!stateEl) return;
+  var state=(r>=70&&b>=30&&feel>=5)?'green':(r>=50)?'yellow':'red';
+  if(state==='green'){
+    stateEl.innerHTML='<span class="ok">Ready to train</span>';
+    if(reasonEl) reasonEl.innerHTML='Readiness <strong>'+r+'</strong> · Sleep <strong>'+checkinData.sleep+'</strong> · Battery <strong>'+b+'</strong> — green light. ';
+  } else if(state==='yellow'){
+    stateEl.innerHTML='<span class="warn">Reduce load</span>';
+    if(reasonEl) reasonEl.innerHTML='Readiness <strong>'+r+'</strong> — lighter session suggested. ';
+  } else {
+    stateEl.innerHTML='<span style="color:#ff7a7a">Recovery day</span>';
+    if(reasonEl) reasonEl.innerHTML='Readiness <strong>'+r+'</strong> — body needs rest. ';
+  }
+}
+
+(function initCI(){
+  var DAY=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var ci=document.getElementById('ciDate');
+  if(ci) ci.textContent='Morning check-in · '+DAY[TODAY.getDay()]+' '+MON[TODAY.getMonth()]+' '+TODAY.getDate();
+  setTimeout(function(){
+    var slR=document.getElementById('slReadiness');
+    var slS=document.getElementById('slSleep');
+    var slB=document.getElementById('slBattery');
+    if(slR){slR.value=checkinData.readiness;document.getElementById('numReadiness').textContent=checkinData.readiness;}
+    if(slS){slS.value=checkinData.sleep;document.getElementById('numSleep').textContent=checkinData.sleep;}
+    if(slB){slB.value=checkinData.battery;document.getElementById('numBattery').textContent=checkinData.battery;}
+    updateCheckinStatus(checkinData.readiness,checkinData.sleep,checkinData.battery,checkinData.feel);
+    if(checkinData.date===TODAY.toDateString()) renderPlanStatusFromCheckin();
+  },300);
+})();
 
 </script>
 <!-- Floating bottom nav -->
 <nav class="bottom-nav" id="bottomNav">
   <button class="bn-item active" id="bn-piano" onclick="showSection('piano')">
-    <div class="bn-icon">📅</div>
-    <div class="bn-label">This week</div>
+    <div class="bn-icon" id="bnPianoIcon" style="display:flex;gap:2px;align-items:center;height:18px;justify-content:center"></div>
+    <div class="bn-label">Week</div>
   </button>
   <button class="bn-item" id="bn-mesi" onclick="showSection('mesi')">
     <div class="bn-icon">🗓</div>
