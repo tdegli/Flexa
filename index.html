@@ -751,6 +751,19 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
   </div>
 </div>
 
+<!-- MODAL: RECALIBRATION ENGINE PROPOSALS -->
+<div class="modal-overlay" id="recalibModal" onclick="if(event.target===this)closeRecalibModal()">
+  <div class="modal">
+    <button class="scheda-back" onclick="closeRecalibModal()" style="margin-bottom:12px">← Back to plan</button>
+    <div class="modal-handle"></div>
+    <div class="modal-title">Flexa rebalanced ✦</div>
+    <div id="recalibProblem" style="font-size:13px;color:var(--text2);line-height:1.55;background:rgba(255,179,155,0.07);border:1px solid rgba(255,179,155,0.2);border-radius:12px;padding:13px 14px;margin-bottom:14px"></div>
+    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:10px">Choose how to fix it</div>
+    <div id="recalibOptions"></div>
+    <button class="modal-cancel" onclick="dismissRecalib()">Keep it as is</button>
+  </div>
+</div>
+
 <!-- MODAL BLOCK DAYS -->
 <div class="block-modal-overlay" id="blockModal" onclick="if(event.target===this)closeBlockModal()">
   <div class="modal">
@@ -1921,6 +1934,7 @@ function confirmFlexProposal(){
   pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano));
   saveState();
   renderPiano();
+  triggerRecalibration('She flexed a session: '+(a.summary || (a.action+' on day '+idx))+'.');
 
   appendFlexMsg('coach', '✓ Done — your plan has been updated.');
   document.getElementById('flexProposalBox').style.display='none';
@@ -2271,6 +2285,7 @@ function confirmAddProposal(){
   }
   saveState();
   renderPiano();
+  triggerRecalibration('She added '+a.sport_name+' to day '+modalIdx+'.');
   appendFlexMsg('coach', '✓ Added — your plan has been updated.');
   document.getElementById('flexProposalBox').style.display='none';
   flexPendingAction = null;
@@ -2928,6 +2943,216 @@ function getPlanContext(){
   return '\n\n## Current week plan state:\n'+days;
 }
 
+// ─── Recalibration engine (the "moat") ────────────────────────────────────────
+// Conservative AI-driven balance check. Runs after a change, only flags a real
+// imbalance vs recovery/progression, and proposes the MINIMUM fix with alternatives.
+var _recalibProposal = null;   // {problem, options:[{summary, changes:[...]}]}
+var _recalibChecking = false;
+
+function buildRecalibPrompt(changeDescription){
+  // Full plan across the visible weeks, with dates, so the engine can look ahead
+  var weeksText = '';
+  for(var w=0; w<WEEKS.length; w++){
+    var wk = pianos[w] ? pianos[w] : WEEKS[w];
+    var isCurrent = (w===currentWeekIdx);
+    var label = WEEK_LABELS[w] || ('Week '+w);
+    weeksText += '\n['+(isCurrent?'CURRENT WEEK':'Week')+' — '+label+']\n';
+    for(var d=0; d<7; d++){
+      var s = wk[d];
+      if(!s) continue;
+      var done = (completions[w] && completions[w][d]) ? ' [DONE]' : '';
+      weeksText += '  '+s.giorno+' '+s.data+': '+s.nome+(s.orario!=='—'?' ('+s.orario+')':' (rest)')+done+'\n';
+    }
+  }
+
+  var checkinSummary = (checkinData)
+    ? 'Readiness '+checkinData.readiness+', Sleep '+checkinData.sleep+', Body Battery '+checkinData.battery+', Feel '+checkinData.feel+'/10'
+    : 'No check-in today';
+
+  var lines = [];
+  lines.push('You are the Flexa recalibration engine. Tatiana just changed her plan. Your ONLY job is to check whether her plan is still balanced and safe, and if NOT, propose the SMALLEST possible fix.');
+  lines.push('');
+  lines.push('## Athlete profile (rules are derived from THIS, not fixed numbers)');
+  lines.push('Tatiana, 35, Barcelona. Goal: body recomposition (61kg → ~56kg, more lean mass) + longevity.');
+  lines.push('Returning after 6 weeks off (recovering right sub-costal/intercostal strain). Progressing conservatively: no loaded core, no deep right-side twists, no deadlifts/heavy hip hinges until cleared.');
+  lines.push('Availability: 3-4 sessions/week, preferred slot 07:00, sessions 25-45 min.');
+  lines.push('Recovery phase: Wk1-2 light (2 sessions), Wk3-4 medium (3), Wk5+ full (3-4).');
+  lines.push('Today check-in: '+checkinSummary);
+  lines.push('');
+  lines.push('## The change she just made');
+  lines.push(changeDescription || 'A session was modified.');
+  lines.push('');
+  lines.push('## Her current multi-week plan');
+  lines.push(weeksText);
+  lines.push('');
+  lines.push('## The TWO non-negotiables you must protect (calibrated to her profile)');
+  lines.push('1. MUSCLE RECOVERY: enough spacing between sessions training the same muscle group. Given she is in injury recovery, lean toward MORE margin (avoid two strength days back-to-back, especially same muscle group; cardio is fine 24h after upper-body work).');
+  lines.push('2. LOAD PROGRESSION: do not let total weekly load jump beyond what her recovery phase allows. Do not pile intensity too fast.');
+  lines.push('');
+  lines.push('## Negotiable goals (try to keep, but YIELD to the non-negotiables if they conflict)');
+  lines.push('- Weekly balance: strength + cardio + mobility represented each week.');
+  lines.push('- Session count: 3-4/week (2 during Wk1-2).');
+  lines.push('');
+  lines.push('## How to behave');
+  lines.push('- Be CONSERVATIVE. If the plan is still fine after her change, say so and propose NOTHING.');
+  lines.push('- Only flag a problem if a non-negotiable is actually violated, OR weekly balance is clearly broken.');
+  lines.push('- When you do propose, propose the MINIMUM change needed. Touch only what is necessary.');
+  lines.push('- If a session was skipped (a past non-rest day not marked DONE), you may propose how to recover it.');
+  lines.push('- You may look into future weeks but only adjust them if truly necessary.');
+  lines.push('- Choose the best resolution yourself (move day / change type / reduce intensity) based on her profile and goal.');
+  lines.push('- Give 1 or 2 alternative options when a fix is needed, so she can choose.');
+  lines.push('');
+  lines.push('## Respond with VALID JSON ONLY, no markdown:');
+  lines.push('{');
+  lines.push('  "balanced": true | false,');
+  lines.push('  "problem": "<if not balanced: one short sentence naming the issue, else empty>",');
+  lines.push('  "options": [');
+  lines.push('     {');
+  lines.push('       "label": "<2-4 word name, e.g. Move to Thursday>",');
+  lines.push('       "summary": "<one sentence: what changes and why>",');
+  lines.push('       "changes": [ {"week_offset":0,"day_index":N,"action":"move_day|change_time|change_sport|add|delete","target_day_index":N,"new_time":"HH:MM–HH:MM","new_sport":"...","new_type":"forza|cardio|yoga"} ]');
+  lines.push('     }');
+  lines.push('  ]');
+  lines.push('}');
+  lines.push('Rules: week_offset 0 = current week, +1 = next week, etc. Include only the fields each action needs. ALWAYS include a time when moving/adding/changing. If balanced is true, "options" must be an empty array.');
+  return lines.join('\n');
+}
+
+async function evaluatePlanBalance(changeDescription){
+  if(_recalibChecking) return;
+  _recalibChecking = true;
+  try {
+    var res = await fetch('/.netlify/functions/coach', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model:'claude-sonnet-4-6', max_tokens:700,
+        system: buildRecalibPrompt(changeDescription),
+        messages: [{role:'user', content:'Check my plan balance after this change and respond with the JSON.'}]
+      })
+    });
+    var data = await res.json();
+    var raw = (data.content && data.content[0] && data.content[0].text) || '{"balanced":true,"options":[]}';
+    var parsed;
+    try { parsed = JSON.parse(raw.replace(/```json|```/g,'').trim()); }
+    catch(e){ parsed = {balanced:true, options:[]}; }
+
+    if(parsed.balanced===false && parsed.options && parsed.options.length>0){
+      _recalibProposal = parsed;
+      showRecalibBadge(true);
+    } else {
+      _recalibProposal = null;
+      showRecalibBadge(false);
+    }
+  } catch(err){
+    // Fail silent — the engine is a helper, never blocks the user
+    _recalibProposal = null;
+    showRecalibBadge(false);
+  }
+  _recalibChecking = false;
+}
+
+function showRecalibBadge(show){
+  var badge = document.getElementById('recalibBadge');
+  if(badge) badge.style.display = show ? 'block' : 'none';
+}
+
+var _recalibTimer = null;
+function triggerRecalibration(changeDescription){
+  // Debounce so rapid edits collapse into one evaluation
+  if(_recalibTimer) clearTimeout(_recalibTimer);
+  _recalibTimer = setTimeout(function(){
+    evaluatePlanBalance(changeDescription);
+  }, 600);
+}
+
+function onCoachNavClick(){
+  // If the engine has a pending proposal, open it; otherwise go to the Coach chat
+  if(_recalibProposal){
+    openRecalibModal();
+  } else {
+    showSection('coach');
+  }
+}
+
+function openRecalibModal(){
+  if(!_recalibProposal) return;
+  var probEl = document.getElementById('recalibProblem');
+  if(probEl) probEl.innerHTML = '<strong style="color:var(--peach)">⚠ </strong>'+(_recalibProposal.problem || 'Your plan needs a small adjustment.');
+  var optsEl = document.getElementById('recalibOptions');
+  if(optsEl){
+    var html = '';
+    _recalibProposal.options.forEach(function(opt, i){
+      html += '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:13px 14px;margin-bottom:10px">'+
+        '<div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px">'+(opt.label||('Option '+(i+1)))+'</div>'+
+        '<div style="font-size:12.5px;color:var(--text2);line-height:1.5;margin-bottom:11px">'+(opt.summary||'')+'</div>'+
+        '<button onclick="applyRecalibOption('+i+')" style="width:100%;background:var(--teal);color:#090910;font-weight:700;border:none;border-radius:10px;padding:10px;cursor:pointer;font-family:inherit;font-size:13px">✓ Apply this</button>'+
+      '</div>';
+    });
+    optsEl.innerHTML = html;
+  }
+  document.getElementById('recalibModal').classList.add('open');
+}
+
+function closeRecalibModal(){
+  document.getElementById('recalibModal').classList.remove('open');
+}
+
+function dismissRecalib(){
+  _recalibProposal = null;
+  showRecalibBadge(false);
+  closeRecalibModal();
+}
+
+function applyRecalibOption(optIdx){
+  var opt = _recalibProposal && _recalibProposal.options[optIdx];
+  if(!opt || !opt.changes){ return; }
+
+  opt.changes.forEach(function(ch){
+    var wOff = ch.week_offset || 0;
+    var wIdx = currentWeekIdx + wOff;
+    if(!WEEKS[wIdx]) return;
+    // Work on that week's working copy
+    var wkPiano = pianos[wIdx] ? pianos[wIdx] : JSON.parse(JSON.stringify(WEEKS[wIdx]));
+    var di = (ch.day_index != null) ? parseInt(ch.day_index,10) : -1;
+    var tdi = (ch.target_day_index != null) ? parseInt(ch.target_day_index,10) : null;
+    if(di<0 || !wkPiano[di]) return;
+
+    if(ch.action==='move_day' && tdi!=null && wkPiano[tdi]){
+      var movedOrario = normalizeOrario(ch.new_time, wkPiano[di].orario);
+      var tmp = {nome:wkPiano[tdi].nome, tipo:wkPiano[tdi].tipo, orario:wkPiano[tdi].orario};
+      wkPiano[tdi].nome = wkPiano[di].nome; wkPiano[tdi].tipo = wkPiano[di].tipo; wkPiano[tdi].orario = movedOrario;
+      wkPiano[di].nome = tmp.nome; wkPiano[di].tipo = tmp.tipo; wkPiano[di].orario = tmp.orario;
+    } else if(ch.action==='change_time' && ch.new_time){
+      wkPiano[di].orario = normalizeOrario(ch.new_time, wkPiano[di].orario);
+    } else if(ch.action==='change_sport' && ch.new_sport){
+      wkPiano[di].nome = ch.new_sport;
+      wkPiano[di].tipo = ch.new_type || wkPiano[di].tipo;
+      if(ch.new_time) wkPiano[di].orario = normalizeOrario(ch.new_time, wkPiano[di].orario);
+      registerSport(ch.new_sport, wkPiano[di].tipo);
+    } else if(ch.action==='add' && ch.new_sport){
+      var tipo = ch.new_type || 'cardio';
+      registerSport(ch.new_sport, tipo);
+      wkPiano[di].nome = ch.new_sport;
+      wkPiano[di].tipo = tipo;
+      wkPiano[di].orario = ch.new_time ? normalizeOrario(ch.new_time, '07:00–07:45') : '07:00–07:45';
+    } else if(ch.action==='delete'){
+      wkPiano[di].nome = 'Rest'; wkPiano[di].tipo = 'riposo'; wkPiano[di].orario = '—';
+    }
+
+    pianos[wIdx] = wkPiano;
+    // If this is the currently loaded week, sync the live piano too
+    if(wIdx===currentWeekIdx){ piano = JSON.parse(JSON.stringify(wkPiano)); }
+  });
+
+  saveState();
+  renderPiano();
+  if(typeof renderMonth==='function') renderMonth();
+
+  _recalibProposal = null;
+  showRecalibBadge(false);
+  closeRecalibModal();
+}
+
 var coachIsTyping = false;
 
 async function sendCoachMessage(){
@@ -3072,6 +3297,7 @@ function applyCoachProposal(btn){
   saveState();
   renderPiano();
   if(typeof renderMonth==='function') renderMonth(); // keep Months view in sync
+  triggerRecalibration('She applied a coach change: '+(a.summary || a.action)+'.');
 
   _coachPendingProposal = null;
   var card = btn.closest('.coach-proposal-card');
@@ -3431,7 +3657,7 @@ function renderPlanStatusFromCheckin(){
     <div class="bn-icon">🗓</div>
     <div class="bn-label">Months</div>
   </button>
-  <button class="bn-coach" onclick="showSection('coach')">✦ Coach</button>
+  <button class="bn-coach" onclick="onCoachNavClick()" style="position:relative">✦ Coach<span id="recalibBadge" style="display:none;position:absolute;top:-3px;right:-3px;width:14px;height:14px;border-radius:50%;background:var(--peach);border:2px solid #090910;box-shadow:0 0 8px rgba(255,179,155,0.6)"></span></button>
   <button class="bn-item" id="bn-profilo" onclick="showSection('profilo')">
     <div class="bn-icon">👤</div>
     <div class="bn-label">Profile</div>
