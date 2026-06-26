@@ -239,6 +239,9 @@ hr{border:none;border-top:1px solid var(--border);margin:18px 0}
 .cal-day{aspect-ratio:1;border-radius:6px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;border:1px solid transparent;cursor:default}
 .cal-day.empty,.cal-day.riposo{background:transparent;color:var(--text3);opacity:.35}
 .cal-day.rest-day{background:var(--bg3);color:var(--text3)}
+.cal-day.clickable{cursor:pointer;transition:transform 0.1s,border-color 0.1s}
+.cal-day.clickable:hover{border-color:var(--purple)}
+.cal-day.rest-day.clickable:hover{background:var(--bg4)}
 .cal-day.forza{background:rgba(185,167,255,0.12);border-color:rgba(185,167,255,0.2);color:var(--purple);font-weight:500;cursor:pointer}
 .cal-day.yoga{background:rgba(255,179,155,0.1);border-color:rgba(255,179,155,0.2);color:var(--peach);font-weight:500;cursor:pointer}
 .cal-day.cardio{background:rgba(143,228,207,0.1);border-color:rgba(143,228,207,0.2);color:var(--teal);font-weight:500;cursor:pointer}
@@ -1424,6 +1427,16 @@ function renderPiano(){
     if(todayEyebrowEl) todayEyebrowEl.textContent = 'Today · '+DAY_LONG2[TODAY.getDay()];
     if(todaySession.tipo!=='riposo'){
       var isDoneToday = !!(completions[currentWeekIdx] && completions[currentWeekIdx][todayDayIdx]);
+      if(isDoneToday){
+        // Already completed today — hide the action card, show a done message (stays ticked in the list below)
+        if(todayCard) todayCard.style.display='none';
+        if(todayRestMsg){
+          todayRestMsg.style.display='block';
+          todayRestMsg.innerHTML = '✓ <strong style="color:var(--teal)">'+todaySession.nome+'</strong> done for today — nice work. <span style="color:var(--teal);cursor:pointer;font-weight:600" id="todayAddLink2">+ Add another activity</span>';
+          var addLink2 = document.getElementById('todayAddLink2');
+          if(addLink2) addLink2.onclick = function(){ openAggiungi(todayDayIdx, true); };
+        }
+      } else {
       var tType = todaySession.tipo==='forza'?'Strength':todaySession.tipo==='yoga'?'Mobility':'Cardio';
       var tBg   = todaySession.tipo==='forza'?'rgba(185,167,255,0.1)':todaySession.tipo==='yoga'?'rgba(255,179,155,0.1)':'rgba(143,228,207,0.1)';
       var tBd   = todaySession.tipo==='forza'?'rgba(185,167,255,0.25)':todaySession.tipo==='yoga'?'rgba(255,179,155,0.25)':'rgba(143,228,207,0.25)';
@@ -1436,15 +1449,16 @@ function renderPiano(){
       if(te('tdDur')) te('tdDur').textContent = durationFromOrario(todaySession.orario);
       var tdDoneBtn = te('tdDoneBtn');
       if(tdDoneBtn){
-        tdDoneBtn.textContent = isDoneToday ? '✓ Done' : '○ Done';
-        tdDoneBtn.style.background = isDoneToday ? 'rgba(143,228,207,0.15)' : 'var(--teal)';
-        tdDoneBtn.style.color = isDoneToday ? 'var(--teal)' : '#090910';
+        tdDoneBtn.textContent = '○ Done';
+        tdDoneBtn.style.background = 'var(--teal)';
+        tdDoneBtn.style.color = '#090910';
         tdDoneBtn.onclick = function(){ toggleDone(todayDayIdx); };
       }
       var tdFlexBtn = te('tdFlexBtn');
       if(tdFlexBtn) tdFlexBtn.onclick = function(){ openModal(todaySession.nome, todaySession.giorno+' '+todaySession.data, todaySession.orario, todayDayIdx, 'flex'); };
       if(todayCard) todayCard.style.display='block';
       if(todayRestMsg) todayRestMsg.style.display='none';
+      }
     } else {
       if(todayCard) todayCard.style.display='none';
       if(todayRestMsg){
@@ -1464,7 +1478,11 @@ function renderPiano(){
 
   // Next session card v2
   var todayData = isTodayWeek ? TODAY.getDate() : 0;
-  var prossima = piano.find(function(s){ return s.tipo!=='riposo' && (!isTodayWeek || s.data>todayData); });
+  var prossima = piano.find(function(s){
+    var sIdx = piano.indexOf(s);
+    var sDone = !!(completions[currentWeekIdx] && completions[currentWeekIdx][sIdx]);
+    return s.tipo!=='riposo' && !sDone && (!isTodayWeek || s.data>todayData);
+  });
   var prossimaIdx = prossima ? piano.indexOf(prossima) : -1;
 
   var eyebrowEl2 = document.getElementById('nextSessionEyebrow');
@@ -2607,7 +2625,7 @@ window.addEventListener('scroll', function(){
 
 // ─── Init ────────────────────────────────────────────────────────────────────
 // Set bottom nav "Week" icon: 7 dots representing the week, today highlighted in purple
-(function setWeekNavIcon(){
+function setWeekNavIcon(){
   var icon = document.getElementById('bnPianoIcon');
   if(!icon) return;
   // Monday=0 ... Sunday=6 (JS getDay: Sun=0, so remap)
@@ -2616,13 +2634,14 @@ window.addEventListener('scroll', function(){
   var dots = '';
   for(var i=0;i<7;i++){
     if(i===todayIdx){
-      dots += '<span style="width:5px;height:5px;border-radius:50%;background:var(--purple);flex-shrink:0"></span>';
+      dots += '<span style="width:5px;height:5px;border-radius:50%;background:var(--purple);flex-shrink:0;display:inline-block"></span>';
     } else {
-      dots += '<span style="width:3px;height:3px;border-radius:50%;background:var(--text3);flex-shrink:0"></span>';
+      dots += '<span style="width:3px;height:3px;border-radius:50%;background:var(--text2);flex-shrink:0;display:inline-block"></span>';
     }
   }
   icon.innerHTML = dots;
-})();
+}
+setWeekNavIcon();
 
 renderPiano();
 
@@ -2746,7 +2765,10 @@ function renderMonth(){
     }
     if(isPast) cls += ' past';
     if(isToday) cls += ' today-mark';
-    var onclick = sess ? ' onclick="openMonthDay('+d+', \''+sess.n.replace(/'/g,"\\'")+'\')"' : '';
+    cls += ' clickable';
+    var dateKeyStr = year+'-'+String(month+1).padStart(2,'0')+'-'+String(d).padStart(2,'0');
+    var sessName = sess ? sess.n.replace(/'/g,"\\'") : '';
+    var onclick = ' onclick="openMonthDayByDate(\''+dateKeyStr+'\', \''+sessName+'\')"';
     html += '<div class="'+cls+'"'+onclick+'>'+d+icon+'</div>';
   }
   cellsEl.innerHTML = html;
@@ -3226,27 +3248,62 @@ function addSportFromCatalog(i){
 }
 
 // ─── Month calendar day click ─────────────────────────────────────────────────
-function openMonthDay(day, session){
-  // Month view always reflects the CURRENT week (idx in piano array = day-of-week)
-  // Find the day index in the current piano that matches this calendar day number
-  var idx = -1;
-  piano.forEach(function(s,i){ if(s.data===day) idx=i; });
+function openMonthDayByDate(dateStr, session){
+  // dateStr = "YYYY-MM-DD". Navigate the Week tab to the week containing this date,
+  // then open the real flex (if there's a session) or add-activity chat (if empty).
+  var parts = dateStr.split('-');
+  var target = new Date(parseInt(parts[0],10), parseInt(parts[1],10)-1, parseInt(parts[2],10));
+  target.setHours(0,0,0,0);
+  var targetMonday = getMondayOf(target);
+  var targetKey = mondayDateKey(targetMonday);
 
-  if(idx === -1){
-    // Day belongs to a different week/month than what's loaded — open a lightweight standalone view
-    if(session){
-      openModal(session, 'Day '+day, '07:00', -1, 'flex');
-    } else {
-      openModal('+ Add activity', 'Day '+day, '—', -1, 'aggiungi');
-    }
-    return;
+  // Find which WEEKS index holds this week; generate it if outside the current window
+  var foundIdx = -1;
+  for(var i=0;i<WEEKS.length;i++){
+    if(WEEKS[i] && WEEKS[i][0] && mondayDateKey(getMondayOf(new Date(WEEKS[i][0].fullDate)))===targetKey){ foundIdx=i; break; }
   }
+  // If not in window, extend WEEKS forward/backward until we reach it (bounded)
+  var guard = 0;
+  while(foundIdx===-1 && guard<60){
+    guard++;
+    var firstMon = getMondayOf(new Date(WEEKS[0][0].fullDate));
+    if(targetMonday < firstMon){
+      var ex = buildWeeks(1, WEEK_OFFSET_START - 1);
+      WEEKS.unshift(ex.weeks[0]); WEEK_LABELS.unshift(ex.labels[0]); WEEK_PHASE.unshift(ex.phases[0]);
+      WEEK_OFFSET_START -= 1;
+      pianos = shiftIndexedObject(pianos, 1); extras = shiftIndexedObject(extras, 1); completions = shiftIndexedObject(completions, 1);
+      currentWeekIdx += 1;
+    } else {
+      var lastOffset = WEEK_OFFSET_START + WEEKS.length;
+      var ex2 = buildWeeks(1, lastOffset);
+      WEEKS.push(ex2.weeks[0]); WEEK_LABELS.push(ex2.labels[0]); WEEK_PHASE.push(ex2.phases[0]);
+    }
+    for(var j=0;j<WEEKS.length;j++){
+      if(WEEKS[j] && WEEKS[j][0] && mondayDateKey(getMondayOf(new Date(WEEKS[j][0].fullDate)))===targetKey){ foundIdx=j; break; }
+    }
+  }
+  if(foundIdx===-1) return;
 
-  // Day exists in current week's piano — route through the real flex/add system
-  if(session || piano[idx].tipo!=='riposo'){
-    openModal(piano[idx].nome, piano[idx].giorno+' '+piano[idx].data, piano[idx].orario, idx, 'flex');
+  // Switch the Week tab to that week
+  applyLoadedStateToCurrentWeeks();
+  pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano)); // save current before switching
+  saveState();
+  currentWeekIdx = foundIdx;
+  piano = pianos[currentWeekIdx] ? JSON.parse(JSON.stringify(pianos[currentWeekIdx])) : JSON.parse(JSON.stringify(WEEKS[currentWeekIdx]));
+  pianoOrig = JSON.parse(JSON.stringify(WEEKS[currentWeekIdx]));
+
+  // Find the day index within that week
+  var dayIdx = (target.getDay()===0) ? 6 : target.getDay()-1;
+
+  // Jump to Week tab so the change is visible in context
+  showSection('piano');
+  renderPiano();
+
+  // Open the right modal
+  if(piano[dayIdx].tipo!=='riposo'){
+    openModal(piano[dayIdx].nome, piano[dayIdx].giorno+' '+piano[dayIdx].data, piano[dayIdx].orario, dayIdx, 'flex');
   } else {
-    openAggiungi(idx, false);
+    openAggiungi(dayIdx, false);
   }
 }
 
