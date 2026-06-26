@@ -1016,7 +1016,34 @@ var SPORT_SPORADICI = [
   {nome:'Walk',      icon:'🚶',carico:'minimal',note:'Active recovery'}
 ];
 
-function icona(n){ return ICONS[n] || '🏋️'; }
+function icona(n){
+  if(ICONS[n]) return ICONS[n];
+  if(!n) return '🏋️';
+  // Keyword-based fallback for sports not in the map (e.g. added via AI chat)
+  var s = n.toLowerCase();
+  var rules = [
+    [/bike|cycl|spin|bici|acquabike|aquabike/, '🚴'],
+    [/swim|nuoto|pool|aqua|acqua/, '🏊'],
+    [/run|jog|corsa|sprint/, '🏃'],
+    [/walk|hike|trek|camminata|escursion/, '🥾'],
+    [/yoga|pilates|stretch|mobilit/, '🧘'],
+    [/weight|strength|gym|forza|pesi|lift|hiit|crossfit/, '🏋️'],
+    [/padel|tennis|squash/, '🎾'],
+    [/volley|pallavolo/, '🏐'],
+    [/box|kick|martial|mma|judo|karate/, '🥊'],
+    [/dance|danc|ballo|zumba/, '💃'],
+    [/climb|arrampic|boulder/, '🧗'],
+    [/ski|sci|snowboard/, '⛷️'],
+    [/surf|paddle|sup|kayak|row|canoa|canoe/, '🏄'],
+    [/football|soccer|calcio/, '⚽'],
+    [/basket/, '🏀'],
+    [/golf/, '⛳'],
+    [/skate|pattin/, '🛹'],
+    [/row|remo|rowing/, '🚣']
+  ];
+  for(var i=0;i<rules.length;i++){ if(rules[i][0].test(s)) return rules[i][1]; }
+  return '🏋️';
+}
 
 function durationFromOrario(orario){
   // Parses "07:00–07:45" and returns "45 min". Falls back to "45 min" if unparseable.
@@ -1034,7 +1061,24 @@ function durationFromOrario(orario){
   if(diff < 0) diff += 24*60; // crosses midnight, unlikely but safe
   return diff+' min';
 }
-function colore(n){ return COLORS[n] || 'var(--text3)'; }
+function colore(n){
+  if(COLORS[n]) return COLORS[n];
+  // Fallback by activity type
+  var t = TIPI[n];
+  if(t==='forza') return 'var(--purple)';
+  if(t==='yoga') return 'var(--peach)';
+  if(t==='cardio') return 'var(--teal)';
+  return 'var(--text3)';
+}
+
+function registerSport(nome, tipo){
+  // Dynamically register a sport added via AI so its icon/color/type resolve everywhere
+  if(!nome) return;
+  if(!TIPI[nome] && tipo) TIPI[nome] = tipo;
+  if(!ICONS[nome]) ICONS[nome] = icona(nome); // uses keyword fallback to pick a sensible emoji
+  if(!COLORS[nome]) COLORS[nome] = colore(nome);
+  if(!CARICHI[nome]) CARICHI[nome] = (tipo==='forza'?'high':tipo==='cardio'?'medium':'low');
+}
 
 // ─── Week navigation ──────────────────────────────────────────────────────────
 function shiftIndexedObject(obj, delta){
@@ -1257,6 +1301,7 @@ function applyFlexaSuggestion(sugIdx){
   piano[sg.day].nome = sg.sport.name;
   piano[sg.day].tipo = CAT_TYPE[sg.sport.cat] || 'cardio';
   piano[sg.day].orario = '07:00–07:45';
+  registerSport(sg.sport.name, piano[sg.day].tipo);
   pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano));
   saveState();
   renderPiano();
@@ -1848,6 +1893,7 @@ function confirmFlexProposal(){
     piano[idx].nome = a.new_sport;
     piano[idx].tipo = a.new_type || piano[idx].tipo;
     if(a.new_time) piano[idx].orario = normalizeOrario(a.new_time, piano[idx].orario);
+    registerSport(a.new_sport, piano[idx].tipo);
   } else if(a.action === 'delete'){
     piano[idx].nome = 'Rest';
     piano[idx].tipo = 'riposo';
@@ -2194,6 +2240,7 @@ function confirmAddProposal(){
     fullTime = a.time || 'Evening'; // vague time like "Evening" — leave as-is for extras
   }
   var isMainEmpty = piano[modalIdx].tipo === 'riposo';
+  registerSport(a.sport_name, tipo);
   if(isMainEmpty){
     // No session yet today — make this the main session for the day
     piano[modalIdx].nome = a.sport_name;
@@ -2601,23 +2648,34 @@ function mondayDateKey(monday){
 }
 
 function savedSessionForDate(date){
-  // Look up a user-modified session for this date from the persisted, date-keyed store.
-  // Returns {n,t,o} if a modified plan exists for that week, else null.
+  // Look up a user-modified session for this date. Single source of truth:
+  // the same date-keyed data the Week tab persists. Returns {n,t,o,rest} or null.
   var monday = getMondayOf(date);
   var dayIdx = (date.getDay()===0) ? 6 : date.getDay()-1; // Mon=0..Sun=6
   var key = mondayDateKey(monday);
 
-  // 1) Check in-memory pianos{} mapped to this Monday via the current WEEKS indices
+  // 1) If this is the week currently loaded in the Week tab, read the LIVE piano array
+  //    (covers edits that haven't been re-keyed into pianos{} yet).
+  if(WEEKS[currentWeekIdx] && WEEKS[currentWeekIdx][0]){
+    var curMon = getMondayOf(new Date(WEEKS[currentWeekIdx][0].fullDate));
+    if(mondayDateKey(curMon)===key && piano && piano[dayIdx]){
+      var lv = piano[dayIdx];
+      return {n:lv.nome, t:lv.tipo, o:lv.orario, rest:(lv.tipo==='riposo')};
+    }
+  }
+
+  // 2) Any other week currently in the WEEKS window with saved edits in pianos{}
   for(var idx=0; idx<WEEKS.length; idx++){
     if(WEEKS[idx] && WEEKS[idx][0] && WEEKS[idx][0].fullDate){
-      var wkMon = WEEKS[idx][0].fullDate instanceof Date ? WEEKS[idx][0].fullDate : new Date(WEEKS[idx][0].fullDate);
-      if(mondayDateKey(getMondayOf(wkMon))===key && pianos[idx]){
+      var wkMon = getMondayOf(new Date(WEEKS[idx][0].fullDate));
+      if(mondayDateKey(wkMon)===key && pianos[idx]){
         var s = pianos[idx][dayIdx];
         if(s) return {n:s.nome, t:s.tipo, o:s.orario, rest:(s.tipo==='riposo')};
       }
     }
   }
-  // 2) Check the persisted store directly (covers weeks not currently in the WEEKS window)
+
+  // 3) Persisted store directly (weeks outside the current WEEKS window)
   try {
     var raw = localStorage.getItem(LS_KEY);
     if(raw){
@@ -2964,9 +3022,11 @@ function applyCoachProposal(btn){
     piano[di].nome = a.new_sport;
     piano[di].tipo = a.new_type || CAT_TYPE[a.new_cat] || piano[di].tipo;
     if(a.new_time) piano[di].orario = normalizeOrario(a.new_time, piano[di].orario);
+    registerSport(a.new_sport, piano[di].tipo);
   } else if(a.action==='add' && di>=0 && a.new_sport){
     var tipo = a.new_type || 'cardio';
     var orario = a.new_time ? normalizeOrario(a.new_time, '07:00–07:45') : '07:00–07:45';
+    registerSport(a.new_sport, tipo);
     if(piano[di].tipo==='riposo'){
       piano[di].nome = a.new_sport;
       piano[di].tipo = tipo;
