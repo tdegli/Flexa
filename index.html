@@ -2641,7 +2641,13 @@ function setWeekNavIcon(){
   }
   icon.innerHTML = dots;
 }
-setWeekNavIcon();
+// The bottom nav is rendered AFTER this script in the DOM, so defer until it exists
+if(document.getElementById('bnPianoIcon')){
+  setWeekNavIcon();
+} else {
+  document.addEventListener('DOMContentLoaded', setWeekNavIcon);
+  window.addEventListener('load', setWeekNavIcon);
+}
 
 renderPiano();
 
