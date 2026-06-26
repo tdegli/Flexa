@@ -2596,11 +2596,49 @@ function phaseForMonday(monday){
   return {plan:(weekNum%2===0?PLAN_A:PLAN_B), label:'Full plan'};
 }
 
+function mondayDateKey(monday){
+  return monday.getFullYear()+'-'+String(monday.getMonth()+1).padStart(2,'0')+'-'+String(monday.getDate()).padStart(2,'0');
+}
+
+function savedSessionForDate(date){
+  // Look up a user-modified session for this date from the persisted, date-keyed store.
+  // Returns {n,t,o} if a modified plan exists for that week, else null.
+  var monday = getMondayOf(date);
+  var dayIdx = (date.getDay()===0) ? 6 : date.getDay()-1; // Mon=0..Sun=6
+  var key = mondayDateKey(monday);
+
+  // 1) Check in-memory pianos{} mapped to this Monday via the current WEEKS indices
+  for(var idx=0; idx<WEEKS.length; idx++){
+    if(WEEKS[idx] && WEEKS[idx][0] && WEEKS[idx][0].fullDate){
+      var wkMon = WEEKS[idx][0].fullDate instanceof Date ? WEEKS[idx][0].fullDate : new Date(WEEKS[idx][0].fullDate);
+      if(mondayDateKey(getMondayOf(wkMon))===key && pianos[idx]){
+        var s = pianos[idx][dayIdx];
+        if(s) return {n:s.nome, t:s.tipo, o:s.orario, rest:(s.tipo==='riposo')};
+      }
+    }
+  }
+  // 2) Check the persisted store directly (covers weeks not currently in the WEEKS window)
+  try {
+    var raw = localStorage.getItem(LS_KEY);
+    if(raw){
+      var st = JSON.parse(raw);
+      if(st.pianosByDate && st.pianosByDate[key] && st.pianosByDate[key][dayIdx]){
+        var ss = st.pianosByDate[key][dayIdx];
+        return {n:ss.nome, t:ss.tipo, o:ss.orario, rest:(ss.tipo==='riposo')};
+      }
+    }
+  } catch(e){}
+  return null;
+}
+
 function sessionForDate(date){
-  // Returns the planned session object for a given calendar date, or null
+  // First honour any user modification saved for that week...
+  var saved = savedSessionForDate(date);
+  if(saved){ return saved.rest ? null : {n:saved.n, t:saved.t, o:saved.o}; }
+  // ...otherwise fall back to the theoretical plan for that week.
   var monday = getMondayOf(date);
   var ph = phaseForMonday(monday);
-  var dayIdx = (date.getDay()===0) ? 6 : date.getDay()-1; // Mon=0..Sun=6
+  var dayIdx = (date.getDay()===0) ? 6 : date.getDay()-1;
   return ph.plan[dayIdx] || null;
 }
 
@@ -2790,7 +2828,12 @@ Rules for proposals:
 - Only emit ONE proposal block per message.
 - Put your normal conversational reply FIRST, then the proposal block at the very end. The proposal block text will be hidden from her — she only sees your words plus an Apply button.
 - If you're only advising or answering a question (no concrete change yet), do NOT emit a block.
-- If a change would break recovery (two heavy days back-to-back, <24h after a hard session), say so in your reply and propose the safer alternative instead.`;
+- If a change would break recovery (two heavy days back-to-back, <24h after a hard session), say so in your reply and propose the safer alternative instead.
+
+CRITICAL:
+- NEVER say "I've updated", "I've moved", "done", or "your plan now shows" — YOU do not apply changes, the Apply button does. Instead say things like "Here's the change — tap Apply to lock it in" or "Want me to apply this?".
+- If your reply describes ANY concrete modification to a specific day, you MUST include the matching [[FLEXA_PROPOSAL]] block. A described change with no block is a bug — never do that.
+- day_index is mandatory and must be the 0-6 integer for the day you are changing.`;
 
 function getPlanContext(){
   var days = piano.map(function(s){
@@ -2904,21 +2947,22 @@ function applyCoachProposal(btn){
     pianoOrig = JSON.parse(JSON.stringify(WEEKS[currentWeekIdx]));
   }
 
-  var di = (a.day_index != null) ? a.day_index : -1;
+  var di = (a.day_index != null) ? parseInt(a.day_index, 10) : -1;
+  var tdi = (a.target_day_index != null) ? parseInt(a.target_day_index, 10) : null;
   var CAT_TYPE = {'strength':'forza','mobility':'yoga','cardio':'cardio'};
 
-  if(a.action==='move_day' && di>=0 && a.target_day_index!=null){
+  if(a.action==='move_day' && di>=0 && tdi!=null){
     var movedOrario = normalizeOrario(a.new_time, piano[di].orario);
-    var tmp = {nome:piano[a.target_day_index].nome, tipo:piano[a.target_day_index].tipo, orario:piano[a.target_day_index].orario};
-    piano[a.target_day_index].nome = piano[di].nome;
-    piano[a.target_day_index].tipo = piano[di].tipo;
-    piano[a.target_day_index].orario = movedOrario;
+    var tmp = {nome:piano[tdi].nome, tipo:piano[tdi].tipo, orario:piano[tdi].orario};
+    piano[tdi].nome = piano[di].nome;
+    piano[tdi].tipo = piano[di].tipo;
+    piano[tdi].orario = movedOrario;
     piano[di].nome = tmp.nome; piano[di].tipo = tmp.tipo; piano[di].orario = tmp.orario;
   } else if(a.action==='change_time' && di>=0 && a.new_time){
     piano[di].orario = normalizeOrario(a.new_time, piano[di].orario);
   } else if(a.action==='change_sport' && di>=0 && a.new_sport){
     piano[di].nome = a.new_sport;
-    piano[di].tipo = a.new_type || piano[di].tipo;
+    piano[di].tipo = a.new_type || CAT_TYPE[a.new_cat] || piano[di].tipo;
     if(a.new_time) piano[di].orario = normalizeOrario(a.new_time, piano[di].orario);
   } else if(a.action==='add' && di>=0 && a.new_sport){
     var tipo = a.new_type || 'cardio';
@@ -2939,6 +2983,7 @@ function applyCoachProposal(btn){
   pianos[currentWeekIdx] = JSON.parse(JSON.stringify(piano));
   saveState();
   renderPiano();
+  if(typeof renderMonth==='function') renderMonth(); // keep Months view in sync
 
   _coachPendingProposal = null;
   var card = btn.closest('.coach-proposal-card');
